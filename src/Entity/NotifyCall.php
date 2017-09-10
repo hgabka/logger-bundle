@@ -54,15 +54,6 @@ class NotifyCall
     protected $updatedAt;
 
     /**
-     * @var ArrayCollection|NotifyCall[]
-     *
-     * @ORM\OneToMany(targetEntity="Hgabka\LoggerBundle\Entity\NotifyCall", cascade={"all"}, mappedBy="notify", orphanRemoval=true)
-     *
-     * @Assert\Valid()
-     */
-    private $calls;
-	
-    /**
      * Get id
      *
      * @return int
@@ -77,7 +68,7 @@ class NotifyCall
      *
      * @param int $id The unique identifier
      *
-     * @return Notify
+     * @return NotifyCall
      */
     public function setId($id)
     {
@@ -90,11 +81,49 @@ class NotifyCall
      * Sets createdAt.
      *
      * @param  \DateTime $createdAt
-     * @return $this
+     * @return NotifyCall
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \Hgabka\LoggerBundle\Entity\Notify
+     */
+    public function getNotify(): \Hgabka\LoggerBundle\Entity\Notify
+    {
+        return $this->notify;
+    }
+
+    /**
+     * @param \Hgabka\LoggerBundle\Entity\Notify $notify
+     * @return NotifyCall
+     */
+    public function setNotify($notify)
+    {
+        $this->notify = $notify;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServer(): string
+    {
+        return $this->server;
+    }
+
+    /**
+     * @param string $server
+     * @return NotifyCall
+     */
+    public function setServer($server)
+    {
+        $this->server = $server;
 
         return $this;
     }
@@ -113,7 +142,7 @@ class NotifyCall
      * Sets updatedAt.
      *
      * @param  \DateTime $updatedAt
-     * @return $this
+     * @return NotifyCall
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {

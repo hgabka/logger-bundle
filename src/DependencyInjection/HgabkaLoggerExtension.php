@@ -20,11 +20,16 @@ class HgabkaLoggerExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = new Configuration($container);
         $config = $this->processConfiguration($configuration, $configs);
-        //var_dump($config); die();
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+
+        $loggerDefinition = $container->getDefinition('hgabka_logger.exception_logger');
+        $loggerDefinition->replaceArgument(1, $config['notifier']['logging']['log_path']);
+
+        $notifierDefinition = $container->getDefinition('hgabka_logger.exception_notifier');
+        $notifierDefinition->addMethodCall('setConfig', [$config['notifier']]);
     }
 }
