@@ -23,6 +23,6 @@ services:
 
     hgabka_logger.column_log_listener:
         class: Hgabka\LoggerBundle\EventListener\ColumnLogListener
-        arguments: ["@hgabka_logger.exception_notifier"]
+        arguments: ["@hgabka_logger.column_logger"]
         tags:
             - { name: doctrine.event_listener, event: onFlush }

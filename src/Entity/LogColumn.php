@@ -44,7 +44,7 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="table", nullable=true)
+     * @ORM\Column(type="string", name="table_name", nullable=true)
      */
     private $table;
 
@@ -58,14 +58,14 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="column", nullable=true)
+     * @ORM\Column(type="string", name="column_name", nullable=true)
      */
     private $column;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="field", nullable=true)
+     * @ORM\Column(type="string", name="field_name", nullable=true)
      */
     private $field;
 

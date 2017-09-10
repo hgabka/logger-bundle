@@ -197,8 +197,10 @@ class ExceptionNotifier
         $sfNotifyCall->setServer( serialize(@$_SERVER));
         $sfNotify->addCall($sfNotifyCall);
 
-        $em->persist($sfNotifyCall);
-        $em->flush();
+        if ($em->isOpen()) {
+            $em->persist($sfNotifyCall);
+            $em->flush();
+        }
     }
 
     protected function sendMail($exception)

@@ -11,7 +11,7 @@ namespace Hgabka\LoggerBundle\Logger;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Hgabka\LoggerBundle\Entity\LogColumn;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ColumnLogger
 {
@@ -80,11 +80,17 @@ class ColumnLogger
             $logFields = $obj->getLogFields();
 
             foreach ($changeData as $field => $changeData) {
-                if (!is_array($logFields) || !in_array($field, $logFields)) {
+                if (!is_array($logFields) || (!empty($logFields) && !in_array($field, $logFields))) {
                     continue;
                 }
+
+                if (empty($logFields) && in_array($field, ['createdAt', 'updatedAt'])) {
+                    continue;
+                }
+
                 $fieldName = $metaData->getColumnName($field);
                 $oldVal = $changeData[0];
+                $newVal = $changeData[1];
                 $log = new LogColumn();
                 $log
                     ->setIdent($this->ident)
@@ -94,7 +100,7 @@ class ColumnLogger
                     ->setColumn($fieldName)
                     ->setField($field)
                     ->setOldValue($this->convertValue($oldVal))
-                    ->setNewValue($this->convertValue($value))
+                    ->setNewValue($this->convertValue($newVal))
                     ->setUserId($userId)
                     ->setModType($action)
                 ;
@@ -103,5 +109,18 @@ class ColumnLogger
         }
 
         return $logs;
+    }
+
+    protected function convertValue($value)
+    {
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (is_array($value) || is_object($value)) {
+            return json_encode($value);
+        }
+
+        return (string)$value;
     }
 }
