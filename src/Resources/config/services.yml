@@ -16,3 +16,13 @@ services:
         arguments: ["@hgabka_logger.exception_notifier"]
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    hgabka_logger.column_logger:
+        class: Hgabka\LoggerBundle\Logger\ColumnLogger
+        arguments: ["@doctrine", "@security.token_storage", '']
+
+    hgabka_logger.column_log_listener:
+        class: Hgabka\LoggerBundle\EventListener\ColumnLogListener
+        arguments: ["@hgabka_logger.exception_notifier"]
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }

@@ -67,6 +67,13 @@ class Configuration implements ConfigurationInterface
                           ->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('column_logger')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('common_identifier')->defaultValue('symfony')->end()
+                    ->end()
+                ->end()
              ->end()
         ;
 

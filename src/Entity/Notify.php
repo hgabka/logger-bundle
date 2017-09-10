@@ -54,7 +54,7 @@ class Notify
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="sever_name", nullable=true)
+     * @ORM\Column(type="string", name="server_name", nullable=true)
      */
     private $serverName;
 
