@@ -21,8 +21,18 @@ services:
         class: Hgabka\LoggerBundle\Logger\ColumnLogger
         arguments: ["@doctrine", "@security.token_storage", '']
 
+    hgabka_logger.action_logger:
+        class: Hgabka\LoggerBundle\Logger\ActionLogger
+        arguments: ["@doctrine", "@security.token_storage", "@translator", "@request_stack", "@session", '', '']
+
     hgabka_logger.column_log_listener:
         class: Hgabka\LoggerBundle\EventListener\ColumnLogListener
         arguments: ["@hgabka_logger.column_logger"]
         tags:
             - { name: doctrine.event_listener, event: onFlush }
+
+    hgabka_logger.action_log_subscriber:
+        class: Hgabka\LoggerBundle\EventListener\ActionLogSubscriber
+        arguments: ["@hgabka_logger.action_logger"]
+        tags:
+            - { name: kernel.event_subscriber }

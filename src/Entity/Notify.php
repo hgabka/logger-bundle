@@ -1,15 +1,22 @@
 <?php
 
+/*
+ * This file is part of PHP CS Fixer.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *     Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Hgabka\LoggerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
-use Hgabka\LoggerBundle\Entity\NotifyCall;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Notify
+ * Notify.
  *
  * @ORM\Entity(repositoryClass="Hgabka\LoggerBundle\Repository\NotifyRepository")
  * @ORM\Table(name="hg_logger_notify")
@@ -28,92 +35,92 @@ class Notify
      *
      * @ORM\Column(type="string", name="controller", nullable=true)
      */
-    private $controller;
+    protected $controller;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="exception_class", nullable=true)
      */
-    private $exceptionClass;
-	
+    protected $exceptionClass;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="message", nullable=true)
      */
-    private $message;
-	
+    protected $message;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="traces", nullable=true)
      */
-    private $traces;
-	
+    protected $traces;
+
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="server_name", nullable=true)
      */
-    private $serverName;
+    protected $serverName;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="redirect_url", nullable=true)
      */
-    private $redirectUrl;
-	
+    protected $redirectUrl;
+
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="request_uri", nullable=true)
      */
-    private $requestUri;
-	
+    protected $requestUri;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="post", nullable=true)
      */
-    private $post;
-	
+    protected $post;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="request", nullable=true)
      */
-    private $request;
-	
+    protected $request;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="params", nullable=true)
      */
-    private $params;
-	
+    protected $params;
+
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(type="integer", name="call_number", nullable=true)
      */
-    private $callNumber;
-	
+    protected $callNumber;
+
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="hash", nullable=true)
      */
-    private $hash;
-	
+    protected $hash;
+
     /**
      * @var string
      *
      * @ORM\Column(type="boolean", name="send_again", nullable=true)
      */
-    private $sendAgain = false;
-	
+    protected $sendAgain = false;
+
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
@@ -135,7 +142,7 @@ class Notify
      *
      * @Assert\Valid()
      */
-    private $calls;
+    protected $calls;
 
     /**
      * Notify constructor.
@@ -146,7 +153,7 @@ class Notify
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -156,7 +163,7 @@ class Notify
     }
 
     /**
-     * Set id
+     * Set id.
      *
      * @param int $id The unique identifier
      *
@@ -179,6 +186,7 @@ class Notify
 
     /**
      * @param string $controller
+     *
      * @return Notify
      */
     public function setController($controller)
@@ -198,6 +206,7 @@ class Notify
 
     /**
      * @param string $exceptionClass
+     *
      * @return Notify
      */
     public function setExceptionClass($exceptionClass)
@@ -217,6 +226,7 @@ class Notify
 
     /**
      * @param string $message
+     *
      * @return Notify
      */
     public function setMessage($message)
@@ -236,6 +246,7 @@ class Notify
 
     /**
      * @param string $traces
+     *
      * @return Notify
      */
     public function setTraces($traces)
@@ -255,6 +266,7 @@ class Notify
 
     /**
      * @param string $redirectUrl
+     *
      * @return Notify
      */
     public function setRedirectUrl($redirectUrl)
@@ -274,6 +286,7 @@ class Notify
 
     /**
      * @param string $requestUri
+     *
      * @return Notify
      */
     public function setRequestUri($requestUri)
@@ -293,6 +306,7 @@ class Notify
 
     /**
      * @param string $post
+     *
      * @return Notify
      */
     public function setPost($post)
@@ -312,6 +326,7 @@ class Notify
 
     /**
      * @param string $request
+     *
      * @return Notify
      */
     public function setRequest($request)
@@ -331,6 +346,7 @@ class Notify
 
     /**
      * @param string $params
+     *
      * @return Notify
      */
     public function setParams($params)
@@ -341,7 +357,7 @@ class Notify
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getCallNumber()
     {
@@ -350,6 +366,7 @@ class Notify
 
     /**
      * @param string $callNumber
+     *
      * @return Notify
      */
     public function setCallNumber($callNumber)
@@ -369,6 +386,7 @@ class Notify
 
     /**
      * @param string $hash
+     *
      * @return Notify
      */
     public function setHash($hash)
@@ -388,6 +406,7 @@ class Notify
 
     /**
      * @param string $sendAgain
+     *
      * @return Notify
      */
     public function setSendAgain($sendAgain)
@@ -407,6 +426,7 @@ class Notify
 
     /**
      * @param ArrayCollection|NotifyCall[] $calls
+     *
      * @return Notify
      */
     public function setCalls($calls)
@@ -416,9 +436,8 @@ class Notify
         return $this;
     }
 
-
     /**
-     * Add call
+     * Add call.
      *
      * @param NotifyCall $call
      *
@@ -448,7 +467,8 @@ class Notify
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param \DateTime $createdAt
+     *
      * @return $this
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -478,6 +498,7 @@ class Notify
 
     /**
      * @param string $serverName
+     *
      * @return Notify
      */
     public function setServerName($serverName)
@@ -490,7 +511,8 @@ class Notify
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param \DateTime $updatedAt
+     *
      * @return $this
      */
     public function setUpdatedAt(\DateTime $updatedAt)

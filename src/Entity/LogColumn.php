@@ -1,19 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sfhun
- * Date: 2017.09.10.
- * Time: 16:02
+
+/*
+ * This file is part of PHP CS Fixer.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *     Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace Hgabka\LoggerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Hgabka\LoggerBundle\Logger\ColumnLogger;
 
 /**
- * LogColumn
+ * LogColumn.
  *
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_log_column")
@@ -32,70 +33,70 @@ class LogColumn
      *
      * @ORM\Column(type="string", name="ident", nullable=true)
      */
-    private $ident;
+    protected $ident;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", name="user_id", nullable=true)
      */
-    private $userId;
+    protected $userId;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="table_name", nullable=true)
      */
-    private $table;
+    protected $table;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="entity_class", nullable=true)
      */
-    private $class;
+    protected $class;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="column_name", nullable=true)
      */
-    private $column;
+    protected $column;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="field_name", nullable=true)
      */
-    private $field;
+    protected $field;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="foreign_id", nullable=true)
      */
-    private $foreignId;
+    protected $foreignId;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="old_value", nullable=true)
      */
-    private $oldValue;
+    protected $oldValue;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="new_value", nullable=true)
      */
-    private $newValue;
+    protected $newValue;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="mod_type", nullable=true)
      */
-    private $modType;
+    protected $modType;
 
     /**
      * @var \DateTime
@@ -112,7 +113,7 @@ class LogColumn
     protected $updatedAt;
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -122,7 +123,7 @@ class LogColumn
     }
 
     /**
-     * Set id
+     * Set id.
      *
      * @param int $id The unique identifier
      *
@@ -145,6 +146,7 @@ class LogColumn
 
     /**
      * @param string $ident
+     *
      * @return LogColumn
      */
     public function setIdent($ident)
@@ -164,6 +166,7 @@ class LogColumn
 
     /**
      * @param int $userId
+     *
      * @return LogColumn
      */
     public function setUserId($userId)
@@ -183,6 +186,7 @@ class LogColumn
 
     /**
      * @param string $table
+     *
      * @return LogColumn
      */
     public function setTable($table)
@@ -202,6 +206,7 @@ class LogColumn
 
     /**
      * @param string $class
+     *
      * @return LogColumn
      */
     public function setClass($class)
@@ -221,6 +226,7 @@ class LogColumn
 
     /**
      * @param string $column
+     *
      * @return LogColumn
      */
     public function setColumn($column)
@@ -240,6 +246,7 @@ class LogColumn
 
     /**
      * @param string $field
+     *
      * @return LogColumn
      */
     public function setField($field)
@@ -259,6 +266,7 @@ class LogColumn
 
     /**
      * @param string $foreignId
+     *
      * @return LogColumn
      */
     public function setForeignId($foreignId)
@@ -278,6 +286,7 @@ class LogColumn
 
     /**
      * @param string $oldValue
+     *
      * @return LogColumn
      */
     public function setOldValue($oldValue)
@@ -297,6 +306,7 @@ class LogColumn
 
     /**
      * @param string $newValue
+     *
      * @return LogColumn
      */
     public function setNewValue($newValue)
@@ -316,6 +326,7 @@ class LogColumn
 
     /**
      * @param string $modType
+     *
      * @return LogColumn
      */
     public function setModType($modType)
@@ -328,7 +339,8 @@ class LogColumn
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param \DateTime $createdAt
+     *
      * @return $this
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -358,6 +370,7 @@ class LogColumn
 
     /**
      * @param string $serverName
+     *
      * @return Notify
      */
     public function setServerName($serverName)
@@ -370,7 +383,8 @@ class LogColumn
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param \DateTime $updatedAt
+     *
      * @return $this
      */
     public function setUpdatedAt(\DateTime $updatedAt)

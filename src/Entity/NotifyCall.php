@@ -1,15 +1,20 @@
 <?php
 
+/*
+ * This file is part of PHP CS Fixer.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *     Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Hgabka\LoggerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
-use Hgabka\LoggerBundle\Entity\Notify;
 
 /**
- * NotifyCall
+ * NotifyCall.
  *
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_notify_call")
@@ -23,22 +28,21 @@ class NotifyCall
      */
     protected $id;
 
-
     /**
      * @var Notify
      *
      * @ORM\ManyToOne(targetEntity="Hgabka\LoggerBundle\Entity\Notify", inversedBy="calls", cascade={"persist"})
      * @ORM\JoinColumn(name="notify_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $notify;
-		
+    protected $notify;
+
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="server", nullable=true)
      */
-    private $server;
-	
+    protected $server;
+
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
@@ -54,7 +58,7 @@ class NotifyCall
     protected $updatedAt;
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -64,7 +68,7 @@ class NotifyCall
     }
 
     /**
-     * Set id
+     * Set id.
      *
      * @param int $id The unique identifier
      *
@@ -76,11 +80,12 @@ class NotifyCall
 
         return $this;
     }
-	
+
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param \DateTime $createdAt
+     *
      * @return NotifyCall
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -100,6 +105,7 @@ class NotifyCall
 
     /**
      * @param \Hgabka\LoggerBundle\Entity\Notify $notify
+     *
      * @return NotifyCall
      */
     public function setNotify($notify)
@@ -119,6 +125,7 @@ class NotifyCall
 
     /**
      * @param string $server
+     *
      * @return NotifyCall
      */
     public function setServer($server)
@@ -141,7 +148,8 @@ class NotifyCall
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param \DateTime $updatedAt
+     *
      * @return NotifyCall
      */
     public function setUpdatedAt(\DateTime $updatedAt)

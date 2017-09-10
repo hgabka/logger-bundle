@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sfhun
- * Date: 2017.09.10.
- * Time: 15:29
+
+/*
+ * This file is part of PHP CS Fixer.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *     Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace Hgabka\LoggerBundle\Logger;
@@ -19,20 +21,21 @@ class ColumnLogger
     const MOD_TYPE_UPDATE = 'UPDATE';
     const MOD_TYPE_DELETE = 'DELETE';
 
-    /** @var  Registry */
+    /** @var Registry */
     protected $doctrine;
 
-    /** @var  TokenStorageInterface */
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
 
-    /** @var  string */
+    /** @var string */
     protected $ident;
 
     /**
      * ColumnLogger constructor.
-     * @param Registry $doctrine
+     *
+     * @param Registry              $doctrine
      * @param TokenStorageInterface $tokenStorage
-     * @param string $ident
+     * @param string                $ident
      */
     public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, string $ident)
     {
@@ -42,11 +45,13 @@ class ColumnLogger
     }
 
     /**
-     * Egy model mezőinek változásának logolása
+     * Egy model mezőinek változásának logolása.
+     *
      * @param $obj
-     * @param string $action LogColumnPeer::MOD_TYPE_* konstansok
+     * @param string        $action     LogColumnPeer::MOD_TYPE_* konstansok
      * @param ClassMetadata $metaData
-     * @param array $changeData
+     * @param array         $changeData
+     *
      * @return array
      */
     public function logColumns($obj, $action, ClassMetadata $metaData, array $changeData = null)
@@ -56,10 +61,10 @@ class ColumnLogger
         $table = $metaData->getTableName();
 
         $user = $this->tokenStorage->getToken()->getUser();
-        $userId = $user ? $user->getId() : null;
+        $userId = $user && is_object($user) ? $user->getId() : null;
 
-        $isDelete = $action == self::MOD_TYPE_DELETE;
-        $fk = (string)($obj->{'get'.$metaData->getSingleIdentifierFieldName()}());
+        $isDelete = $action === self::MOD_TYPE_DELETE;
+        $fk = (string) ($obj->{'get'.$metaData->getSingleIdentifierFieldName()}());
         if (empty($fk)) {
             $fk = null;
         }
@@ -80,11 +85,11 @@ class ColumnLogger
             $logFields = $obj->getLogFields();
 
             foreach ($changeData as $field => $changeData) {
-                if (!is_array($logFields) || (!empty($logFields) && !in_array($field, $logFields))) {
+                if (!is_array($logFields) || (!empty($logFields) && !in_array($field, $logFields, true))) {
                     continue;
                 }
 
-                if (empty($logFields) && in_array($field, ['createdAt', 'updatedAt'])) {
+                if (empty($logFields) && in_array($field, ['createdAt', 'updatedAt'], true)) {
                     continue;
                 }
 
@@ -121,6 +126,6 @@ class ColumnLogger
             return json_encode($value);
         }
 
-        return (string)$value;
+        return (string) $value;
     }
 }
