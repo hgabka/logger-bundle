@@ -99,6 +99,13 @@ class LogColumn
     protected $modType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="entity_data", nullable=true)
+     */
+    protected $data;
+
+    /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
@@ -376,6 +383,25 @@ class LogColumn
     public function setServerName($serverName)
     {
         $this->serverName = $serverName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData(): string
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     * @return LogColumn
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
 
         return $this;
     }

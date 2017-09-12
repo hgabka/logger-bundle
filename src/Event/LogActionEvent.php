@@ -52,7 +52,7 @@ class LogActionEvent extends Event
     /**
      * @return array
      */
-    public function getParameters(): array
+    public function getParameters()
     {
         return $this->parameters;
     }

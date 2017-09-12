@@ -150,6 +150,9 @@ class ExceptionNotifier
         $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
         $sfNotify->setPost(serialize(@$_POST));
         $sfNotify->setParams(serialize($this->requestStack->getCurrentRequest()->attributes->all()));
+        $sfNotify->setCode($exception->getCode());
+        $sfNotify->setLine($exception->getLine());
+        $sfNotify->setFile($exception->getFile());
         $hash = $this->getHash($sfNotify);
         $sfNotify->setHash($hash);
         $sfNotify->setRequest(serialize(@$_REQUEST));
@@ -196,6 +199,9 @@ class ExceptionNotifier
         $message = 'Exception was thrown.'."\n";
         $message .= '----------------------------------------------------------------------'."\n\n";
         $message .= 'Message: '.($exception instanceof \Throwable ? $exception->getMessage() : '404 error')."\n";
+        $message .= 'File: '.$exception->getFile()."\n";
+        $message .= 'Line: '.$exception->getLine()."\n";
+        $message .= 'Code: '.$exception->getCode()."\n";
         $message .= 'Class: '.get_class($exception)."\n\n";
         $message .= 'Details: '."\n";
         $message .= '- controller: '.($controller ?? '')."\n";
@@ -216,6 +222,10 @@ class ExceptionNotifier
         $body = 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
         $body .= ($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'<br>';
+        $body .= 'File: '.$exception->getFile()."<br />";
+        $body .= 'Line: '.$exception->getLine()."<br />";
+        $body .= 'Code: '.$exception->getCode()."<br />";
+        $body .= 'Class: '.get_class($exception)."<br /><br />";
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
         $body .= @$controller.'<br>';
         $body .= '<pre>';

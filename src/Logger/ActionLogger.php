@@ -101,17 +101,20 @@ class ActionLogger
      *
      * @return ActionLogger
      */
-    public function update($i18nParamsOrMessage = null)
+    public function update($i18nParamsOrMessage = null, $priority = null)
     {
         if (null === $this->startedObj) {
             throw new \LogicException('Az update() meghivasa elott meg kell hivni a start()-ot');
         }
 
-        if (null === $i18nParamsOrMessage) {
+        if (null !== $i18nParamsOrMessage) {
             $i18nParamsOrMessage = $this->startedObj->getDescription();
         }
+        if (null !== $priority) {
+            $this->startedObj->setPriority($priority);
+        }
 
-        $this->logAction(LogActionEvent::EVENT_UPDATE, $this->startedObj->getType(), $i18nParamsOrMessage);
+        $this->logAction(LogActionEvent::EVENT_UPDATE, $this->startedObj->getType(), $i18nParamsOrMessage, $priority);
 
         return $this;
     }
@@ -208,7 +211,7 @@ class ActionLogger
                 if ($this->startedObj) {
                     $this->startedObj
                         ->setEndTime(new \DateTime())
-                        ->setSuccess(true)
+                        ->setSuccess($this->startedObj->getPriority() !== Logger::getLevelName(Logger::ERROR))
                     ;
                     $em->persist($this->startedObj);
                     $em->flush();

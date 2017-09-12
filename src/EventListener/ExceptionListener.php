@@ -33,6 +33,6 @@ class ExceptionListener
         // You get the exception object from the received event
         $exception = $event->getException();
 
-        //    $this->notifier->trigger($exception);
+        $this->notifier->trigger($exception);
     }
 }

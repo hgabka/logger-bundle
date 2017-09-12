@@ -11,7 +11,10 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -49,14 +52,15 @@ class ColumnLogger
      *
      * @param $obj
      * @param string        $action     LogColumnPeer::MOD_TYPE_* konstansok
-     * @param ClassMetadata $metaData
+     * @param EntityManager $em
      * @param array         $changeData
      *
      * @return array
      */
-    public function logColumns($obj, $action, ClassMetadata $metaData, array $changeData = null)
+    public function logColumns($obj, $action, EntityManager $em, array $changeData = null)
     {
         $objClass = get_class($obj);
+        $metaData = $em->getClassMetadata($objClass);
 
         $table = $metaData->getTableName();
 
@@ -64,9 +68,20 @@ class ColumnLogger
         $userId = $user && is_object($user) ? $user->getId() : null;
 
         $isDelete = $action === self::MOD_TYPE_DELETE;
-        $fk = (string) ($obj->{'get'.$metaData->getSingleIdentifierFieldName()}());
+        $wrapped = AbstractWrapper::wrap($obj, $em);
+        $fk = $wrapped->getIdentifier(false);
+
+        if (is_array($fk)) {
+            $fk = implode('#', $fk);
+        }
+
         if (empty($fk)) {
             $fk = null;
+        }
+
+        $entityData = [];
+        foreach ($metaData->getFieldNames() as $field) {
+            $entityData[$field] = $metaData->getFieldValue($obj, $field);
         }
 
         $logs = [];
@@ -79,6 +94,7 @@ class ColumnLogger
                 ->setForeignId($fk)
                 ->setUserId($userId)
                 ->setModType($action)
+                ->setData(json_encode($entityData))
             ;
             $logs[] = $log;
         } else {
@@ -94,7 +110,7 @@ class ColumnLogger
                 }
 
                 $fieldName = $metaData->getColumnName($field);
-                $oldVal = $changeData[0];
+                $oldVal = $action == self::MOD_TYPE_INSERT ? null : $changeData[0];
                 $newVal = $changeData[1];
                 $log = new LogColumn();
                 $log
@@ -108,6 +124,7 @@ class ColumnLogger
                     ->setNewValue($this->convertValue($newVal))
                     ->setUserId($userId)
                     ->setModType($action)
+                    ->setData(json_encode($entityData))
                 ;
                 $logs[] = $log;
             }

@@ -38,7 +38,7 @@ class ColumnLogListener
             if ($entity instanceof LoggableEntityInterface) {
                 $changeSet = $uow->getEntityChangeSet($entity);
 
-                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_INSERT, $em->getClassMetadata(get_class($entity)), $changeSet);
+                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_INSERT, $em, $changeSet);
                 foreach ($logs as $log) {
                     $em->persist($log);
                     $uow->computeChangeSet($em->getClassMetadata(get_class($log)), $log);
@@ -48,9 +48,10 @@ class ColumnLogListener
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof LoggableEntityInterface) {
+
                 $changeSet = $uow->getEntityChangeSet($entity);
 
-                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_UPDATE, $em->getClassMetadata(get_class($entity)), $changeSet);
+                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_UPDATE, $em, $changeSet);
                 foreach ($logs as $log) {
                     $em->persist($log);
                     $uow->computeChangeSet($em->getClassMetadata(get_class($log)), $log);
@@ -60,7 +61,7 @@ class ColumnLogListener
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($entity instanceof LoggableEntityInterface) {
-                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_DELETE, $em->getClassMetadata(get_class($entity)), $changeSet);
+                $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_DELETE, $em);
                 foreach ($logs as $log) {
                     $em->persist($log);
                     $uow->computeChangeSet($em->getClassMetadata(get_class($log)), $log);

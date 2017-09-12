@@ -53,7 +53,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
      */
     public function onUpdate(LogActionEvent $event)
     {
-        $this->logger->update($event->getParameters());
+        $this->logger->update($event->getParameters(), $event->getPriority());
     }
 
     /**

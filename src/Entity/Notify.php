@@ -52,6 +52,27 @@ class Notify
     protected $message;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="code", nullable=true)
+     */
+    protected $code;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="file", nullable=true)
+     */
+    protected $file;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="line", nullable=true)
+     */
+    protected $line;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="text", name="traces", nullable=true)
@@ -232,6 +253,63 @@ class Notify
     public function setMessage($message)
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCode(): int
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param int $code
+     * @return Notify
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile(): string
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param string $file
+     * @return Notify
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLine(): int
+    {
+        return $this->line;
+    }
+
+    /**
+     * @param int $line
+     * @return Notify
+     */
+    public function setLine($line)
+    {
+        $this->line = $line;
 
         return $this;
     }
