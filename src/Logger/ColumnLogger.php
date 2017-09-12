@@ -80,8 +80,8 @@ class ColumnLogger
         }
 
         $entityData = [];
-        foreach ($metaData->getFieldNames() as $field) {
-            $entityData[$field] = $metaData->getFieldValue($obj, $field);
+        foreach ($metaData->getColumnNames() as $field) {
+            $entityData[$field] = $metaData->getFieldValue($obj, $metaData->getFieldForColumn($field));
         }
 
         $logs = [];
