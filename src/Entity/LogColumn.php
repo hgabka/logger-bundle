@@ -397,6 +397,7 @@ class LogColumn
 
     /**
      * @param string $data
+     *
      * @return LogColumn
      */
     public function setData($data)

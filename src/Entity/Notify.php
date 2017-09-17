@@ -267,6 +267,7 @@ class Notify
 
     /**
      * @param int $code
+     *
      * @return Notify
      */
     public function setCode($code)
@@ -286,6 +287,7 @@ class Notify
 
     /**
      * @param string $file
+     *
      * @return Notify
      */
     public function setFile($file)
@@ -305,6 +307,7 @@ class Notify
 
     /**
      * @param int $line
+     *
      * @return Notify
      */
     public function setLine($line)

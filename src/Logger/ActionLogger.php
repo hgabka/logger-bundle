@@ -98,6 +98,7 @@ class ActionLogger
      * Mindenképp meg kell hívni előtte a start()-ot.
      *
      * @param array|string $i18nParamsOrMessage String esetén ez lesz a szöveg
+     * @param null|mixed   $priority
      *
      * @return ActionLogger
      */
@@ -174,7 +175,7 @@ class ActionLogger
             case LogActionEvent::EVENT_START:
                 $context = $this->getContextOptions();
                 $request = $this->requestStack->getCurrentRequest();
-                if ($kind === LogActionEvent::EVENT_UPDATE) {
+                if (LogActionEvent::EVENT_UPDATE === $kind) {
                     $obj = $this->startedObj;
                 } else {
                     $obj = new LogAction();
@@ -198,7 +199,7 @@ class ActionLogger
                 if (is_string($i18nParamsOrMessage)) {
                     $obj->setDescription($i18nParamsOrMessage);
                 } else {
-                    if ($kind === LogActionEvent::EVENT_UPDATE && null === $i18nParamsOrMessage) {
+                    if (LogActionEvent::EVENT_UPDATE === $kind && null === $i18nParamsOrMessage) {
                         // update ne irja felül a szöveget, ha nincs megadva paraméter
                     } else {
                         // type fordítása a paraméterek segítségével

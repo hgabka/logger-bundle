@@ -48,7 +48,6 @@ class ColumnLogListener
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof LoggableEntityInterface) {
-
                 $changeSet = $uow->getEntityChangeSet($entity);
 
                 $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_UPDATE, $em, $changeSet);

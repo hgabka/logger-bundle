@@ -149,7 +149,7 @@ class ExceptionNotifier
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
         $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
         $sfNotify->setPost(serialize(@$_POST));
-        $sfNotify->setParams(serialize($this->requestStack->getCurrentRequest()->attributes->all()));
+        $sfNotify->setParams(serialize($_GET));
         $sfNotify->setCode($exception->getCode());
         $sfNotify->setLine($exception->getLine());
         $sfNotify->setFile($exception->getFile());
@@ -171,13 +171,14 @@ class ExceptionNotifier
         $sfNotify->setCallNumber($called + 1);
 
         $em = $this->doctrine->getManager();
-        $em->persist($sfNotify);
-
-        $sfNotifyCall = new NotifyCall();
-        $sfNotifyCall->setServer(serialize(@$_SERVER));
-        $sfNotify->addCall($sfNotifyCall);
 
         if ($em->isOpen()) {
+            $em->persist($sfNotify);
+
+            $sfNotifyCall = new NotifyCall();
+            $sfNotifyCall->setServer(serialize(@$_SERVER));
+            $sfNotify->addCall($sfNotifyCall);
+
             $em->persist($sfNotifyCall);
             $em->flush();
         }
@@ -222,10 +223,10 @@ class ExceptionNotifier
         $body = 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
         $body .= ($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'<br>';
-        $body .= 'File: '.$exception->getFile()."<br />";
-        $body .= 'Line: '.$exception->getLine()."<br />";
-        $body .= 'Code: '.$exception->getCode()."<br />";
-        $body .= 'Class: '.get_class($exception)."<br /><br />";
+        $body .= 'File: '.$exception->getFile().'<br />';
+        $body .= 'Line: '.$exception->getLine().'<br />';
+        $body .= 'Code: '.$exception->getCode().'<br />';
+        $body .= 'Class: '.get_class($exception).'<br /><br />';
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
         $body .= @$controller.'<br>';
         $body .= '<pre>';

@@ -11,9 +11,7 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -67,7 +65,7 @@ class ColumnLogger
         $user = $this->tokenStorage->getToken()->getUser();
         $userId = $user && is_object($user) ? $user->getId() : null;
 
-        $isDelete = $action === self::MOD_TYPE_DELETE;
+        $isDelete = self::MOD_TYPE_DELETE === $action;
         $wrapped = AbstractWrapper::wrap($obj, $em);
         $fk = $wrapped->getIdentifier(false);
 
@@ -110,7 +108,7 @@ class ColumnLogger
                 }
 
                 $fieldName = $metaData->getColumnName($field);
-                $oldVal = $action == self::MOD_TYPE_INSERT ? null : $changeData[0];
+                $oldVal = self::MOD_TYPE_INSERT === $action ? null : $changeData[0];
                 $newVal = $changeData[1];
                 $log = new LogColumn();
                 $log
