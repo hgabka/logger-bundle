@@ -116,7 +116,7 @@ class ExceptionNotifier
             return;
         }
         $enabled404 = !isset($this->config['mails']['send_404']) || $this->config['mails']['send_404'] !== false;
-        if ($this->isMailSendingEnabled() && (!$error404 || $enabled404)) {
+        if (!$error404 || $enabled404) {
             if (empty($this->config['mails']['send_only_if_new']) || !$this->isDatabaseLoggingEnabled()) {
                 $this->sendMail($exception);
                 $mailSent = true;
@@ -152,7 +152,7 @@ class ExceptionNotifier
         $old = $this->doctrine->getRepository('HgabkaLoggerBundle:Notify')->findOneBy(['hash' => $hash]);
 
         if (!$old) {
-            if ($this->isMailSendingEnabled() && !$mailSent && (!$error404 || $enabled404)) {
+            if (!$mailSent && (!$error404 || $enabled404)) {
                 $this->sendMail($exception);
             }
         } else {
@@ -209,6 +209,10 @@ class ExceptionNotifier
 
     protected function sendMail($exception)
     {
+        if (!$this->isMailSendingEnabled()) {
+            return;
+        }
+
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest()->attributes->get('_controller');
 
@@ -254,6 +258,26 @@ class ExceptionNotifier
 
     protected function getHash(Notify $notify)
     {
-        return sha1(implode('|', get_object_vars($notify)));
+        return sha1(implode('|', $this->entityToArray($notify)));
+    }
+
+    protected function entityToArray($entity)
+    {
+        $maxLevel = 0;
+        if (empty($entity)) {
+            return [];
+        }
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+        $md = $em->getClassMetadata(get_class($entity));
+
+        $result = [];
+        if ($md) {
+            foreach ($md->getFieldNames() as $field) {
+                $result[$field] = $md->getFieldValue($entity, $field);
+            }
+        }
+
+        return $result;
     }
 }
