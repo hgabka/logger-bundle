@@ -152,7 +152,7 @@ class ExceptionNotifier
         $old = $this->doctrine->getRepository('HgabkaLoggerBundle:Notify')->findOneBy(['hash' => $hash]);
 
         if (!$old) {
-            if (!$mailSent && (!$error404 || $enabled404)) {
+            if ($this->isMailSendingEnabled() && !$mailSent && (!$error404 || $enabled404)) {
                 $this->sendMail($exception);
             }
         } else {
