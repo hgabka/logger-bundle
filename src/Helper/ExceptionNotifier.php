@@ -263,7 +263,6 @@ class ExceptionNotifier
 
     protected function entityToArray($entity)
     {
-        $maxLevel = 0;
         if (empty($entity)) {
             return [];
         }
