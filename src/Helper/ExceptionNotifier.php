@@ -224,10 +224,19 @@ class ExceptionNotifier
         $body .= 'Code: '.$exception->getCode().'<br />';
         $body .= 'Class: '.get_class($exception).'<br /><br />';
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
-        $body .= @$controller.'<br>';
+        $body .= ($controller.'<br>');
+
         $body .= '<pre>';
-        $body .= '<br>Paraméterek:<br>'.@var_export($this->requestStack->getCurrentRequest()->attributes->all(), true);
-        $body .= '<br>SERVER:<br>'.@var_export(@$_SERVER, true);
+        $t = $this->requestStack->getCurrentRequest()->attributes->all();
+        foreach ($t as $key => $data) {
+            if (is_object($data)) {
+                unset($t[$key]);
+            }
+        }
+        $body .= ('<br>Paraméterek:<br>'.var_export($t, true));
+
+        $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
+
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
         $fromEmail = isset($this->config['mails']['from_mail']) ? $this->config['mails']['from_mail'] : 'info@hgnotifier.com';
 
@@ -244,6 +253,7 @@ class ExceptionNotifier
         $mail->setFrom([$fromEmail => $fromName]);
         $mail->setTo($to);
         $mail->setBody($body, 'text/html');
+
         $mailer->send($mail);
     }
 
