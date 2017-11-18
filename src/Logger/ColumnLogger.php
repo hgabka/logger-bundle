@@ -54,7 +54,7 @@ class ColumnLogger
 
         $table = $metaData->getTableName();
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
         $userId = $user && is_object($user) ? $user->getId() : null;
 
         $isDelete = self::MOD_TYPE_DELETE === $action;
