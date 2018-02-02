@@ -176,18 +176,22 @@ class ActionLogger
                         ->setTime(new \DateTime())
                         ->setType($type)
                         ->setPriority($priority)
-                        ->setClientIp($context[self::OPT_IP])
-                        ->setController($context[self::OPT_ACTION])
-                        ->setSessionId($context[self::OPT_SESSION])
-                        ->setUserAgent($context[self::OPT_USER_AGENT])
-                        ->setUserId($context[self::OPT_USER])
-                        ->setRequestUri($context[self::OPT_URL])
                         ->setPost(\json_encode($request->request->all()))
                         ->setRequestAttributes(\json_encode($request->attributes->all()))
                         ->setMethod($request->getMethod().' ('.$request->getRealMethod().')')
                         ->setSuccess(false)
                     ;
                 }
+
+                $obj
+                    ->setClientIp($context[self::OPT_IP])
+                    ->setController($context[self::OPT_ACTION])
+                    ->setSessionId($context[self::OPT_SESSION])
+                    ->setUserAgent($context[self::OPT_USER_AGENT])
+                    ->setUserId($context[self::OPT_USER])
+                    ->setRequestUri($context[self::OPT_URL])
+                ;
+
                 if (is_string($i18nParamsOrMessage)) {
                     $obj->setDescription($i18nParamsOrMessage);
                 } else {
@@ -232,7 +236,7 @@ class ActionLogger
     protected function getContextOptions()
     {
         $request = $this->requestStack->getCurrentRequest();
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
         $this->session->start();
         $session = $this->session->getId();
 

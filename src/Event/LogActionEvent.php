@@ -64,7 +64,7 @@ class LogActionEvent extends Event
     /**
      * @return string
      */
-    public function getPriority(): string
+    public function getPriority()
     {
         return $this->priority;
     }
