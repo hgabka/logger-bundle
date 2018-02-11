@@ -4,7 +4,6 @@ namespace Hgabka\LoggerBundle\Traits;
 
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 trait LoggableTrait
@@ -24,7 +23,7 @@ trait LoggableTrait
         $this->dispatcher = $dispatcher;
     }
 
-    protected function logStart($type, $params = [], $priority = null)
+    protected function logStart($type, $params = [], $priority = null, $extraParameters = null)
     {
         $priority = $priority ?? Logger::getLevelName(Logger::INFO);
 
@@ -34,6 +33,9 @@ trait LoggableTrait
             ->setParameters($params)
             ->setPriority($priority)
         ;
+        if ($extraParameters) {
+            $event->setExtraParameters($extraParameters);
+        }
 
         $this->dispatcher->dispatch(LogActionEvent::EVENT_START, $event);
     }
@@ -45,28 +47,37 @@ trait LoggableTrait
         $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
     }
 
-    protected function logUpdate()
+    protected function logUpdate($priority = null, $extraParameters = null)
     {
         $event = new LogActionEvent();
+        if ($priority) {
+            $event->setPriority($priority);
+        }
+        if ($extraParameters) {
+            $event->setExtraParameters($extraParameters);
+        }
 
         $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
     }
 
-    protected function logError()
+    protected function logError($extraParameters = null)
     {
         $event = new LogActionEvent();
         $event
             ->setParameters(null)
             ->setPriority(Logger::getLevelName(Logger::ERROR))
         ;
+        if ($extraParameters) {
+            $event->setExtraParameters($extraParameters);
+        }
 
         $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
         $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
     }
 
-    protected function actionLog($type, $params = [], $priority = null)
+    protected function actionLog($type, $params = [], $priority = null, $extraParameters = null)
     {
-        $this->logStart($type, $params, $priority);
+        $this->logStart($type, $params, $priority, $extraParameters);
         $this->logDone();
     }
 }

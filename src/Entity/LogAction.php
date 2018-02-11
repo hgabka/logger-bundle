@@ -70,7 +70,7 @@ class LogAction
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="request_uri", nullable=true)
+     * @ORM\Column(type="text", name="request_uri", nullable=true)
      */
     protected $requestUri;
 
@@ -122,6 +122,13 @@ class LogAction
      * @ORM\Column(type="text", name="request_attributes", nullable=true)
      */
     protected $requestAttributes;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="extra_parameters", nullable=true)
+     */
+    protected $extraParameters;
 
     /**
      * @var string
@@ -530,5 +537,25 @@ class LogAction
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtraParameters()
+    {
+        return $this->extraParameters;
+    }
+
+    /**
+     * @param string $extraParameters
+     *
+     * @return LogAction
+     */
+    public function setExtraParameters($extraParameters)
+    {
+        $this->extraParameters = $extraParameters;
+
+        return $this;
     }
 }

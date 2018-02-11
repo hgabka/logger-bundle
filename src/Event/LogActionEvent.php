@@ -18,6 +18,9 @@ class LogActionEvent extends Event
     /** @var array */
     protected $parameters;
 
+    /** @var array|\Traversable */
+    protected $extraParameters;
+
     /** @var string */
     protected $priority;
 
@@ -77,6 +80,26 @@ class LogActionEvent extends Event
     public function setPriority($priority)
     {
         $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * @return array|\Traversable
+     */
+    public function getExtraParameters()
+    {
+        return $this->extraParameters;
+    }
+
+    /**
+     * @param array|\Traversable $extraParameters
+     *
+     * @return LogActionEvent
+     */
+    public function setExtraParameters($extraParameters)
+    {
+        $this->extraParameters = $extraParameters;
 
         return $this;
     }
