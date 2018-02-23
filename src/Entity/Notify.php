@@ -88,7 +88,7 @@ class Notify
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="request_uri", nullable=true)
+     * @ORM\Column(type="text", name="request_uri", nullable=true)
      */
     protected $requestUri;
 
