@@ -35,6 +35,13 @@ class LogAction
     protected $userId;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="original_user_id", nullable=true)
+     */
+    protected $originalUserId;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", name="session_id", nullable=true)
@@ -211,6 +218,26 @@ class LogAction
     public function setUserId($userId)
     {
         $this->userId = $userId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginalUserId(): int
+    {
+        return $this->originalUserId;
+    }
+
+    /**
+     * @param int $originalUserId
+     *
+     * @return LogAction
+     */
+    public function setOriginalUserId($originalUserId)
+    {
+        $this->originalUserId = $originalUserId;
 
         return $this;
     }

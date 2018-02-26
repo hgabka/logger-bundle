@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ColumnLogger
 {
@@ -23,6 +24,9 @@ class ColumnLogger
     /** @var string */
     protected $ident;
 
+    /** @var AuthorizationCheckerInterface */
+    protected $authChecker;
+
     /**
      * ColumnLogger constructor.
      *
@@ -30,11 +34,12 @@ class ColumnLogger
      * @param TokenStorageInterface $tokenStorage
      * @param string                $ident
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, string $ident)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authChecker, string $ident)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
         $this->ident = $ident;
+        $this->authChecker = $authChecker;
     }
 
     /**
@@ -55,7 +60,20 @@ class ColumnLogger
         $table = $metaData->getTableName();
 
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
+
+        $originalUser = null;
+        if ($this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
+                if ($role instanceof SwitchUserRole) {
+                    $originalUser = $role->getSource()->getUser();
+
+                    break;
+                }
+            }
+        }
+
         $userId = $user && is_object($user) ? $user->getId() : null;
+        $originalUserId = $originalUser ? $originalUser->getId() : null;
 
         $isDelete = self::MOD_TYPE_DELETE === $action;
         $wrapped = AbstractWrapper::wrap($obj, $em);
@@ -83,9 +101,13 @@ class ColumnLogger
                 ->setClass($objClass)
                 ->setForeignId($fk)
                 ->setUserId($userId)
+                ->setOriginalUserId($originalUserId)
                 ->setModType($action)
                 ->setData(json_encode($entityData))
             ;
+            if ($originalUser) {
+                $log->setNote('Impersonated (original user: '.$extraParameters.')');
+            }
             $logs[] = $log;
         } else {
             $logFields = $obj->getLogFields();
@@ -113,9 +135,13 @@ class ColumnLogger
                     ->setOldValue($this->convertValue($oldVal))
                     ->setNewValue($this->convertValue($newVal))
                     ->setUserId($userId)
+                    ->setOriginalUserId($originalUserId)
                     ->setModType($action)
                     ->setData(json_encode($entityData))
                 ;
+                if ($originalUser) {
+                    $log->setNote('Impersonated (original user: '.$extraParameters.')');
+                }
                 $logs[] = $log;
             }
         }

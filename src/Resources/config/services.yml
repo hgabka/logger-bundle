@@ -19,11 +19,11 @@ services:
 
     hgabka_logger.column_logger:
         class: Hgabka\LoggerBundle\Logger\ColumnLogger
-        arguments: ["@doctrine", "@security.token_storage", '']
+        arguments: ["@doctrine", "@security.token_storage", '@security.authorization_checker', '']
 
     hgabka_logger.action_logger:
         class: Hgabka\LoggerBundle\Logger\ActionLogger
-        arguments: ["@doctrine", "@security.token_storage", "@translator", "@request_stack", "@session", '', '']
+        arguments: ["@doctrine", "@security.token_storage", "@translator", "@request_stack", "@session", '@security.authorization_checker', '', '']
 
     hgabka_logger.column_log_listener:
         class: Hgabka\LoggerBundle\EventListener\ColumnLogListener
