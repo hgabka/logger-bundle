@@ -262,7 +262,7 @@ class ActionLogger
         $request = $this->requestStack->getCurrentRequest();
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
         $originalUser = null;
-        if ($this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
             foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
                 if ($role instanceof SwitchUserRole) {
                     $originalUser = $role->getSource()->getUser();
