@@ -81,7 +81,7 @@ class Notify
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="redirect_url", nullable=true)
+     * @ORM\Column(type="text", name="redirect_url", nullable=true)
      */
     protected $redirectUrl;
 
