@@ -9,11 +9,14 @@ use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ActionLogger
 {
     const OPT_USER = 'user';
+    const OPT_ORIGINAL_USER = 'original_user';
     const OPT_URL = 'url';
     const OPT_IP = 'ip';
     const OPT_SESSION = 'session';
@@ -48,6 +51,9 @@ class ActionLogger
     /** @var Session */
     protected $session;
 
+    /** @var AuthorizationCheckerInterface */
+    protected $authChecker;
+
     /**
      * ColumnLogger constructor.
      *
@@ -59,7 +65,7 @@ class ActionLogger
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, string $ident, string $catalog)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, string $ident, string $catalog)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -68,6 +74,7 @@ class ActionLogger
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->session = $session;
+        $this->authChecker = $authChecker;
     }
 
     /**
@@ -167,12 +174,19 @@ class ActionLogger
     {
         $em = $this->doctrine->getManager();
         $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
+        $context = $this->getContextOptions();
+        if ($context[self::OPT_ORIGINAL_USER]) {
+            if (empty($extraParameters)) {
+                $extraParameters = '';
+            }
+            $extraParameters .= ((empty($extraParameters) ? "\n" : '').'Impersonated (original user: '.$context[self::OPT_ORIGINAL_USER].')');
+        }
 
         switch ($kind) {
             case LogActionEvent::EVENT_UPDATE:
             case LogActionEvent::EVENT_LOG:
             case LogActionEvent::EVENT_START:
-                $context = $this->getContextOptions();
+
                 $request = $this->requestStack->getCurrentRequest();
                 if (LogActionEvent::EVENT_UPDATE === $kind) {
                     $obj = $this->startedObj;
@@ -197,6 +211,7 @@ class ActionLogger
                     ->setSessionId($context[self::OPT_SESSION])
                     ->setUserAgent($context[self::OPT_USER_AGENT])
                     ->setUserId($context[self::OPT_USER])
+                    ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
                     ->setRequestUri($context[self::OPT_URL])
                     ->setExtraParameters($extraParameters ?? null)
                 ;
@@ -246,11 +261,22 @@ class ActionLogger
     {
         $request = $this->requestStack->getCurrentRequest();
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
+        $originalUser = null;
+        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
+                if ($role instanceof SwitchUserRole) {
+                    $originalUser = $role->getSource()->getUser();
+
+                    break;
+                }
+            }
+        }
         $this->session->start();
         $session = $this->session->getId();
 
         return [
             self::OPT_USER => $user && is_object($user) ? $user->getId() : null,
+            self::OPT_ORIGINAL_USER => $originalUser && is_object($originalUser) ? $originalUser->getId() : null,
             self::OPT_USER_AGENT => $request ? $request->headers->get('User-Agent') : null,
             self::OPT_IP => $request ? $request->getClientIp() : null,
             self::OPT_URL => $request ? $request->getRequestUri() : null,

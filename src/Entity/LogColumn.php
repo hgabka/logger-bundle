@@ -35,6 +35,13 @@ class LogColumn
     protected $userId;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="original_user_id", nullable=true)
+     */
+    protected $originalUserId;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", name="table_name", nullable=true)
@@ -96,6 +103,13 @@ class LogColumn
      * @ORM\Column(type="text", name="entity_data", nullable=true)
      */
     protected $data;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="note", nullable=true)
+     */
+    protected $note;
 
     /**
      * @var \DateTime
@@ -171,6 +185,26 @@ class LogColumn
     public function setUserId($userId)
     {
         $this->userId = $userId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginalUserId(): int
+    {
+        return $this->originalUserId;
+    }
+
+    /**
+     * @param int $originalUserId
+     *
+     * @return LogColumn
+     */
+    public function setOriginalUserId($originalUserId)
+    {
+        $this->originalUserId = $originalUserId;
 
         return $this;
     }
@@ -421,5 +455,25 @@ class LogColumn
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote(): string
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     *
+     * @return LogColumn
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
     }
 }
