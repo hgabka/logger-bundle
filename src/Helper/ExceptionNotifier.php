@@ -115,7 +115,7 @@ class ExceptionNotifier
         if (!$this->isEnabled()) {
             return;
         }
-        $enabled404 = !isset($this->config['mails']['send_404']) || $this->config['mails']['send_404'] !== false;
+        $enabled404 = !isset($this->config['mails']['send_404']) || false !== $this->config['mails']['send_404'];
         if (!$error404 || $enabled404) {
             if (empty($this->config['mails']['send_only_if_new']) || !$this->isDatabaseLoggingEnabled()) {
                 $this->sendMail($exception);

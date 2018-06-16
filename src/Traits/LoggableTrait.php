@@ -47,9 +47,10 @@ trait LoggableTrait
         $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
     }
 
-    protected function logUpdate($priority = null, $extraParameters = null)
+    protected function logUpdate($params = null, $priority = null, $extraParameters = null)
     {
         $event = new LogActionEvent();
+        $event->setParameters($params);
         if ($priority) {
             $event->setPriority($priority);
         }
