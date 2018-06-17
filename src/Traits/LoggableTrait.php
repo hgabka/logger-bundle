@@ -5,6 +5,7 @@ namespace Hgabka\LoggerBundle\Traits;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormInterface;
 
 trait LoggableTrait
 {
@@ -61,6 +62,12 @@ trait LoggableTrait
         $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
     }
 
+    protected function logFormErrors($type, $params, FormInterface $form)
+    {
+        $this->logStart($type, $params, Logger::ERROR);
+        $this->logError($form);
+    }
+
     protected function logError($extraParameters = null)
     {
         $event = new LogActionEvent();
@@ -69,6 +76,12 @@ trait LoggableTrait
             ->setPriority(Logger::getLevelName(Logger::ERROR))
         ;
         if ($extraParameters) {
+            if ($extraParameters instanceof FormInterface) {
+                $extraParameters = (string) $extraParameters->getErrors(true, false);
+            }
+            if (!is_string($extraParameters)) {
+                $extraParameters = json_encode($extraParameters);
+            }
             $event->setExtraParameters($extraParameters);
         }
 
