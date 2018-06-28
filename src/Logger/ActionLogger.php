@@ -318,6 +318,8 @@ class ActionLogger
             }
         } else {
             $objClass = null;
+            $table = null;
+            $fk = null;
         }
 
         $log
