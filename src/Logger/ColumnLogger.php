@@ -103,7 +103,7 @@ class ColumnLogger
                 ->setUserId($userId)
                 ->setOriginalUserId($originalUserId)
                 ->setModType($action)
-                ->setData(json_encode($entityData))
+                ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
             ;
             if ($originalUser) {
                 $log->setNote('Impersonated (original user: '.$extraParameters.')');
@@ -137,7 +137,7 @@ class ColumnLogger
                     ->setUserId($userId)
                     ->setOriginalUserId($originalUserId)
                     ->setModType($action)
-                    ->setData(json_encode($entityData))
+                    ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
                 ;
                 if ($originalUser) {
                     $log->setNote('Impersonated (original user: '.$extraParameters.')');
@@ -156,7 +156,7 @@ class ColumnLogger
         }
 
         if (is_array($value) || is_object($value)) {
-            return json_encode($value);
+            return json_encode($value, JSON_UNESCAPED_UNICODE);
         }
 
         return (string) $value;
