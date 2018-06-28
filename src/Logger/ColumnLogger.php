@@ -124,6 +124,11 @@ class ColumnLogger
                 $fieldName = $metaData->getColumnName($field);
                 $oldVal = self::MOD_TYPE_INSERT === $action ? null : $changeData[0];
                 $newVal = $changeData[1];
+
+                if (($oldValue = $this->convertValue($oldVal)) === ($newValue = $this->convertValue($newVal))) {
+                    continue;
+                }
+
                 $log = new LogColumn();
                 $log
                     ->setIdent($this->ident)
@@ -132,8 +137,8 @@ class ColumnLogger
                     ->setForeignId($fk)
                     ->setColumn($fieldName)
                     ->setField($field)
-                    ->setOldValue($this->convertValue($oldVal))
-                    ->setNewValue($this->convertValue($newVal))
+                    ->setOldValue($oldValue)
+                    ->setNewValue($newValue)
                     ->setUserId($userId)
                     ->setOriginalUserId($originalUserId)
                     ->setModType($action)
