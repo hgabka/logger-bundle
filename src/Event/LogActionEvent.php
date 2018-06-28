@@ -24,6 +24,9 @@ class LogActionEvent extends Event
     /** @var string */
     protected $priority;
 
+    /** @var object */
+    protected $object;
+
     /**
      * @return string
      */
@@ -100,6 +103,26 @@ class LogActionEvent extends Event
     public function setExtraParameters($extraParameters)
     {
         $this->extraParameters = $extraParameters;
+
+        return $this;
+    }
+
+    /**
+     * @return object
+     */
+    public function getObject()
+    {
+        return $this->object;
+    }
+
+    /**
+     * @param object $object
+     *
+     * @return LogActionEvent
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
 
         return $this;
     }

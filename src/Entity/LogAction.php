@@ -129,6 +129,26 @@ class LogAction
      * @ORM\Column(type="text", name="request_attributes", nullable=true)
      */
     protected $requestAttributes;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="table_name", nullable=true)
+     */
+    protected $table;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="entity_class", nullable=true)
+     */
+    protected $class;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="foreign_id", nullable=true)
+     */
+    protected $foreignId;
 
     /**
      * @var string
@@ -582,6 +602,66 @@ class LogAction
     public function setExtraParameters($extraParameters)
     {
         $this->extraParameters = $extraParameters;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return LogAction
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return LogAction
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForeignId(): string
+    {
+        return $this->foreignId;
+    }
+
+    /**
+     * @param string $foreignId
+     *
+     * @return LogAction
+     */
+    public function setForeignId($foreignId)
+    {
+        $this->foreignId = $foreignId;
 
         return $this;
     }

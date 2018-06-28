@@ -24,7 +24,7 @@ trait LoggableTrait
         $this->dispatcher = $dispatcher;
     }
 
-    protected function logStart($type, $params = [], $priority = null, $extraParameters = null)
+    protected function logStart($type, $params = [], $object = null, $priority = null, $extraParameters = null)
     {
         $priority = $priority ?? Logger::getLevelName(Logger::INFO);
 
@@ -33,6 +33,7 @@ trait LoggableTrait
             ->setType($type)
             ->setParameters($params)
             ->setPriority($priority)
+            ->setObject($object)
         ;
         if ($extraParameters) {
             $event->setExtraParameters($extraParameters);
@@ -48,7 +49,7 @@ trait LoggableTrait
         $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
     }
 
-    protected function logUpdate($params = null, $priority = null, $extraParameters = null)
+    protected function logUpdate($params = null, $object = null, $priority = null, $extraParameters = null)
     {
         $event = new LogActionEvent();
         $event->setParameters($params);
@@ -58,17 +59,20 @@ trait LoggableTrait
         if ($extraParameters) {
             $event->setExtraParameters($extraParameters);
         }
+        if ($object) {
+            $event->setObject($object);
+        }
 
         $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
     }
 
-    protected function logFormErrors($type, $params, FormInterface $form)
+    protected function logFormErrors($type, $params, FormInterface $form, $object = null)
     {
-        $this->logStart($type, $params, Logger::ERROR);
+        $this->logStart($type, $params, $object, Logger::ERROR);
         $this->logError($form);
     }
 
-    protected function logError($extraParameters = null)
+    protected function logError($object = null, $extraParameters = null)
     {
         $event = new LogActionEvent();
         $event
@@ -85,13 +89,17 @@ trait LoggableTrait
             $event->setExtraParameters($extraParameters);
         }
 
+        if ($object) {
+            $event->setObject($object);
+        }
+
         $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
         $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
     }
 
-    protected function actionLog($type, $params = [], $priority = null, $extraParameters = null)
+    protected function actionLog($type, $params = [], $object = null, $priority = null, $extraParameters = null)
     {
-        $this->logStart($type, $params, $priority, $extraParameters);
+        $this->logStart($type, $params, $object, $priority, $extraParameters);
         $this->logDone();
     }
 }

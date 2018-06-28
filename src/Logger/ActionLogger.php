@@ -3,6 +3,7 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogAction;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
@@ -83,12 +84,13 @@ class ActionLogger
      * @param string       $type
      * @param array|string $i18nParamsOrMessage String esetén ez lesz a szöveg
      * @param null|mixed   $extraParameters
+     * @param null|mixed   $object
      *
      * @return ActionLogger
      */
-    public function start($type, $i18nParamsOrMessage = null, $extraParameters = null)
+    public function start($type, $i18nParamsOrMessage = null, $object = null, $extraParameters = null)
     {
-        $this->startedObj = $this->logAction(LogActionEvent::EVENT_START, $type, $i18nParamsOrMessage, $extraParameters);
+        $this->startedObj = $this->logAction(LogActionEvent::EVENT_START, $type, $i18nParamsOrMessage, $object, null, $extraParameters);
 
         return $this;
     }
@@ -100,10 +102,11 @@ class ActionLogger
      * @param array|string $i18nParamsOrMessage String esetén ez lesz a szöveg
      * @param null|mixed   $priority
      * @param null|mixed   $extraParameters
+     * @param null|mixed   $object
      *
      * @return ActionLogger
      */
-    public function update($i18nParamsOrMessage = null, $priority = null, $extraParameters = null)
+    public function update($i18nParamsOrMessage = null, $object = null, $priority = null, $extraParameters = null)
     {
         if (null === $this->startedObj) {
             throw new \LogicException('Az update() meghivasa elott meg kell hivni a start()-ot');
@@ -119,7 +122,7 @@ class ActionLogger
             $this->startedObj->setExtraParameters($extraParameters ?? null);
         }
 
-        $this->logAction(LogActionEvent::EVENT_UPDATE, $this->startedObj->getType(), $i18nParamsOrMessage, $priority, $extraParameters);
+        $this->logAction(LogActionEvent::EVENT_UPDATE, $this->startedObj->getType(), $i18nParamsOrMessage, $object, $priority, $extraParameters);
 
         return $this;
     }
@@ -149,12 +152,13 @@ class ActionLogger
      * @param array|string $i18nParamsOrMessage String esetén ez lesz a szöveg
      * @param int          $priority            sfLogger konstansok
      * @param null|mixed   $extraParameters
+     * @param null|mixed   $object
      *
      * @return ActionLogger
      */
-    public function log($type, $i18nParamsOrMessage = null, $priority = null, $extraParameters = null)
+    public function log($type, $i18nParamsOrMessage = null, $object = null, $priority = null, $extraParameters = null)
     {
-        $this->logAction(LogActionEvent::EVENT_LOG, $type, $i18nParamsOrMessage, $priority, $extraParameters);
+        $this->logAction(LogActionEvent::EVENT_LOG, $type, $i18nParamsOrMessage, $object, $priority, $extraParameters);
 
         return $this;
     }
@@ -167,10 +171,11 @@ class ActionLogger
      * @param array      $i18nParamsOrMessage
      * @param int        $priority            sfLogger konstansok
      * @param null|mixed $extraParameters
+     * @param null|mixed $object
      *
      * @return null|LogAction
      */
-    protected function logAction($kind, $type, $i18nParamsOrMessage = [], $priority = null, $extraParameters = null)
+    protected function logAction($kind, $type, $i18nParamsOrMessage = [], $object = null, $priority = null, $extraParameters = null)
     {
         $em = $this->doctrine->getManager();
         $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
@@ -189,7 +194,6 @@ class ActionLogger
 
                 $request = $this->requestStack->getCurrentRequest();
                 if (LogActionEvent::EVENT_UPDATE === $kind) {
-
                     $obj = $this->startedObj;
                 } else {
                     $obj = new LogAction();
@@ -216,6 +220,9 @@ class ActionLogger
                     ->setRequestUri($context[self::OPT_URL])
                     ->setExtraParameters($extraParameters ?? null)
                 ;
+                if (null !== $object) {
+                    $this->setObject($obj, $object);
+                }
 
                 if (is_string($i18nParamsOrMessage)) {
                     $obj->setDescription($i18nParamsOrMessage);
@@ -284,5 +291,39 @@ class ActionLogger
             self::OPT_SESSION => $session ? $session : null,
             self::OPT_ACTION => $request->attributes->get('_controller'),
         ];
+    }
+
+    protected function setObject(LogAction $log, $object)
+    {
+        $em = $this->doctrine->getManager();
+        if (is_object($object)) {
+            $objClass = get_class($object);
+            $metaData = $em->getClassMetadata($objClass);
+
+            $fk = null;
+            $table = null;
+
+            if ($metaData) {
+                $table = $metaData->getTableName();
+                $wrapped = AbstractWrapper::wrap($object, $em);
+                $fk = $wrapped->getIdentifier(false);
+
+                if (is_array($fk)) {
+                    $fk = implode('#', $fk);
+                }
+
+                if (empty($fk)) {
+                    $fk = null;
+                }
+            }
+        } else {
+            $objClass = null;
+        }
+
+        $log
+            ->setTable($table)
+            ->setClass($objClass)
+            ->setForeignId($fk)
+        ;
     }
 }
