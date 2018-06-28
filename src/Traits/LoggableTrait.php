@@ -69,7 +69,7 @@ trait LoggableTrait
     protected function logFormErrors($type, $params, FormInterface $form, $object = null)
     {
         $this->logStart($type, $params, $object, Logger::ERROR);
-        $this->logError($form);
+        $this->logError($object, $form);
     }
 
     protected function logError($object = null, $extraParameters = null)
@@ -81,7 +81,7 @@ trait LoggableTrait
         ;
         if ($extraParameters) {
             if ($extraParameters instanceof FormInterface) {
-                $extraParameters = (string) $extraParameters->getErrors(true, false);
+                $extraParameters = ['errors' => (string) $extraParameters->getErrors(true, false)];
             }
             if (!is_string($extraParameters)) {
                 $extraParameters = json_encode($extraParameters);
