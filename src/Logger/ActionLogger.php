@@ -109,7 +109,7 @@ class ActionLogger
             throw new \LogicException('Az update() meghivasa elott meg kell hivni a start()-ot');
         }
 
-        if (null !== $i18nParamsOrMessage) {
+        if (null === $i18nParamsOrMessage) {
             $i18nParamsOrMessage = $this->startedObj->getDescription();
         }
         if (null !== $priority) {
@@ -189,6 +189,7 @@ class ActionLogger
 
                 $request = $this->requestStack->getCurrentRequest();
                 if (LogActionEvent::EVENT_UPDATE === $kind) {
+
                     $obj = $this->startedObj;
                 } else {
                     $obj = new LogAction();
