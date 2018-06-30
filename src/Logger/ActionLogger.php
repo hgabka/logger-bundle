@@ -218,8 +218,14 @@ class ActionLogger
                     ->setUserId($context[self::OPT_USER])
                     ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
                     ->setRequestUri($context[self::OPT_URL])
-                    ->setExtraParameters($extraParameters ?? null)
                 ;
+                $extraParameters = empty($obj->getExtraParameters()) || $extraParameters === $obj->getExtraParameters()
+                    ? $extraParameters
+                    : $obj->getExtraParameters().("\n".$extraParameters)
+                ;
+
+                $obj->setExtraParameters($extraParameters ?? null);
+
                 if (null !== $object) {
                     $this->setObject($obj, $object);
                 }
