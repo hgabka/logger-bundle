@@ -180,6 +180,11 @@ class ActionLogger
         $em = $this->doctrine->getManager();
         $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
         $context = $this->getContextOptions();
+
+        if (is_array($extraParameters) || is_object($extraParameters)) {
+            $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
+        }
+
         if ($context[self::OPT_ORIGINAL_USER]) {
             if (empty($extraParameters)) {
                 $extraParameters = '';
