@@ -55,6 +55,12 @@ class ActionLogger
     /** @var AuthorizationCheckerInterface */
     protected $authChecker;
 
+    /** @var string */
+    protected $enabled;
+
+    /** @var bool */
+    protected $debug;
+
     /**
      * ColumnLogger constructor.
      *
@@ -66,7 +72,7 @@ class ActionLogger
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, string $ident, string $catalog)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -76,6 +82,8 @@ class ActionLogger
         $this->requestStack = $requestStack;
         $this->session = $session;
         $this->authChecker = $authChecker;
+        $this->enabled = $enabled;
+        $this->debug = $debug;
     }
 
     /**
@@ -90,6 +98,10 @@ class ActionLogger
      */
     public function start($type, $i18nParamsOrMessage = null, $object = null, $extraParameters = null)
     {
+        if (!$this->isLoggingEnabled()) {
+            return;
+        }
+
         $this->startedObj = $this->logAction(LogActionEvent::EVENT_START, $type, $i18nParamsOrMessage, $object, null, $extraParameters);
 
         return $this;
@@ -108,6 +120,10 @@ class ActionLogger
      */
     public function update($i18nParamsOrMessage = null, $object = null, $priority = null, $extraParameters = null)
     {
+        if (!$this->isLoggingEnabled()) {
+            return;
+        }
+
         if (null === $this->startedObj) {
             throw new \LogicException('Az update() meghivasa elott meg kell hivni a start()-ot');
         }
@@ -135,6 +151,10 @@ class ActionLogger
      */
     public function done()
     {
+        if (!$this->isLoggingEnabled()) {
+            return;
+        }
+
         if (null === $this->startedObj) {
             throw new \LogicException('A done() meghivasa elott meg kell hivni a start()-ot');
         }
@@ -177,6 +197,10 @@ class ActionLogger
      */
     protected function logAction($kind, $type, $i18nParamsOrMessage = [], $object = null, $priority = null, $extraParameters = null)
     {
+        if (!$this->isLoggingEnabled()) {
+            return;
+        }
+
         $em = $this->doctrine->getManager();
         $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
         $context = $this->getContextOptions();
@@ -338,5 +362,15 @@ class ActionLogger
             ->setClass($objClass)
             ->setForeignId($fk)
         ;
+    }
+
+    protected function isLoggingEnabled()
+    {
+        $logEnv = $this->enabled;
+        if ($this->debug) {
+            return in_array($logEnv, ['always', 'debug'], true);
+        }
+
+        return in_array($logEnv, ['always', 'prod'], true);
     }
 }

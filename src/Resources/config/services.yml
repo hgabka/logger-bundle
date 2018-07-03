@@ -23,7 +23,7 @@ services:
 
     hgabka_logger.action_logger:
         class: Hgabka\LoggerBundle\Logger\ActionLogger
-        arguments: ["@doctrine", "@security.token_storage", "@translator", "@request_stack", "@session", '@security.authorization_checker', '', '']
+        arguments: ["@doctrine", "@security.token_storage", "@translator", "@request_stack", "@session", '@security.authorization_checker',"%kernel.debug%", '', '', '']
 
     hgabka_logger.column_log_listener:
         class: Hgabka\LoggerBundle\EventListener\ColumnLogListener

@@ -74,6 +74,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('common_identifier')->defaultValue('symfony')->end()
                         ->scalarNode('translation_domain')->defaultValue('logger')->end()
+                        ->enumNode('enabled')->values(['always', 'prod', 'debug', 'never'])->defaultValue('prod')->end()
                     ->end()
                 ->end()
              ->end()
