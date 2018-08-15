@@ -172,7 +172,8 @@ class ExceptionNotifier
             $sfNotify->addCall($sfNotifyCall);
 
             $em->persist($sfNotifyCall);
-            $em->flush();
+            $em->flush($sfNotify);
+            $em->flush($sfNotifyCall);
         }
     }
 
