@@ -324,7 +324,7 @@ class ActionLogger
             self::OPT_IP => $request ? $request->getClientIp() : null,
             self::OPT_URL => $request ? $request->getRequestUri() : null,
             self::OPT_SESSION => $session ? $session : null,
-            self::OPT_ACTION => $request->attributes->get('_controller'),
+            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
         ];
     }
 
