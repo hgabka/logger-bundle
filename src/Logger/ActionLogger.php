@@ -232,7 +232,7 @@ class ActionLogger
                         ->setType($type)
                         ->setPriority($priority)
                         ->setPost(\json_encode($request->request->all()))
-                        ->setRequestAttributes(\json_encode($request->attributes->all()))
+                        ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
                         ->setMethod($request->getMethod().' ('.$request->getRealMethod().')')
                         ->setSuccess(false)
                         ->setExtraParameters($extraParameters ?? null)
@@ -324,7 +324,7 @@ class ActionLogger
             self::OPT_IP => $request ? $request->getClientIp() : null,
             self::OPT_URL => $request ? $request->getRequestUri() : null,
             self::OPT_SESSION => $session ? $session : null,
-            self::OPT_ACTION => $request->attributes->get('_controller'),
+            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
         ];
     }
 
