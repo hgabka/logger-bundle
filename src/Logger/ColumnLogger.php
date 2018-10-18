@@ -8,9 +8,19 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class ColumnLogger
 {
+    const OPT_USER = 'user';
+    const OPT_ORIGINAL_USER = 'original_user';
+    const OPT_URL = 'url';
+    const OPT_IP = 'ip';
+    const OPT_SESSION = 'session';
+    const OPT_USER_AGENT = 'user_agent';
+    const OPT_ACTION = 'action';
+
     const MOD_TYPE_INSERT = 'INSERT';
     const MOD_TYPE_UPDATE = 'UPDATE';
     const MOD_TYPE_DELETE = 'DELETE';
@@ -27,6 +37,12 @@ class ColumnLogger
     /** @var AuthorizationCheckerInterface */
     protected $authChecker;
 
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /** @var Session */
+    protected $session;
+
     /**
      * ColumnLogger constructor.
      *
@@ -34,12 +50,14 @@ class ColumnLogger
      * @param TokenStorageInterface $tokenStorage
      * @param string                $ident
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authChecker, string $ident)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, string $ident)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
         $this->ident = $ident;
         $this->authChecker = $authChecker;
+        $this->requestStack = $requestStack;
+        $this->session = $session;
     }
 
     /**
@@ -54,6 +72,8 @@ class ColumnLogger
      */
     public function logColumns($obj, $action, EntityManager $em, array $changeData = null)
     {
+        $request = $this->requestStack->getCurrentRequest();
+        $context = $this->getContextOptions();
         $objClass = get_class($obj);
         $metaData = $em->getClassMetadata($objClass);
 
@@ -142,7 +162,16 @@ class ColumnLogger
                     ->setUserId($userId)
                     ->setOriginalUserId($originalUserId)
                     ->setModType($action)
-                    ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
+                    ->setPost($request ? \json_encode($request->request->all()) : null)
+                    ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
+                    ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
+                    ->setClientIp($context[self::OPT_IP])
+                    ->setController($context[self::OPT_ACTION])
+                    ->setSessionId($context[self::OPT_SESSION])
+                    ->setUserAgent($context[self::OPT_USER_AGENT])
+                    ->setUserId($context[self::OPT_USER])
+                    ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
+                    ->setRequestUri($context[self::OPT_URL])
                 ;
                 if ($originalUser) {
                     $log->setNote('Impersonated (original user: '.$extraParameters.')');
@@ -165,5 +194,39 @@ class ColumnLogger
         }
 
         return (string) $value;
+    }
+
+
+    /**
+     * Kontextus információk, minden ami globálisan elérhető.
+     *
+     * @return array
+     */
+    protected function getContextOptions()
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
+        $originalUser = null;
+        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
+                if ($role instanceof SwitchUserRole) {
+                    $originalUser = $role->getSource()->getUser();
+
+                    break;
+                }
+            }
+        }
+        $this->session->start();
+        $session = $this->session->getId();
+
+        return [
+            self::OPT_USER => $user && is_object($user) ? $user->getId() : null,
+            self::OPT_ORIGINAL_USER => $originalUser && is_object($originalUser) ? $originalUser->getId() : null,
+            self::OPT_USER_AGENT => $request ? $request->headers->get('User-Agent') : null,
+            self::OPT_IP => $request ? $request->getClientIp() : null,
+            self::OPT_URL => $request ? $request->getRequestUri() : null,
+            self::OPT_SESSION => $session ? $session : null,
+            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
+        ];
     }
 }

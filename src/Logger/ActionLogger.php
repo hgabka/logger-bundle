@@ -231,9 +231,9 @@ class ActionLogger
                         ->setTime(new \DateTime())
                         ->setType($type)
                         ->setPriority($priority)
-                        ->setPost(\json_encode($request->request->all()))
+                        ->setPost($request ? \json_encode($request->request->all()) : null)
                         ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
-                        ->setMethod($request->getMethod().' ('.$request->getRealMethod().')')
+                        ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
                         ->setSuccess(false)
                         ->setExtraParameters($extraParameters ?? null)
                     ;

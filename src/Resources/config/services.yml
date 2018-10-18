@@ -19,7 +19,7 @@ services:
 
     hgabka_logger.column_logger:
         class: Hgabka\LoggerBundle\Logger\ColumnLogger
-        arguments: ["@doctrine", "@security.token_storage", '@security.authorization_checker', '']
+        arguments: ["@doctrine", "@security.token_storage", "@request_stack", "@session", '@security.authorization_checker', '']
 
     hgabka_logger.action_logger:
         class: Hgabka\LoggerBundle\Logger\ActionLogger

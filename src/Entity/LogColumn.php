@@ -107,6 +107,62 @@ class LogColumn
     /**
      * @var string
      *
+     * @ORM\Column(type="string", name="session_id", nullable=true)
+     */
+    protected $sessionId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="controller", nullable=true)
+     */
+    protected $controller;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="request_uri", nullable=true)
+     */
+    protected $requestUri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="client_ip", nullable=true)
+     */
+    protected $clientIp;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="user_agent", nullable=true)
+     */
+    protected $userAgent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="post", nullable=true)
+     */
+    protected $post;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="request_attributes", nullable=true)
+     */
+    protected $requestAttributes;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="method", nullable=true)
+     */
+    protected $method;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="text", name="note", nullable=true)
      */
     protected $note;
@@ -473,6 +529,158 @@ class LogColumn
     public function setNote($note)
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * @param string $sessionId
+     * @return LogColumn
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @param string $controller
+     * @return LogColumn
+     */
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestUri()
+    {
+        return $this->requestUri;
+    }
+
+    /**
+     * @param string $requestUri
+     * @return LogColumn
+     */
+    public function setRequestUri($requestUri)
+    {
+        $this->requestUri = $requestUri;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientIp()
+    {
+        return $this->clientIp;
+    }
+
+    /**
+     * @param string $clientIp
+     * @return LogColumn
+     */
+    public function setClientIp($clientIp)
+    {
+        $this->clientIp = $clientIp;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param string $userAgent
+     * @return LogColumn
+     */
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPost()
+    {
+        return $this->post;
+    }
+
+    /**
+     * @param string $post
+     * @return LogColumn
+     */
+    public function setPost($post)
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestAttributes()
+    {
+        return $this->requestAttributes;
+    }
+
+    /**
+     * @param string $requestAttributes
+     * @return LogColumn
+     */
+    public function setRequestAttributes($requestAttributes)
+    {
+        $this->requestAttributes = $requestAttributes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     * @return LogColumn
+     */
+    public function setMethod($method)
+    {
+        $this->method = $method;
 
         return $this;
     }
