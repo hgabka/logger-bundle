@@ -123,7 +123,7 @@ class AbstractLogger
     protected function setObject(ObjectLogInterface $log, $object)
     {
         $data = $this->getEntityData($object);
-        list('class' => $objClass, 'table' => $table, 'key' => $fk) = $data;
+        ['class' => $objClass, 'table' => $table, 'key' => $fk] = $data;
 
         $log
             ->setTable($table)
