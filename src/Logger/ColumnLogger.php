@@ -124,6 +124,16 @@ class ColumnLogger
                 ->setOriginalUserId($originalUserId)
                 ->setModType($action)
                 ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
+                ->setPost($request ? \json_encode($request->request->all()) : null)
+                ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
+                ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
+                ->setClientIp($context[self::OPT_IP])
+                ->setController($context[self::OPT_ACTION])
+                ->setSessionId($context[self::OPT_SESSION])
+                ->setUserAgent($context[self::OPT_USER_AGENT])
+                ->setUserId($context[self::OPT_USER])
+                ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
+                ->setRequestUri($context[self::OPT_URL])
             ;
             if ($originalUser) {
                 $log->setNote('Impersonated (original user: '.$extraParameters.')');
@@ -162,6 +172,7 @@ class ColumnLogger
                     ->setUserId($userId)
                     ->setOriginalUserId($originalUserId)
                     ->setModType($action)
+                    ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
                     ->setPost($request ? \json_encode($request->request->all()) : null)
                     ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
                     ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
