@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_log_action")
  */
-class LogAction
+class LogAction implements ObjectLogInterface
 {
     /**
      * @ORM\Id

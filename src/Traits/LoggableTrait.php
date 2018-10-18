@@ -82,11 +82,11 @@ trait LoggableTrait
         if ($extraParameters) {
             if ($extraParameters instanceof FormInterface) {
                 $extraParameters = ['errors' => (string) $extraParameters->getErrors(true, false)];
-            } elseif (is_string($extraParameters)) {
+            } elseif (\is_string($extraParameters)) {
                 $extraParameters = ['errors' => $extraParameters];
             }
 
-            if (!is_string($extraParameters)) {
+            if (!\is_string($extraParameters)) {
                 $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
             }
             $event->setExtraParameters($extraParameters);

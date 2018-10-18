@@ -3,7 +3,7 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Hgabka\LoggerBundle\Entity\LogAction;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
@@ -11,30 +11,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ActionLogger
+class ActionLogger extends AbstractLogger
 {
-    const OPT_USER = 'user';
-    const OPT_ORIGINAL_USER = 'original_user';
-    const OPT_URL = 'url';
-    const OPT_IP = 'ip';
-    const OPT_SESSION = 'session';
-    const OPT_USER_AGENT = 'user_agent';
-    const OPT_ACTION = 'action';
-
-    /** @var Registry */
-    protected $doctrine;
-
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
-
     /** @var TranslatorInterface */
     protected $translator;
-
-    /** @var string */
-    protected $ident;
 
     /** @var string */
     protected $catalog;
@@ -45,21 +27,6 @@ class ActionLogger
      * @var LogAction
      */
     protected $startedObj;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    /** @var Session */
-    protected $session;
-
-    /** @var AuthorizationCheckerInterface */
-    protected $authChecker;
-
-    /** @var string */
-    protected $enabled;
-
-    /** @var bool */
-    protected $debug;
 
     /**
      * ColumnLogger constructor.
@@ -72,7 +39,7 @@ class ActionLogger
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
+    public function __construct(ManagerRegistry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -205,7 +172,7 @@ class ActionLogger
         $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
         $context = $this->getContextOptions();
 
-        if (is_array($extraParameters) || is_object($extraParameters)) {
+        if (\is_array($extraParameters) || \is_object($extraParameters)) {
             $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
         }
 
@@ -259,7 +226,7 @@ class ActionLogger
                     $this->setObject($obj, $object);
                 }
 
-                if (is_string($i18nParamsOrMessage)) {
+                if (\is_string($i18nParamsOrMessage)) {
                     $obj->setDescription($i18nParamsOrMessage);
                 } else {
                     if (LogActionEvent::EVENT_UPDATE === $kind && null === $i18nParamsOrMessage) {
@@ -293,84 +260,5 @@ class ActionLogger
         }
 
         return $obj;
-    }
-
-    /**
-     * Kontextus információk, minden ami globálisan elérhető.
-     *
-     * @return array
-     */
-    protected function getContextOptions()
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
-        $originalUser = null;
-        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
-                if ($role instanceof SwitchUserRole) {
-                    $originalUser = $role->getSource()->getUser();
-
-                    break;
-                }
-            }
-        }
-        $this->session->start();
-        $session = $this->session->getId();
-
-        return [
-            self::OPT_USER => $user && is_object($user) ? $user->getId() : null,
-            self::OPT_ORIGINAL_USER => $originalUser && is_object($originalUser) ? $originalUser->getId() : null,
-            self::OPT_USER_AGENT => $request ? $request->headers->get('User-Agent') : null,
-            self::OPT_IP => $request ? $request->getClientIp() : null,
-            self::OPT_URL => $request ? $request->getRequestUri() : null,
-            self::OPT_SESSION => $session ? $session : null,
-            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
-        ];
-    }
-
-    protected function setObject(LogAction $log, $object)
-    {
-        $em = $this->doctrine->getManager();
-        if (is_object($object)) {
-            $objClass = get_class($object);
-            $metaData = $em->getClassMetadata($objClass);
-
-            $fk = null;
-            $table = null;
-
-            if ($metaData) {
-                $table = $metaData->getTableName();
-                $wrapped = AbstractWrapper::wrap($object, $em);
-                $fk = $wrapped->getIdentifier(false);
-
-                if (is_array($fk)) {
-                    $fk = implode('#', $fk);
-                }
-
-                if (empty($fk)) {
-                    $fk = null;
-                }
-            }
-        } else {
-            $objClass = null;
-            $table = null;
-            $fk = null;
-        }
-
-        $log
-            ->setTable($table)
-            ->setClass($objClass)
-            ->setForeignId($fk)
-        ;
-    }
-
-    protected function isLoggingEnabled()
-    {
-        $logEnv = $this->enabled;
-        if ($this->debug) {
-            return in_array($logEnv, ['always', 'debug'], true);
-        }
-
-        return in_array($logEnv, ['always', 'prod'], true);
     }
 }
