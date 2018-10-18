@@ -176,11 +176,11 @@ class ActionLogger extends AbstractLogger
             $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
         }
 
-        if ($context[self::OPT_ORIGINAL_USER]) {
+        if ($context[static::OPT_ORIGINAL_USER]) {
             if (empty($extraParameters)) {
                 $extraParameters = '';
             }
-            $extraParameters .= ((empty($extraParameters) ? "\n" : '').'Impersonated (original user: '.$context[self::OPT_ORIGINAL_USER].')');
+            $extraParameters .= ((empty($extraParameters) ? "\n" : '').'Impersonated (original user: '.$context[static::OPT_ORIGINAL_USERNAME].')');
         }
 
         switch ($kind) {
@@ -207,13 +207,15 @@ class ActionLogger extends AbstractLogger
                 }
 
                 $obj
-                    ->setClientIp($context[self::OPT_IP])
-                    ->setController($context[self::OPT_ACTION])
-                    ->setSessionId($context[self::OPT_SESSION])
-                    ->setUserAgent($context[self::OPT_USER_AGENT])
-                    ->setUserId($context[self::OPT_USER])
-                    ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
-                    ->setRequestUri($context[self::OPT_URL])
+                    ->setClientIp($context[static::OPT_IP])
+                    ->setController($context[static::OPT_ACTION])
+                    ->setSessionId($context[static::OPT_SESSION])
+                    ->setUserAgent($context[static::OPT_USER_AGENT])
+                    ->setUserId($context[static::OPT_USER])
+                    ->setOriginalUserId($context[static::OPT_ORIGINAL_USER])
+                    ->setUsername($context[static::OPT_USERNAME])
+                    ->setOriginalUsername($context[static::OPT_ORIGINAL_USERNAME])
+                    ->setRequestUri($context[static::OPT_URL])
                 ;
                 $extraParameters = empty($obj->getExtraParameters()) || $extraParameters === $obj->getExtraParameters()
                     ? $extraParameters
