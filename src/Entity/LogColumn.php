@@ -44,6 +44,20 @@ class LogColumn
     /**
      * @var string
      *
+     * @ORM\Column(type="string", name="username", nullable=true)
+     */
+    protected $username;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="original_username", nullable=true)
+     */
+    protected $originalUsername;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string", name="table_name", nullable=true)
      */
     protected $table;
@@ -208,7 +222,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getIdent(): string
+    public function getIdent()
     {
         return $this->ident;
     }
@@ -228,7 +242,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getUserId()
     {
         return $this->userId;
     }
@@ -248,7 +262,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getOriginalUserId(): int
+    public function getOriginalUserId()
     {
         return $this->originalUserId;
     }
@@ -268,7 +282,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getTable(): string
+    public function getTable()
     {
         return $this->table;
     }
@@ -288,7 +302,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getClass(): string
+    public function getClass()
     {
         return $this->class;
     }
@@ -308,7 +322,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getColumn(): string
+    public function getColumn()
     {
         return $this->column;
     }
@@ -328,7 +342,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getField(): string
+    public function getField()
     {
         return $this->field;
     }
@@ -348,7 +362,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getForeignId(): string
+    public function getForeignId()
     {
         return $this->foreignId;
     }
@@ -368,7 +382,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getOldValue(): string
+    public function getOldValue()
     {
         return $this->oldValue;
     }
@@ -388,7 +402,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getNewValue(): string
+    public function getNewValue()
     {
         return $this->newValue;
     }
@@ -408,7 +422,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getModType(): string
+    public function getModType()
     {
         return $this->modType;
     }
@@ -452,7 +466,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getServerName(): string
+    public function getServerName()
     {
         return $this->serverName;
     }
@@ -472,7 +486,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getData(): string
+    public function getData()
     {
         return $this->data;
     }
@@ -516,7 +530,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getNote(): string
+    public function getNote()
     {
         return $this->note;
     }
@@ -689,6 +703,46 @@ class LogColumn
     public function setMethod($method)
     {
         $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return LogColumn
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalUsername()
+    {
+        return $this->originalUsername;
+    }
+
+    /**
+     * @param string $originalUsername
+     *
+     * @return LogColumn
+     */
+    public function setOriginalUsername($originalUsername)
+    {
+        $this->originalUsername = $originalUsername;
 
         return $this;
     }

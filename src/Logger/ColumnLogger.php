@@ -52,28 +52,10 @@ class ColumnLogger extends AbstractLogger
             return [];
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-        $context = $this->getContextOptions();
-        $objClass = \get_class($obj);
-        $metaData = $em->getClassMetadata($objClass);
+        $metaData = $em->getClassMetadata(\get_class($obj));
+        $objClass = $metaData->getName();
 
         $table = $metaData->getTableName();
-
-        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
-
-        $originalUser = null;
-        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
-                if ($role instanceof SwitchUserRole) {
-                    $originalUser = $role->getSource()->getUser();
-
-                    break;
-                }
-            }
-        }
-
-        $userId = $user && \is_object($user) ? $user->getId() : null;
-        $originalUserId = $originalUser ? $originalUser->getId() : null;
 
         $isDelete = self::MOD_TYPE_DELETE === $action;
         $wrapped = AbstractWrapper::wrap($obj, $em);
@@ -91,32 +73,22 @@ class ColumnLogger extends AbstractLogger
         foreach ($metaData->getColumnNames() as $field) {
             $entityData[$field] = $metaData->getFieldValue($obj, $metaData->getFieldForColumn($field));
         }
+        $context = $this->getContextOptions();
+        $originalUser = $context[static::OPT_ORIGINAL_USER_OBJECT];
 
         $logs = [];
         if ($isDelete) {
             $log = new LogColumn();
             $log
-                ->setIdent($this->ident)
                 ->setTable($table)
                 ->setClass($objClass)
                 ->setForeignId($fk)
-                ->setUserId($userId)
-                ->setOriginalUserId($originalUserId)
                 ->setModType($action)
                 ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
-                ->setPost($request ? \json_encode($request->request->all()) : null)
-                ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
-                ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
-                ->setClientIp($context[self::OPT_IP])
-                ->setController($context[self::OPT_ACTION])
-                ->setSessionId($context[self::OPT_SESSION])
-                ->setUserAgent($context[self::OPT_USER_AGENT])
-                ->setUserId($context[self::OPT_USER])
-                ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
-                ->setRequestUri($context[self::OPT_URL])
             ;
-            if ($originalUser) {
-                $log->setNote('Impersonated (original user: '.$extraParameters.')');
+            $this->setLogFields($log);
+            if ($originalUser && \is_object()) {
+                $log->setNote('Impersonated (original user: '.$context[self::OPT_ORIGINAL_USERNAME].')');
             }
             $logs[] = $log;
         } else {
@@ -141,7 +113,6 @@ class ColumnLogger extends AbstractLogger
 
                 $log = new LogColumn();
                 $log
-                    ->setIdent($this->ident)
                     ->setTable($table)
                     ->setClass($objClass)
                     ->setForeignId($fk)
@@ -149,29 +120,41 @@ class ColumnLogger extends AbstractLogger
                     ->setField($field)
                     ->setOldValue($oldValue)
                     ->setNewValue($newValue)
-                    ->setUserId($userId)
-                    ->setOriginalUserId($originalUserId)
                     ->setModType($action)
                     ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
-                    ->setPost($request ? \json_encode($request->request->all()) : null)
-                    ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
-                    ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
-                    ->setClientIp($context[self::OPT_IP])
-                    ->setController($context[self::OPT_ACTION])
-                    ->setSessionId($context[self::OPT_SESSION])
-                    ->setUserAgent($context[self::OPT_USER_AGENT])
-                    ->setUserId($context[self::OPT_USER])
-                    ->setOriginalUserId($context[self::OPT_ORIGINAL_USER])
-                    ->setRequestUri($context[self::OPT_URL])
                 ;
+                $this->setLogFields($log);
+
                 if ($originalUser) {
-                    $log->setNote('Impersonated (original user: '.$extraParameters.')');
+                    $log->setNote('Impersonated (original user: '.$context[static::OPT_ORIGINAL_USERNAME].')');
                 }
                 $logs[] = $log;
             }
         }
 
         return $logs;
+    }
+
+    protected function setLogFields($log)
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        $context = $this->getContextOptions();
+
+        $log
+            ->setIdent($this->ident)
+            ->setPost($request ? \json_encode($request->request->all()) : null)
+            ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
+            ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
+            ->setClientIp($context[static::OPT_IP])
+            ->setController($context[static::OPT_ACTION])
+            ->setSessionId($context[static::OPT_SESSION])
+            ->setUserAgent($context[static::OPT_USER_AGENT])
+            ->setUserId($context[static::OPT_USER])
+            ->setOriginalUserId($context[static::OPT_ORIGINAL_USER])
+            ->setUsername($context[static::OPT_USERNAME])
+            ->setOriginalUsername($context[static::OPT_ORIGINAL_USERNAME])
+            ->setRequestUri($context[static::OPT_URL])
+        ;
     }
 
     protected function convertValue($value)
