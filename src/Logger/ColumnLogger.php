@@ -2,55 +2,29 @@
 
 namespace Hgabka\LoggerBundle\Logger;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class ColumnLogger
+class ColumnLogger extends AbstractLogger
 {
-    const OPT_USER = 'user';
-    const OPT_ORIGINAL_USER = 'original_user';
-    const OPT_URL = 'url';
-    const OPT_IP = 'ip';
-    const OPT_SESSION = 'session';
-    const OPT_USER_AGENT = 'user_agent';
-    const OPT_ACTION = 'action';
-
     const MOD_TYPE_INSERT = 'INSERT';
     const MOD_TYPE_UPDATE = 'UPDATE';
     const MOD_TYPE_DELETE = 'DELETE';
 
-    /** @var Registry */
-    protected $doctrine;
-
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
-
-    /** @var string */
-    protected $ident;
-
-    /** @var AuthorizationCheckerInterface */
-    protected $authChecker;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    /** @var Session */
-    protected $session;
-
     /**
      * ColumnLogger constructor.
      *
-     * @param Registry              $doctrine
+     * @param ManagerRegistry       $doctrine
      * @param TokenStorageInterface $tokenStorage
      * @param string                $ident
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, string $ident)
+    public function __construct(ManagerRegistry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -58,6 +32,8 @@ class ColumnLogger
         $this->authChecker = $authChecker;
         $this->requestStack = $requestStack;
         $this->session = $session;
+        $this->debug = $debug;
+        $this->enabled = $enabled;
     }
 
     /**
@@ -72,9 +48,13 @@ class ColumnLogger
      */
     public function logColumns($obj, $action, EntityManager $em, array $changeData = null)
     {
+        if (!$this->isLoggingEnabled()) {
+            return [];
+        }
+
         $request = $this->requestStack->getCurrentRequest();
         $context = $this->getContextOptions();
-        $objClass = get_class($obj);
+        $objClass = \get_class($obj);
         $metaData = $em->getClassMetadata($objClass);
 
         $table = $metaData->getTableName();
@@ -92,14 +72,14 @@ class ColumnLogger
             }
         }
 
-        $userId = $user && is_object($user) ? $user->getId() : null;
+        $userId = $user && \is_object($user) ? $user->getId() : null;
         $originalUserId = $originalUser ? $originalUser->getId() : null;
 
         $isDelete = self::MOD_TYPE_DELETE === $action;
         $wrapped = AbstractWrapper::wrap($obj, $em);
         $fk = $wrapped->getIdentifier(false);
 
-        if (is_array($fk)) {
+        if (\is_array($fk)) {
             $fk = implode('#', $fk);
         }
 
@@ -143,11 +123,11 @@ class ColumnLogger
             $logFields = $obj->getLogFields();
 
             foreach ($changeData as $field => $changeData) {
-                if (!is_array($logFields) || (!empty($logFields) && !in_array($field, $logFields, true))) {
+                if (!\is_array($logFields) || (!empty($logFields) && !\in_array($field, $logFields, true))) {
                     continue;
                 }
 
-                if (empty($logFields) && in_array($field, ['createdAt', 'updatedAt'], true)) {
+                if (empty($logFields) && \in_array($field, ['createdAt', 'updatedAt'], true)) {
                     continue;
                 }
 
@@ -196,48 +176,14 @@ class ColumnLogger
 
     protected function convertValue($value)
     {
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value ? '1' : '0';
         }
 
-        if (is_array($value) || is_object($value)) {
+        if (\is_array($value) || \is_object($value)) {
             return json_encode($value, JSON_UNESCAPED_UNICODE);
         }
 
         return (string) $value;
-    }
-
-
-    /**
-     * Kontextus információk, minden ami globálisan elérhető.
-     *
-     * @return array
-     */
-    protected function getContextOptions()
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
-        $originalUser = null;
-        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
-                if ($role instanceof SwitchUserRole) {
-                    $originalUser = $role->getSource()->getUser();
-
-                    break;
-                }
-            }
-        }
-        $this->session->start();
-        $session = $this->session->getId();
-
-        return [
-            self::OPT_USER => $user && is_object($user) ? $user->getId() : null,
-            self::OPT_ORIGINAL_USER => $originalUser && is_object($originalUser) ? $originalUser->getId() : null,
-            self::OPT_USER_AGENT => $request ? $request->headers->get('User-Agent') : null,
-            self::OPT_IP => $request ? $request->getClientIp() : null,
-            self::OPT_URL => $request ? $request->getRequestUri() : null,
-            self::OPT_SESSION => $session ? $session : null,
-            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
-        ];
     }
 }

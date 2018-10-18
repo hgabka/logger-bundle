@@ -543,6 +543,7 @@ class LogColumn
 
     /**
      * @param string $sessionId
+     *
      * @return LogColumn
      */
     public function setSessionId($sessionId)
@@ -562,6 +563,7 @@ class LogColumn
 
     /**
      * @param string $controller
+     *
      * @return LogColumn
      */
     public function setController($controller)
@@ -581,6 +583,7 @@ class LogColumn
 
     /**
      * @param string $requestUri
+     *
      * @return LogColumn
      */
     public function setRequestUri($requestUri)
@@ -600,6 +603,7 @@ class LogColumn
 
     /**
      * @param string $clientIp
+     *
      * @return LogColumn
      */
     public function setClientIp($clientIp)
@@ -619,6 +623,7 @@ class LogColumn
 
     /**
      * @param string $userAgent
+     *
      * @return LogColumn
      */
     public function setUserAgent($userAgent)
@@ -638,6 +643,7 @@ class LogColumn
 
     /**
      * @param string $post
+     *
      * @return LogColumn
      */
     public function setPost($post)
@@ -657,6 +663,7 @@ class LogColumn
 
     /**
      * @param string $requestAttributes
+     *
      * @return LogColumn
      */
     public function setRequestAttributes($requestAttributes)
@@ -676,6 +683,7 @@ class LogColumn
 
     /**
      * @param string $method
+     *
      * @return LogColumn
      */
     public function setMethod($method)
