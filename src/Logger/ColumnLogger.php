@@ -51,6 +51,8 @@ class ColumnLogger extends AbstractLogger
         if (!$this->isLoggingEnabled()) {
             return [];
         }
+        
+        ini_set('memory_limit', '-1');
 
         $metaData = $em->getClassMetadata(\get_class($obj));
         $objClass = $metaData->getName();
