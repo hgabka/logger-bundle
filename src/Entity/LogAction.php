@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_log_action")
  */
-class LogAction implements ObjectLogInterface
+class LogAction
 {
     /**
      * @ORM\Id
@@ -40,20 +40,6 @@ class LogAction implements ObjectLogInterface
      * @ORM\Column(type="integer", name="original_user_id", nullable=true)
      */
     protected $originalUserId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="username", nullable=true)
-     */
-    protected $username;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="original_username", nullable=true)
-     */
-    protected $originalUsername;
 
     /**
      * @var string
@@ -143,26 +129,6 @@ class LogAction implements ObjectLogInterface
      * @ORM\Column(type="text", name="request_attributes", nullable=true)
      */
     protected $requestAttributes;
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="table_name", nullable=true)
-     */
-    protected $table;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="entity_class", nullable=true)
-     */
-    protected $class;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="foreign_id", nullable=true)
-     */
-    protected $foreignId;
 
     /**
      * @var string
@@ -219,7 +185,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getIdent()
+    public function getIdent(): string
     {
         return $this->ident;
     }
@@ -239,7 +205,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
@@ -259,7 +225,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return int
      */
-    public function getOriginalUserId()
+    public function getOriginalUserId(): int
     {
         return $this->originalUserId;
     }
@@ -279,7 +245,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getSessionId()
+    public function getSessionId(): string
     {
         return $this->sessionId;
     }
@@ -299,7 +265,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return \DateTime
      */
-    public function getTime()
+    public function getTime(): \DateTime
     {
         return $this->time;
     }
@@ -319,7 +285,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return \DateTime
      */
-    public function getEndTime()
+    public function getEndTime(): \DateTime
     {
         return $this->endTime;
     }
@@ -339,7 +305,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getController()
+    public function getController(): string
     {
         return $this->controller;
     }
@@ -359,7 +325,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -379,7 +345,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getRequestUri()
+    public function getRequestUri(): string
     {
         return $this->requestUri;
     }
@@ -399,7 +365,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return bool
      */
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return $this->success;
     }
@@ -419,7 +385,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getClientIp()
+    public function getClientIp(): string
     {
         return $this->clientIp;
     }
@@ -439,7 +405,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getUserAgent()
+    public function getUserAgent(): string
     {
         return $this->userAgent;
     }
@@ -459,7 +425,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -479,7 +445,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getPriority()
+    public function getPriority(): string
     {
         return $this->priority;
     }
@@ -499,7 +465,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -519,7 +485,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getRequestAttributes()
+    public function getRequestAttributes(): string
     {
         return $this->requestAttributes;
     }
@@ -539,7 +505,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getPost()
+    public function getPost(): string
     {
         return $this->post;
     }
@@ -559,7 +525,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }
@@ -616,106 +582,6 @@ class LogAction implements ObjectLogInterface
     public function setExtraParameters($extraParameters)
     {
         $this->extraParameters = $extraParameters;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param string $table
-     *
-     * @return LogAction
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return LogAction
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getForeignId()
-    {
-        return $this->foreignId;
-    }
-
-    /**
-     * @param string $foreignId
-     *
-     * @return LogAction
-     */
-    public function setForeignId($foreignId)
-    {
-        $this->foreignId = $foreignId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return LogAction
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOriginalUsername()
-    {
-        return $this->originalUsername;
-    }
-
-    /**
-     * @param int $originalUsername
-     *
-     * @return LogAction
-     */
-    public function setOriginalUsername($originalUsername)
-    {
-        $this->originalUsername = $originalUsername;
 
         return $this;
     }

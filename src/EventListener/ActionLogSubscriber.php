@@ -37,7 +37,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
      */
     public function onStart(LogActionEvent $event)
     {
-        $this->logger->start($event->getType(), $event->getParameters(), $event->getObject(), $event->getExtraParameters());
+        $this->logger->start($event->getType(), $event->getParameters(), $event->getExtraParameters());
     }
 
     /**
@@ -45,7 +45,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
      */
     public function onUpdate(LogActionEvent $event)
     {
-        $this->logger->update($event->getParameters(), $event->getObject(), $event->getPriority(), $event->getExtraParameters());
+        $this->logger->update($event->getParameters(), $event->getPriority(), $event->getExtraParameters());
     }
 
     /**
@@ -61,7 +61,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
      */
     public function onLog(LogActionEvent $event)
     {
-        $this->logger->log($event->getType(), $event->getParameters(), $event->getObject(), $event->getPriority(), $event->getExtraParameters());
+        $this->logger->log($event->getType(), $event->getParameters(), $event->getPriority(), $event->getExtraParameters());
     }
 
     /**

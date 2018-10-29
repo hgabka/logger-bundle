@@ -44,20 +44,6 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="username", nullable=true)
-     */
-    protected $username;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="original_username", nullable=true)
-     */
-    protected $originalUsername;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(type="string", name="table_name", nullable=true)
      */
     protected $table;
@@ -121,62 +107,6 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="session_id", nullable=true)
-     */
-    protected $sessionId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="controller", nullable=true)
-     */
-    protected $controller;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request_uri", nullable=true)
-     */
-    protected $requestUri;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="client_ip", nullable=true)
-     */
-    protected $clientIp;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="user_agent", nullable=true)
-     */
-    protected $userAgent;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="post", nullable=true)
-     */
-    protected $post;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request_attributes", nullable=true)
-     */
-    protected $requestAttributes;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="method", nullable=true)
-     */
-    protected $method;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(type="text", name="note", nullable=true)
      */
     protected $note;
@@ -222,7 +152,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getIdent()
+    public function getIdent(): string
     {
         return $this->ident;
     }
@@ -242,7 +172,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
@@ -262,7 +192,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getOriginalUserId()
+    public function getOriginalUserId(): int
     {
         return $this->originalUserId;
     }
@@ -282,7 +212,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->table;
     }
@@ -302,7 +232,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -322,7 +252,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getColumn()
+    public function getColumn(): string
     {
         return $this->column;
     }
@@ -342,7 +272,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -362,7 +292,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getForeignId()
+    public function getForeignId(): string
     {
         return $this->foreignId;
     }
@@ -382,7 +312,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getOldValue()
+    public function getOldValue(): string
     {
         return $this->oldValue;
     }
@@ -402,7 +332,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getNewValue()
+    public function getNewValue(): string
     {
         return $this->newValue;
     }
@@ -422,7 +352,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getModType()
+    public function getModType(): string
     {
         return $this->modType;
     }
@@ -466,7 +396,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getServerName()
+    public function getServerName(): string
     {
         return $this->serverName;
     }
@@ -486,7 +416,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
@@ -530,7 +460,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getNote()
+    public function getNote(): string
     {
         return $this->note;
     }
@@ -543,206 +473,6 @@ class LogColumn
     public function setNote($note)
     {
         $this->note = $note;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * @param string $sessionId
-     *
-     * @return LogColumn
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @param string $controller
-     *
-     * @return LogColumn
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestUri()
-    {
-        return $this->requestUri;
-    }
-
-    /**
-     * @param string $requestUri
-     *
-     * @return LogColumn
-     */
-    public function setRequestUri($requestUri)
-    {
-        $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientIp()
-    {
-        return $this->clientIp;
-    }
-
-    /**
-     * @param string $clientIp
-     *
-     * @return LogColumn
-     */
-    public function setClientIp($clientIp)
-    {
-        $this->clientIp = $clientIp;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgent()
-    {
-        return $this->userAgent;
-    }
-
-    /**
-     * @param string $userAgent
-     *
-     * @return LogColumn
-     */
-    public function setUserAgent($userAgent)
-    {
-        $this->userAgent = $userAgent;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPost()
-    {
-        return $this->post;
-    }
-
-    /**
-     * @param string $post
-     *
-     * @return LogColumn
-     */
-    public function setPost($post)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestAttributes()
-    {
-        return $this->requestAttributes;
-    }
-
-    /**
-     * @param string $requestAttributes
-     *
-     * @return LogColumn
-     */
-    public function setRequestAttributes($requestAttributes)
-    {
-        $this->requestAttributes = $requestAttributes;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $method
-     *
-     * @return LogColumn
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return LogColumn
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOriginalUsername()
-    {
-        return $this->originalUsername;
-    }
-
-    /**
-     * @param string $originalUsername
-     *
-     * @return LogColumn
-     */
-    public function setOriginalUsername($originalUsername)
-    {
-        $this->originalUsername = $originalUsername;
 
         return $this;
     }

@@ -81,20 +81,20 @@ class ExceptionNotifier
     {
         $logEnv = $this->config['logging']['enabled'];
         if ($this->isDebug) {
-            return \in_array($logEnv, ['always', 'debug'], true);
+            return in_array($logEnv, ['always', 'debug'], true);
         }
 
-        return \in_array($logEnv, ['always', 'prod'], true);
+        return in_array($logEnv, ['always', 'prod'], true);
     }
 
     public function isMailSendingEnabled()
     {
         $mailEnv = $this->config['mails']['enabled'];
         if ($this->isDebug) {
-            return \in_array($mailEnv, ['always', 'debug'], true);
+            return in_array($mailEnv, ['always', 'debug'], true);
         }
 
-        return \in_array($mailEnv, ['always', 'prod'], true);
+        return in_array($mailEnv, ['always', 'prod'], true);
     }
 
     public function getMasterRequest()
@@ -115,7 +115,7 @@ class ExceptionNotifier
         if (!$this->isEnabled()) {
             return;
         }
-        $enabled404 = !isset($this->config['mails']['send_404']) || false !== $this->config['mails']['send_404'];
+        $enabled404 = !isset($this->config['mails']['send_404']) || $this->config['mails']['send_404'] !== false;
         if (!$error404 || $enabled404) {
             if (empty($this->config['mails']['send_only_if_new']) || !$this->isDatabaseLoggingEnabled()) {
                 $this->sendMail($exception);
@@ -134,7 +134,7 @@ class ExceptionNotifier
         $sfNotify = new Notify();
 
         $sfNotify->setController($this->getMasterRequest()->attributes->get('_controller'));
-        $sfNotify->setExceptionClass(\get_class($exception));
+        $sfNotify->setExceptionClass(get_class($exception));
         $sfNotify->setMessage($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
         $sfNotify->setTraces($exception instanceof \Throwable ? $exception->getTraceAsString() : '');
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
@@ -181,7 +181,7 @@ class ExceptionNotifier
     {
         $logTypeConfig = $this->config['logging']['type'][$this->isDebug ? 'debug' : 'prod'];
 
-        return \in_array($logTypeConfig, ['both', $kind], true);
+        return in_array($logTypeConfig, ['both', $kind], true);
     }
 
     protected function log($exception)
@@ -196,7 +196,7 @@ class ExceptionNotifier
         $message .= 'File: '.$exception->getFile()."\n";
         $message .= 'Line: '.$exception->getLine()."\n";
         $message .= 'Code: '.$exception->getCode()."\n";
-        $message .= 'Class: '.\get_class($exception)."\n\n";
+        $message .= 'Class: '.get_class($exception)."\n\n";
         $message .= 'Details: '."\n";
         $message .= '- controller: '.($controller ?? '')."\n";
         $message .= '- redirect URL: '.(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '')."\n";
@@ -223,14 +223,14 @@ class ExceptionNotifier
         $body .= 'File: '.$exception->getFile().'<br />';
         $body .= 'Line: '.$exception->getLine().'<br />';
         $body .= 'Code: '.$exception->getCode().'<br />';
-        $body .= 'Class: '.\get_class($exception).'<br /><br />';
+        $body .= 'Class: '.get_class($exception).'<br /><br />';
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
         $body .= ($controller.'<br>');
 
         $body .= '<pre>';
         $t = $this->requestStack->getCurrentRequest()->attributes->all();
         foreach ($t as $key => $data) {
-            if (\is_object($data)) {
+            if (is_object($data)) {
                 unset($t[$key]);
             }
         }
@@ -279,7 +279,7 @@ class ExceptionNotifier
         }
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        $md = $em->getClassMetadata(\get_class($entity));
+        $md = $em->getClassMetadata(get_class($entity));
 
         $result = [];
         if ($md) {
