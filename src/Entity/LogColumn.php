@@ -93,14 +93,14 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="text", name="old_value", nullable=true)
+     * @ORM\Column(type="hg_utils_longblob", name="old_value", nullable=true)
      */
     protected $oldValue;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", name="new_value", nullable=true)
+     * @ORM\Column(type="hg_utils_longblob", name="new_value", nullable=true)
      */
     protected $newValue;
 
