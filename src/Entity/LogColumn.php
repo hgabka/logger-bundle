@@ -100,7 +100,7 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="text", name="hg_utils_longblob", nullable=true)
+     * @ORM\Column(type="hg_utils_longblob", name="new_value", nullable=true)
      */
     protected $newValue;
 
