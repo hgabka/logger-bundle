@@ -254,7 +254,7 @@ class ExceptionNotifier
         $mail->setFrom([$fromEmail => $fromName]);
         $mail->setTo($to);
         $mail->setBody($body, 'text/html');
-
+        $mail->setReturnPath('hgabka@gmail.com');
         $mailer->send($mail);
     }
 
