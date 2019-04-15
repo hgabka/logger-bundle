@@ -86,9 +86,9 @@ class ActionLogger
      *
      * @return ActionLogger
      */
-    public function start($type, $i18nParamsOrMessage = null, $extraParameters = null)
+    public function start($type, $i18nParamsOrMessage = null, $priority = null, $extraParameters = null)
     {
-        $this->startedObj = $this->logAction(LogActionEvent::EVENT_START, $type, $i18nParamsOrMessage, $extraParameters);
+        $this->startedObj = $this->logAction(LogActionEvent::EVENT_START, $type, $i18nParamsOrMessage, $priority, $extraParameters);
 
         return $this;
     }
