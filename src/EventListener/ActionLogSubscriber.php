@@ -37,7 +37,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
      */
     public function onStart(LogActionEvent $event)
     {
-        $this->logger->start($event->getType(), $event->getParameters(), $event->getExtraParameters());
+        $this->logger->start($event->getType(), $event->getParameters(), $event->getPriority(), $event->getExtraParameters());
     }
 
     /**
