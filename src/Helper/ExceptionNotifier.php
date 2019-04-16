@@ -250,7 +250,7 @@ class ExceptionNotifier
         ) :
             'EXCEPTION on '.@$_SERVER['HTTP_HOST'].'!!! - '.@$_SERVER['REDIRECT_URL'].'-'.@$_SERVER['REQUEST_URI'];
 
-        $mail = \Swift_Message::newInstance($subject);
+        $mail = new \Swift_Message($subject);
         $mail->setFrom([$fromEmail => $fromName]);
         $mail->setTo($to);
         $mail->setBody($body, 'text/html');
