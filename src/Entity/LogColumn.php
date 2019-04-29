@@ -9,7 +9,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * LogColumn.
  *
  * @ORM\Entity
- * @ORM\Table(name="hg_logger_log_column")
+ * @ORM\Table(name="hg_logger_log_column", indexes={
+ *     @ORM\Index(name="user", columns={"user_id"}),
+ *     @ORM\Index(name="original_user", columns={"original_user_id"})
+ * })
  */
 class LogColumn
 {
