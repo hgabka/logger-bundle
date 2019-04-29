@@ -122,7 +122,11 @@ class ExceptionNotifier
                 $mailSent = true;
             }
         }
+        $enabledLog404 = !isset($this->config['logging']['log_404']) || false !== $this->config['logging']['log_404'];
 
+        if ($error404 && !$enabledLog404) {
+            return;
+        }
         if ($this->isFileLoggingEnabled()) {
             $this->log($exception);
         }
@@ -149,7 +153,7 @@ class ExceptionNotifier
         $sfNotify->setHash($hash);
         $sfNotify->setRequest(serialize(@$_REQUEST));
 
-        $old = $this->doctrine->getRepository('HgabkaLoggerBundle:Notify')->findOneBy(['hash' => $hash]);
+        $old = $this->doctrine->getRepository(Notify::class)->findOneBy(['hash' => $hash]);
 
         if (!$old) {
             if (!$mailSent && (!$error404 || $enabled404)) {
@@ -250,7 +254,7 @@ class ExceptionNotifier
         ) :
             'EXCEPTION on '.@$_SERVER['HTTP_HOST'].'!!! - '.@$_SERVER['REDIRECT_URL'].'-'.@$_SERVER['REQUEST_URI'];
 
-        $mail = new \Swift_Message($subject);
+        $mail = \Swift_Message::newInstance($subject);
         $mail->setFrom([$fromEmail => $fromName]);
         $mail->setTo($to);
         $mail->setBody($body, 'text/html');
