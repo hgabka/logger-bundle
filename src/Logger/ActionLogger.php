@@ -197,9 +197,9 @@ class ActionLogger
                         ->setTime(new \DateTime())
                         ->setType($type)
                         ->setPriority($priority)
-                        ->setPost(\json_encode($request->request->all()))
-                        ->setRequestAttributes(\json_encode($request->attributes->all()))
-                        ->setMethod($request->getMethod().' ('.$request->getRealMethod().')')
+                        ->setPost($request ? \json_encode($request->request->all()) : null)
+                        ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
+                        ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
                         ->setSuccess(false)
                         ->setExtraParameters($extraParameters ?? null)
                     ;
@@ -281,7 +281,7 @@ class ActionLogger
             self::OPT_IP => $request ? $request->getClientIp() : null,
             self::OPT_URL => $request ? $request->getRequestUri() : null,
             self::OPT_SESSION => $session ? $session : null,
-            self::OPT_ACTION => $request->attributes->get('_controller'),
+            self::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
         ];
     }
 }
