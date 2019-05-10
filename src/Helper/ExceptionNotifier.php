@@ -133,7 +133,7 @@ class ExceptionNotifier
 
         $sfNotify = new Notify();
 
-        $sfNotify->setController($this->getMasterRequest()->attributes->get('_controller'));
+        $sfNotify->setController($this->getMasterRequest() ? $this->getMasterRequest()->attributes->get('_controller') : null);
         $sfNotify->setExceptionClass(get_class($exception));
         $sfNotify->setMessage($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
         $sfNotify->setTraces($exception instanceof \Throwable ? $exception->getTraceAsString() : '');
@@ -189,7 +189,7 @@ class ExceptionNotifier
         if (!$this->isLoggingEnabled()) {
             return;
         }
-        $controller = $this->getMasterRequest()->attributes->get('_controller');
+        $controller = $this->getMasterRequest() ? $this->getMasterRequest()->attributes->get('_controller') : '';
         $message = 'Exception was thrown.'."\n";
         $message .= '----------------------------------------------------------------------'."\n\n";
         $message .= 'Message: '.($exception instanceof \Throwable ? $exception->getMessage() : '404 error')."\n";
@@ -215,7 +215,7 @@ class ExceptionNotifier
         }
 
         $mailer = $this->mailer;
-        $controller = $this->getMasterRequest()->attributes->get('_controller');
+        $controller = $this->getMasterRequest() ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
         $body = 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
@@ -228,7 +228,7 @@ class ExceptionNotifier
         $body .= ($controller.'<br>');
 
         $body .= '<pre>';
-        $t = $this->requestStack->getCurrentRequest()->attributes->all();
+        $t = $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->attributes->all() : [];
         foreach ($t as $key => $data) {
             if (is_object($data)) {
                 unset($t[$key]);
