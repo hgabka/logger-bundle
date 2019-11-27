@@ -122,6 +122,10 @@ class ExceptionNotifier
                 $mailSent = true;
             }
         }
+        $enabledLog404 = !isset($this->config['logging']['log_404']) || false !== $this->config['logging']['log_404'];
+        if ($error404 && !$enabledLog404) {
+            return;
+        }
 
         if ($this->isFileLoggingEnabled()) {
             $this->log($exception);
