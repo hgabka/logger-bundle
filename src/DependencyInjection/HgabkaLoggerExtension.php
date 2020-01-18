@@ -26,7 +26,7 @@ class HgabkaLoggerExtension extends Extension
         $loader->load('services.yml');
 
         $loggerDefinition = $container->getDefinition('hgabka_logger.exception_logger');
-        $loggerDefinition->replaceArgument(1, $config['notifier']['logging']['log_path']);
+        $loggerDefinition->replaceArgument(2, $config['notifier']['logging']['log_path']);
 
         $columnLoggerDefinition = $container->getDefinition('hgabka_logger.column_logger');
         $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['common_identifier']);

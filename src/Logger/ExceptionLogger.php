@@ -3,17 +3,18 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\FormatterInterface;
 use Psr\Log\LoggerInterface;
 
 class ExceptionLogger
 {
     protected $logger;
 
-    public function __construct(LoggerInterface $logger, $path)
+    public function __construct(LoggerInterface $logger, FormatterInterface $formatter, $path)
     {
         $this->logger = $logger;
         $handler = new StreamHandler($path.'/'.date('Ymd').'.log');
-        $handler->setFormatter(new ExceptionLogFormatter());
+        $handler->setFormatter($formatter);
         $this->logger->setHandlers([$handler]);
     }
 

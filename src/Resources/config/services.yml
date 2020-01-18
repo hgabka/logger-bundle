@@ -1,11 +1,15 @@
 parameters:
     hgabka_logger.exception_logger.class: 'Hgabka\LoggerBundle\Logger\ExceptionLogger'
+    hgabka_logger.exception_log_formatter.class: 'Hgabka\LoggerBundle\Logger\ExceptionLogFormatter'
     hgabka_logger.exception_notifier.class: 'Hgabka\LoggerBundle\Helper\ExceptionNotifier'
 
 services:
     hgabka_logger.exception_logger:
         class: '%hgabka_logger.exception_logger.class%'
-        arguments: ["@logger", '']
+        arguments: ["@logger", '@hgabka_logger.exception_log_formatter', '']
+
+    hgabka_logger.exception_log_formatter:
+        class: '%hgabka_logger.exception_log_formatter.class%'
 
     hgabka_logger.exception_notifier:
         class: '%hgabka_logger.exception_notifier.class%'
