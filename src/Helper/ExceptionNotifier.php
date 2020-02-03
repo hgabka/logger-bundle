@@ -232,14 +232,19 @@ class ExceptionNotifier
         $body .= ($controller.'<br>');
 
         $body .= '<pre>';
-        $t = $this->requestStack->getCurrentRequest()->attributes->all();
-        foreach ($t as $key => $data) {
-            if (\is_object($data)) {
-                unset($t[$key]);
+        $req = $this->requestStack->getCurrentRequest();
+        if ($req) {
+            $pars = array_merge($r->request->all(), $this->requestStack->getCurrentRequest()->query->all());
+            foreach ($pars as $key => $data) {
+                if (\is_object($data)) {
+                    unset($pars[$key]);
+                }
             }
-        }
-        $body .= ('<br>Paraméterek:<br>'.var_export($t, true));
-
+        } else {
+            $pars = $_REQUEST;
+        }    
+        $body .= ('<br>Paraméterek:<br>'.var_export($pars, true));
+        
         $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
 
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
