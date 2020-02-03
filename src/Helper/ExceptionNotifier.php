@@ -144,14 +144,14 @@ class ExceptionNotifier
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
         $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
-        $sfNotify->setPost(serialize(@$_POST));
-        $sfNotify->setParams(serialize($_GET));
+        $sfNotify->setPost(json_encode(@$_POST));
+        $sfNotify->setParams(json_encode($_GET));
         $sfNotify->setCode($exception->getCode());
         $sfNotify->setLine($exception->getLine());
         $sfNotify->setFile($exception->getFile());
         $hash = $this->getHash($sfNotify);
         $sfNotify->setHash($hash);
-        $sfNotify->setRequest(serialize(@$_REQUEST));
+        $sfNotify->setRequest(json_encode(@$_REQUEST));
 
         $old = $this->doctrine->getRepository(Notify::class)->findOneBy(['hash' => $hash]);
 
@@ -172,7 +172,7 @@ class ExceptionNotifier
             $em->persist($sfNotify);
 
             $sfNotifyCall = new NotifyCall();
-            $sfNotifyCall->setServer(serialize(@$_SERVER));
+            $sfNotifyCall->setServer(json_encode(@$_SERVER));
             $sfNotify->addCall($sfNotifyCall);
 
             $em->persist($sfNotifyCall);
@@ -221,17 +221,17 @@ class ExceptionNotifier
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest()->attributes->get('_controller');
 
-        $body = 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
+        $body = '<pre>';
+        $body .= 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
-        $body .= ($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'<br>';
+        $body .= ('Exception message: '.($exception instanceof \Throwable ? $exception->getMessage() : '404 error')).'<br>';
         $body .= 'File: '.$exception->getFile().'<br />';
         $body .= 'Line: '.$exception->getLine().'<br />';
         $body .= 'Code: '.$exception->getCode().'<br />';
         $body .= 'Class: '.\get_class($exception).'<br /><br />';
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
-        $body .= ($controller.'<br>');
+        $body .= ('Controller: '.$controller.'<br>');
 
-        $body .= '<pre>';
         $req = $this->requestStack->getCurrentRequest();
         if ($req) {
             $pars = array_merge($req->request->all(), $req->query->all());
@@ -246,6 +246,7 @@ class ExceptionNotifier
         $body .= ('<br>Paraméterek:<br>'.var_export($pars, true));
 
         $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
+        $body.='</pre>';
 
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
         $fromEmail = isset($this->config['mails']['from_mail']) ? $this->config['mails']['from_mail'] : 'info@hgnotifier.com';
