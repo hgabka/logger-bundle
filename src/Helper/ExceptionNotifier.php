@@ -234,7 +234,7 @@ class ExceptionNotifier
         $body .= '<pre>';
         $req = $this->requestStack->getCurrentRequest();
         if ($req) {
-            $pars = array_merge($r->request->all(), $this->requestStack->getCurrentRequest()->query->all());
+            $pars = array_merge($req->request->all(), $req->query->all());
             foreach ($pars as $key => $data) {
                 if (\is_object($data)) {
                     unset($pars[$key]);
