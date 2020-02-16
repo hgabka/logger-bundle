@@ -2,8 +2,8 @@
 
 namespace Hgabka\LoggerBundle\Logger;
 
-use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 
 class ExceptionLogger

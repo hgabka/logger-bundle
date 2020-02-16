@@ -144,8 +144,8 @@ class ColumnLogger extends AbstractLogger
 
         $log
             ->setIdent($this->ident)
-            ->setPost($request ? \json_encode($request->request->all()) : null)
-            ->setRequestAttributes($request ? \json_encode($request->attributes->all()) : null)
+            ->setPost($request ? json_encode($request->request->all()) : null)
+            ->setRequestAttributes($request ? json_encode($request->attributes->all()) : null)
             ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
             ->setClientIp($context[static::OPT_IP])
             ->setController($context[static::OPT_ACTION])
