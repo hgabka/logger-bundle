@@ -242,11 +242,11 @@ class ExceptionNotifier
             }
         } else {
             $pars = $_REQUEST;
-        }    
+        }
         $body .= ('<br>Paraméterek:<br>'.var_export($pars, true));
 
         $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
-        $body.='</pre>';
+        $body .= '</pre>';
 
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
         $fromEmail = isset($this->config['mails']['from_mail']) ? $this->config['mails']['from_mail'] : 'info@hgnotifier.com';
