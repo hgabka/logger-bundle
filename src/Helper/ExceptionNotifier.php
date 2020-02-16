@@ -224,7 +224,7 @@ class ExceptionNotifier
         $body = '<pre>';
         $body .= 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
-        $body .= ('Exception message: '.($exception instanceof \Throwable ? $exception->getMessage() : '404 error')).'<br>';
+        $body .= ('<br />Exception message: <br /><br /><span style="font-size:18px;font-weight:bold">'.($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'</span><br />').'<br>';
         $body .= 'File: '.$exception->getFile().'<br />';
         $body .= 'Line: '.$exception->getLine().'<br />';
         $body .= 'Code: '.$exception->getCode().'<br />';
