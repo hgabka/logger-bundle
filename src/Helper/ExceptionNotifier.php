@@ -220,6 +220,7 @@ class ExceptionNotifier
 
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest()->attributes->get('_controller');
+        
         $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
         $width = 1200;
 
