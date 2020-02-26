@@ -220,27 +220,44 @@ class ExceptionNotifier
 
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest() ? $this->getMasterRequest()->attributes->get('_controller') : '';
+        $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
+        $width = 1200;
 
-        $body = 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
+        $body = '
+        <!DOCTYPE html>
+        <html style="width:'.$width.'px">
+            <head>
+                <meta charset="UTF-8" />
+                <title>'.$message.'</title>
+            </head>   
+            <body style="width:'.$width.'px">
+            
+        <pre width="'.$width.'" style="max-width:'.$width.'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">';
+        $body .= 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
-        $body .= ($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'<br>';
+        $body .= ('<br />Exception message: <br /><br /><p style="font-size:18px;font-weight:bold;display:block;max-width:100%;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;">'.$message.'</p><br />').'<br>';
         $body .= 'File: '.$exception->getFile().'<br />';
         $body .= 'Line: '.$exception->getLine().'<br />';
         $body .= 'Code: '.$exception->getCode().'<br />';
-        $body .= 'Class: '.get_class($exception).'<br /><br />';
+        $body .= 'Class: '.\get_class($exception).'<br /><br />';
         $body .= ($exception instanceof \Throwable ? '<ul><li>'.implode('</li><li>', $this->getTraceArray($exception)).'</li></ul>' : '').'<br>';
-        $body .= ($controller.'<br>');
+        $body .= ('Controller: '.$controller.'<br>');
 
-        $body .= '<pre>';
-        $t = $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->attributes->all() : [];
-        foreach ($t as $key => $data) {
-            if (is_object($data)) {
-                unset($t[$key]);
+        $req = $this->requestStack->getCurrentRequest();
+        if ($req) {
+            $pars = array_merge($req->request->all(), $req->query->all());
+            foreach ($pars as $key => $data) {
+                if (\is_object($data)) {
+                    unset($pars[$key]);
+                }
             }
+        } else {
+            $pars = $_REQUEST;
         }
-        $body .= ('<br>Paraméterek:<br>'.var_export($t, true));
+        $body .= ('<br>Paraméterek:<br>'.var_export($pars, true));
 
         $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
+        $body .= '</pre></body></html>';
 
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
         $fromEmail = isset($this->config['mails']['from_mail']) ? $this->config['mails']['from_mail'] : 'info@hgnotifier.com';
