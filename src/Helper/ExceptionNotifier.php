@@ -221,10 +221,22 @@ class ExceptionNotifier
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest()->attributes->get('_controller');
 
-        $body = '<pre>';
+        $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
+        $width = 1200;
+
+        $body = '
+        <!DOCTYPE html>
+        <html style="width:'.$width.'px">
+            <head>
+                <meta charset="UTF-8" />
+                <title>'.$message.'</title>
+            </head>   
+            <body style="width:'.$width.'px">
+            
+        <pre width="'.$width.'" style="max-width:'.$width.'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">';
         $body .= 'REDIRECT_URL:'.@$_SERVER['REDIRECT_URL'].'<br>';
         $body .= 'REQUEST_URI:'.@$_SERVER['REQUEST_URI'].'<br>';
-        $body .= ('<br />Exception message: <br /><br /><span style="font-size:18px;font-weight:bold">'.($exception instanceof \Throwable ? $exception->getMessage() : '404 error').'</span><br />').'<br>';
+        $body .= ('<br />Exception message: <br /><br /><p style="font-size:18px;font-weight:bold;display:block;max-width:100%;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;">'.$message.'</p><br />').'<br>';
         $body .= 'File: '.$exception->getFile().'<br />';
         $body .= 'Line: '.$exception->getLine().'<br />';
         $body .= 'Code: '.$exception->getCode().'<br />';
@@ -246,7 +258,7 @@ class ExceptionNotifier
         $body .= ('<br>Paraméterek:<br>'.var_export($pars, true));
 
         $body .= '<br>SERVER:<br>'.var_export(@$_SERVER, true);
-        $body .= '</pre>';
+        $body .= '</pre></body></html>';
 
         $fromName = isset($this->config['mails']['from_name']) ? $this->config['mails']['from_name'] : 'hgLoggerBundle';
         $fromEmail = isset($this->config['mails']['from_mail']) ? $this->config['mails']['from_mail'] : 'info@hgnotifier.com';
