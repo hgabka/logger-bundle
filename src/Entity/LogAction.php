@@ -10,11 +10,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_log_action", indexes={
- *     @ORM\Index(name="user_idx", columns={"user_id"}),
- *     @ORM\Index(name="foreign_id", columns={"foreign_id"}),
- *     @ORM\Index(name="table_name", columns={"table_name"}),
- *     @ORM\Index(name="log_type", columns={"log_type"}),
- *     @ORM\Index(name="original_user", columns={"original_user_id"})
+ *     @ORM\Index(name="user_action_idx", columns={"user_id"}),
+ *     @ORM\Index(name="foreign_id_action_idx", columns={"foreign_id"}),
+ *     @ORM\Index(name="table_name_action_idx", columns={"table_name"}),
+ *     @ORM\Index(name="log_type_action_idx", columns={"log_type"}),
+ *     @ORM\Index(name="original_user_action_idx", columns={"original_user_id"})
  * })
  */
 class LogAction implements ObjectLogInterface
