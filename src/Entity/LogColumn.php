@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Entity
  * @ORM\Table(name="hg_logger_log_column", indexes={
- *     @ORM\Index(name="user", columns={"user_id"}),
+ *     @ORM\Index(name="user_idx", columns={"user_id"}),
  *     @ORM\Index(name="original_user", columns={"original_user_id"})
  * })
  */
