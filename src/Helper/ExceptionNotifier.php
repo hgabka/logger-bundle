@@ -136,7 +136,7 @@ class ExceptionNotifier
         }
 
         $sfNotify = new Notify();
-        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller');
+        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
         $sfNotify->setController($controller);
         $sfNotify->setExceptionClass(\get_class($exception));
@@ -194,7 +194,7 @@ class ExceptionNotifier
         if (!$this->isLoggingEnabled()) {
             return;
         }
-        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller');
+        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
         $message = 'Exception was thrown.'."\n";
         $message .= '----------------------------------------------------------------------'."\n\n";
@@ -221,7 +221,7 @@ class ExceptionNotifier
         }
 
         $mailer = $this->mailer;
-        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller');
+        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
         
         $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
         $width = 1200;
