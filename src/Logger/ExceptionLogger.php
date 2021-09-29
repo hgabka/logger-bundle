@@ -13,9 +13,11 @@ class ExceptionLogger
     public function __construct(LoggerInterface $logger, FormatterInterface $formatter, $path)
     {
         $this->logger = $logger;
-        $handler = new StreamHandler($path.'/'.date('Ymd').'.log');
-        $handler->setFormatter($formatter);
-        $this->logger->setHandlers([$handler]);
+        if (!empty($path)) {
+            $handler = new StreamHandler($path.'/'.date('Ymd').'.log');
+            $handler->setFormatter($formatter);
+            $this->logger->setHandlers([$handler]);
+        }
     }
 
     /**
