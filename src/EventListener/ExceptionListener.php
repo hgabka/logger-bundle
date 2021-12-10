@@ -3,7 +3,7 @@
 namespace Hgabka\LoggerBundle\EventListener;
 
 use Hgabka\LoggerBundle\Helper\ExceptionNotifier;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class ExceptionListener
 {
@@ -20,7 +20,7 @@ class ExceptionListener
         $this->notifier = $notifier;
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         // You get the exception object from the received event
         $exception = $event->getException();
