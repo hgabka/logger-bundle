@@ -2,7 +2,7 @@
 
 namespace Hgabka\LoggerBundle\Logger;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
@@ -24,7 +24,7 @@ class ColumnLogger extends AbstractLogger
      * @param TokenStorageInterface $tokenStorage
      * @param string                $ident
      */
-    public function __construct(ManagerRegistry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $enabled)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
