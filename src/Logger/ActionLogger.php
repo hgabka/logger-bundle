@@ -3,7 +3,6 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Hgabka\LoggerBundle\Entity\LogAction;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
@@ -39,7 +38,7 @@ class ActionLogger extends AbstractLogger
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(ManagerRegistry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
