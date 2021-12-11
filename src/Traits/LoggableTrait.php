@@ -39,14 +39,14 @@ trait LoggableTrait
             $event->setExtraParameters($extraParameters);
         }
 
-        $this->dispatcher->dispatch(LogActionEvent::EVENT_START, $event);
+        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_START);
     }
 
     protected function logDone()
     {
         $event = new LogActionEvent();
 
-        $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
+        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_DONE);
     }
 
     protected function logUpdate($params = null, $object = null, $priority = null, $extraParameters = null)
@@ -63,7 +63,7 @@ trait LoggableTrait
             $event->setObject($object);
         }
 
-        $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
+        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
     }
 
     protected function logFormErrors($type, $params, FormInterface $form, $object = null)
@@ -96,8 +96,8 @@ trait LoggableTrait
             $event->setObject($object);
         }
 
-        $this->dispatcher->dispatch(LogActionEvent::EVENT_UPDATE, $event);
-        $this->dispatcher->dispatch(LogActionEvent::EVENT_DONE, $event);
+        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
+        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
     }
 
     protected function actionLog($type, $params = [], $object = null, $priority = null, $extraParameters = null)
