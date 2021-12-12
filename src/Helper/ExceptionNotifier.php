@@ -99,7 +99,7 @@ class ExceptionNotifier
 
     public function getMasterRequest()
     {
-        return $this->requestStack->getMasterRequest();
+        return $this->requestStack->getMainRequest();
     }
 
     public function isEnabled()
