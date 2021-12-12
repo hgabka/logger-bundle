@@ -13,9 +13,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ColumnLogger extends AbstractLogger
 {
-    const MOD_TYPE_INSERT = 'INSERT';
-    const MOD_TYPE_UPDATE = 'UPDATE';
-    const MOD_TYPE_DELETE = 'DELETE';
+    public const MOD_TYPE_INSERT = 'INSERT';
+    public const MOD_TYPE_UPDATE = 'UPDATE';
+    public const MOD_TYPE_DELETE = 'DELETE';
 
     /**
      * ColumnLogger constructor.
@@ -86,11 +86,11 @@ class ColumnLogger extends AbstractLogger
                 ->setClass($objClass)
                 ->setForeignId($fk)
                 ->setModType($action)
-                ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
+                ->setData(json_encode($entityData, \JSON_UNESCAPED_UNICODE))
             ;
             $this->setLogFields($log);
             if ($originalUser && \is_object()) {
-                $log->setNote('Impersonated (original user: '.$context[self::OPT_ORIGINAL_USERNAME].')');
+                $log->setNote('Impersonated (original user: ' . $context[self::OPT_ORIGINAL_USERNAME] . ')');
             }
             $logs[] = $log;
         } else {
@@ -123,12 +123,12 @@ class ColumnLogger extends AbstractLogger
                     ->setOldValue($oldValue)
                     ->setNewValue($newValue)
                     ->setModType($action)
-                    ->setData(json_encode($entityData, JSON_UNESCAPED_UNICODE))
+                    ->setData(json_encode($entityData, \JSON_UNESCAPED_UNICODE))
                 ;
                 $this->setLogFields($log);
 
                 if ($originalUser) {
-                    $log->setNote('Impersonated (original user: '.$context[static::OPT_ORIGINAL_USERNAME].')');
+                    $log->setNote('Impersonated (original user: ' . $context[static::OPT_ORIGINAL_USERNAME] . ')');
                 }
                 $logs[] = $log;
             }
@@ -146,7 +146,7 @@ class ColumnLogger extends AbstractLogger
             ->setIdent($this->ident)
             ->setPost($request ? json_encode($request->request->all()) : null)
             ->setRequestAttributes($request ? json_encode($request->attributes->all()) : null)
-            ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
+            ->setMethod($request ? ($request->getMethod() . ' (' . $request->getRealMethod() . ')') : null)
             ->setClientIp($context[static::OPT_IP])
             ->setController($context[static::OPT_ACTION])
             ->setSessionId($context[static::OPT_SESSION])
@@ -166,7 +166,7 @@ class ColumnLogger extends AbstractLogger
         }
 
         if (\is_array($value) || \is_object($value)) {
-            return json_encode($value, JSON_UNESCAPED_UNICODE);
+            return json_encode($value, \JSON_UNESCAPED_UNICODE);
         }
 
         return (string) $value;

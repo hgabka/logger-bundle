@@ -168,18 +168,18 @@ class ActionLogger extends AbstractLogger
         }
 
         $em = $this->doctrine->getManager();
-        $priority = $priority ? $priority : Logger::getLevelName(Logger::INFO);
+        $priority = $priority ?: Logger::getLevelName(Logger::INFO);
         $context = $this->getContextOptions();
 
         if (\is_array($extraParameters) || \is_object($extraParameters)) {
-            $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
+            $extraParameters = json_encode($extraParameters, \JSON_UNESCAPED_UNICODE);
         }
 
         if ($context[static::OPT_ORIGINAL_USER]) {
             if (empty($extraParameters)) {
                 $extraParameters = '';
             }
-            $extraParameters .= ((empty($extraParameters) ? "\n" : '').'Impersonated (original user: '.$context[static::OPT_ORIGINAL_USERNAME].')');
+            $extraParameters .= ((empty($extraParameters) ? "\n" : '') . 'Impersonated (original user: ' . $context[static::OPT_ORIGINAL_USERNAME] . ')');
         }
 
         switch ($kind) {
@@ -199,7 +199,7 @@ class ActionLogger extends AbstractLogger
                         ->setPriority($priority)
                         ->setPost($request ? json_encode($request->request->all()) : null)
                         ->setRequestAttributes($request ? json_encode($request->attributes->all()) : null)
-                        ->setMethod($request ? ($request->getMethod().' ('.$request->getRealMethod().')') : null)
+                        ->setMethod($request ? ($request->getMethod() . ' (' . $request->getRealMethod() . ')') : null)
                         ->setSuccess(false)
                         ->setExtraParameters($extraParameters ?? null)
                     ;
@@ -218,7 +218,7 @@ class ActionLogger extends AbstractLogger
                 ;
                 $extraParameters = empty($obj->getExtraParameters()) || $extraParameters === $obj->getExtraParameters()
                     ? $extraParameters
-                    : $obj->getExtraParameters().("\n".$extraParameters)
+                    : $obj->getExtraParameters() . ("\n" . $extraParameters)
                 ;
 
                 $obj->setExtraParameters($extraParameters ?? null);
@@ -252,7 +252,7 @@ class ActionLogger extends AbstractLogger
 
                 break;
             default:
-                throw new \LogicException('Érvénytelen log fajta: '.$kind);
+                throw new \LogicException('Érvénytelen log fajta: ' . $kind);
         }
 
         if ($obj) {

@@ -6,7 +6,7 @@ use Monolog\Formatter\LineFormatter;
 
 class ExceptionLogFormatter extends LineFormatter
 {
-    const SIMPLE_FORMAT = "[%datetime%] %message%\n";
+    public const SIMPLE_FORMAT = "[%datetime%] %message%\n";
 
     public function stringify($value): string
     {

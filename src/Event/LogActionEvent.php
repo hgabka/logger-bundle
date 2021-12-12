@@ -6,11 +6,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class LogActionEvent extends Event
 {
-    const EVENT_START = 'hgabka_logger.log_start';
-    const EVENT_DONE = 'hgabka_logger.log_done';
-    const EVENT_UPDATE = 'hgabka_logger.log_update';
-    const EVENT_LOG = 'hgabka_logger.log_log';
-    const EVENT_FORM = 'hgabka_logger.log_form';
+    public const EVENT_START = 'hgabka_logger.log_start';
+    public const EVENT_DONE = 'hgabka_logger.log_done';
+    public const EVENT_UPDATE = 'hgabka_logger.log_update';
+    public const EVENT_LOG = 'hgabka_logger.log_log';
+    public const EVENT_FORM = 'hgabka_logger.log_form';
 
     /** @var string */
     protected $type;

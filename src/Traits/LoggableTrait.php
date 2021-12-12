@@ -87,7 +87,7 @@ trait LoggableTrait
             }
 
             if (!\is_string($extraParameters)) {
-                $extraParameters = json_encode($extraParameters, JSON_UNESCAPED_UNICODE);
+                $extraParameters = json_encode($extraParameters, \JSON_UNESCAPED_UNICODE);
             }
             $event->setExtraParameters($extraParameters);
         }

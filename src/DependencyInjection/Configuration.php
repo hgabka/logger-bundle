@@ -63,7 +63,7 @@ class Configuration implements ConfigurationInterface
                                           ->enumNode('prod')->values(['file', 'database', 'both', 'none'])->defaultValue('both')->end()
                                       ->end()
                                   ->end()
-                                  ->scalarNode('log_path')->defaultValue($this->container->getParameter('kernel.logs_dir').'/exception')->end()
+                                  ->scalarNode('log_path')->defaultValue($this->container->getParameter('kernel.logs_dir') . '/exception')->end()
                                   ->booleanNode('log_404')->defaultTrue()->end()
                               ->end()
                           ->end()

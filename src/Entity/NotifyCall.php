@@ -90,7 +90,7 @@ class NotifyCall
     /**
      * @return \Hgabka\LoggerBundle\Entity\Notify
      */
-    public function getNotify(): \Hgabka\LoggerBundle\Entity\Notify
+    public function getNotify(): Notify
     {
         return $this->notify;
     }

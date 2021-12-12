@@ -14,17 +14,17 @@ use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
 class AbstractLogger
 {
-    const OPT_USER = 'user';
-    const OPT_USER_OBJECT = 'user_object';
-    const OPT_ORIGINAL_USER = 'original_user';
-    const OPT_ORIGINAL_USER_OBJECT = 'original_user_object';
-    const OPT_URL = 'url';
-    const OPT_IP = 'ip';
-    const OPT_SESSION = 'session';
-    const OPT_USER_AGENT = 'user_agent';
-    const OPT_ACTION = 'action';
-    const OPT_USERNAME = 'username';
-    const OPT_ORIGINAL_USERNAME = 'original_username';
+    public const OPT_USER = 'user';
+    public const OPT_USER_OBJECT = 'user_object';
+    public const OPT_ORIGINAL_USER = 'original_user';
+    public const OPT_ORIGINAL_USER_OBJECT = 'original_user_object';
+    public const OPT_URL = 'url';
+    public const OPT_IP = 'ip';
+    public const OPT_SESSION = 'session';
+    public const OPT_USER_AGENT = 'user_agent';
+    public const OPT_ACTION = 'action';
+    public const OPT_USERNAME = 'username';
+    public const OPT_ORIGINAL_USERNAME = 'original_username';
 
     /** @var ManagerRegistry */
     protected $doctrine;

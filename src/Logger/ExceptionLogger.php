@@ -14,7 +14,7 @@ class ExceptionLogger
     {
         $this->logger = $logger;
         if (!empty($path)) {
-            $handler = new StreamHandler($path.'/'.date('Ymd').'.log');
+            $handler = new StreamHandler($path . '/' . date('Ymd') . '.log');
             $handler->setFormatter($formatter);
             $this->logger->setHandlers([$handler]);
         }
