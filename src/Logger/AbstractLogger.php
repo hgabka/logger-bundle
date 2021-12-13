@@ -47,11 +47,15 @@ class AbstractLogger
     /** @var bool */
     protected $debug;
 
-    
     protected function getSession(): ?SessionInterface
     {
-        return $this->requestStack->getSession();
+        try {
+            return $this->requestStack->getSession();
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
+    
     /**
      * Kontextus információk, minden ami globálisan elérhető.
      *
