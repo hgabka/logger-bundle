@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\ObjectLogInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -38,9 +38,6 @@ class AbstractLogger
     /** @var RequestStack */
     protected $requestStack;
 
-    /** @var Session */
-    protected $session;
-
     /** @var AuthorizationCheckerInterface */
     protected $authChecker;
 
@@ -50,6 +47,11 @@ class AbstractLogger
     /** @var bool */
     protected $debug;
 
+    
+    protected function getSession(): ?SessionInterface
+    {
+        return $this->requestStack->getSession();
+    }
     /**
      * Kontextus információk, minden ami globálisan elérhető.
      *
@@ -69,7 +71,9 @@ class AbstractLogger
                 }
             }
         }
-        $this->session->start();
+        $sessionObj = $this->getSession();
+        
+        $sessionObj->start();
         $session = $this->session->getId();
         $accessor = PropertyAccess::createPropertyAccessor();
 
