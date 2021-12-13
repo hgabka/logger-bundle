@@ -34,11 +34,10 @@ class ActionLogger extends AbstractLogger
      * @param TokenStorageInterface $tokenStorage
      * @param TranslatorInterface   $translator
      * @param RequestStack          $requestStack
-     * @param Session               $session
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, Session $session, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -46,7 +45,6 @@ class ActionLogger extends AbstractLogger
         $this->catalog = $catalog;
         $this->translator = $translator;
         $this->requestStack = $requestStack;
-        $this->session = $session;
         $this->authChecker = $authChecker;
         $this->enabled = $enabled;
         $this->debug = $debug;
