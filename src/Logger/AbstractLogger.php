@@ -77,8 +77,13 @@ class AbstractLogger
         }
         $sessionObj = $this->getSession();
         
-        $sessionObj->start();
-        $session = $sessionObj->getId();
+        if ($sessionObj) {
+            $sessionObj->start();
+            $session = $sessionObj->getId();
+        } else {
+            $session = null;
+        }
+
         $accessor = PropertyAccess::createPropertyAccessor();
 
         return [
