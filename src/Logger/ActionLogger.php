@@ -7,7 +7,6 @@ use Hgabka\LoggerBundle\Entity\LogAction;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;

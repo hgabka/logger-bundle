@@ -55,7 +55,7 @@ class AbstractLogger
             return null;
         }
     }
-    
+
     /**
      * Kontextus információk, minden ami globálisan elérhető.
      *
@@ -76,7 +76,7 @@ class AbstractLogger
             }
         }
         $sessionObj = $this->getSession();
-        
+
         if ($sessionObj) {
             $sessionObj->start();
             $session = $sessionObj->getId();
