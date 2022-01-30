@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
@@ -66,14 +67,9 @@ class AbstractLogger
         $request = $this->requestStack->getCurrentRequest();
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
         $originalUser = null;
-        if ($this->tokenStorage->getToken() && $this->authChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
-                if ($role instanceof SwitchUserRole) {
-                    $originalUser = $role->getSource()->getUser();
-
-                    break;
-                }
-            }
+        $token = $this->tokenStorage->getToken();
+        if ($token instanceof SwitchUserToken) {
+              $originalUser = $token->getOriginalToken()->getUser();
         }
         $sessionObj = $this->getSession();
 
