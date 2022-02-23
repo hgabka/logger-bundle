@@ -2,6 +2,7 @@
 
 namespace Hgabka\LoggerBundle\DependencyInjection;
 
+use Hgabka\LoggerBundle\Helper\ExceptionNotifier;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -37,7 +38,7 @@ class HgabkaLoggerExtension extends Extension
         $actionLoggerDefinition->replaceArgument(7, $config['action_logger']['translation_domain']);
         $actionLoggerDefinition->replaceArgument(8, $config['action_logger']['enabled']);
 
-        $notifierDefinition = $container->getDefinition('hgabka_logger.exception_notifier');
+        $notifierDefinition = $container->getDefinition(ExceptionNotifier::class);
         $notifierDefinition->addMethodCall('setConfig', [$config['notifier']]);
     }
 }
