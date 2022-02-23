@@ -11,9 +11,12 @@ services:
     hgabka_logger.exception_log_formatter:
         class: '%hgabka_logger.exception_log_formatter.class%'
 
-    hgabka_logger.exception_notifier:
-        class: '%hgabka_logger.exception_notifier.class%'
+    Hgabka\LoggerBundle\Helper\ExceptionNotifier:
+        autowire: true
         arguments: ["@doctrine", "@mailer", "@request_stack", "@hgabka_logger.exception_logger", "%kernel.debug%"]
+
+    hgabka_logger.exception_notifier:
+        alias: Hgabka\LoggerBundle\Helper\ExceptionNotifier
 
     hgabka_logger.exception_listener:
         class: Hgabka\LoggerBundle\EventListener\ExceptionListener
