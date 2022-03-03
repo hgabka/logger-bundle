@@ -152,7 +152,7 @@ class LogColumn
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="user_agent", nullable=true)
+     * @ORM\Column(type="text", name="user_agent", nullable=true)
      */
     protected $userAgent;
 
