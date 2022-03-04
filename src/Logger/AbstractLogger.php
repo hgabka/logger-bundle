@@ -11,7 +11,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
 class AbstractLogger
 {
@@ -69,7 +68,7 @@ class AbstractLogger
         $originalUser = null;
         $token = $this->tokenStorage->getToken();
         if ($token instanceof SwitchUserToken) {
-              $originalUser = $token->getOriginalToken()->getUser();
+            $originalUser = $token->getOriginalToken()->getUser();
         }
         $sessionObj = $this->getSession();
 
