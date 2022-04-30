@@ -3,18 +3,30 @@
 namespace Hgabka\LoggerBundle\Helper;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManagerInterface;
+use function get_class;
 use Hgabka\LoggerBundle\Entity\Notify;
 use Hgabka\LoggerBundle\Entity\NotifyCall;
 use Hgabka\LoggerBundle\Logger\ExceptionLogger;
+use function in_array;
+use function is_array;
+use function is_object;
+use function json_encode;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
+use Throwable;
 
 class ExceptionNotifier
 {
     /** @var Registry */
     protected $doctrine;
 
-    /** @var \Swift_Mailer */
+    /** @var MailerInterface */
     protected $mailer;
 
     /** @var ExceptionLogger */
@@ -33,12 +45,12 @@ class ExceptionNotifier
      * ExceptionNotifier constructor.
      *
      * @param Registry        $doctrine
-     * @param \Swift_Mailer   $mailer
+     * @param MailerInterface $mailer
      * @param RequestStack    $requestStack
      * @param ExceptionLogger $logger
      * @param bool            $isDebug
      */
-    public function __construct(Registry $doctrine, \Swift_Mailer $mailer, RequestStack $requestStack, ExceptionLogger $logger, bool $isDebug)
+    public function __construct(Registry $doctrine, MailerInterface $mailer, RequestStack $requestStack, ExceptionLogger $logger, bool $isDebug)
     {
         $this->doctrine = $doctrine;
         $this->mailer = $mailer;
@@ -52,14 +64,14 @@ class ExceptionNotifier
      *
      * @return ExceptionNotifier
      */
-    public function setConfig($config)
+    public function setConfig(array $config): self
     {
         $this->config = $config;
 
         return $this;
     }
 
-    public function isFileLoggingEnabled()
+    public function isFileLoggingEnabled(): bool
     {
         if (!$this->isLoggingEnabled()) {
             return false;
@@ -68,7 +80,7 @@ class ExceptionNotifier
         return $this->typeSuits('file');
     }
 
-    public function isDatabaseLoggingEnabled()
+    public function isDatabaseLoggingEnabled(): bool
     {
         if (!$this->isLoggingEnabled()) {
             return false;
@@ -77,32 +89,32 @@ class ExceptionNotifier
         return $this->typeSuits('database');
     }
 
-    public function isLoggingEnabled()
+    public function isLoggingEnabled(): bool
     {
         $logEnv = $this->config['logging']['enabled'];
         if ($this->isDebug) {
-            return \in_array($logEnv, ['always', 'debug'], true);
+            return in_array($logEnv, ['always', 'debug'], true);
         }
 
-        return \in_array($logEnv, ['always', 'prod'], true);
+        return in_array($logEnv, ['always', 'prod'], true);
     }
 
-    public function isMailSendingEnabled()
+    public function isMailSendingEnabled(): bool
     {
         $mailEnv = $this->config['mails']['enabled'];
         if ($this->isDebug) {
-            return \in_array($mailEnv, ['always', 'debug'], true);
+            return in_array($mailEnv, ['always', 'debug'], true);
         }
 
-        return \in_array($mailEnv, ['always', 'prod'], true);
+        return in_array($mailEnv, ['always', 'prod'], true);
     }
 
-    public function getMasterRequest()
+    public function getMasterRequest(): ?Request
     {
         return $this->requestStack->getMainRequest();
     }
 
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->isMailSendingEnabled() || $this->isLoggingEnabled();
     }
@@ -139,9 +151,9 @@ class ExceptionNotifier
         $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
         $sfNotify->setController($controller);
-        $sfNotify->setExceptionClass(\get_class($exception));
-        $sfNotify->setMessage($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
-        $sfNotify->setTraces($exception instanceof \Throwable ? $exception->getTraceAsString() : '');
+        $sfNotify->setExceptionClass(get_class($exception));
+        $sfNotify->setMessage($exception instanceof Throwable ? $exception->getMessage() : '404 error');
+        $sfNotify->setTraces($exception instanceof Throwable ? $exception->getTraceAsString() : '');
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
         $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
@@ -182,11 +194,11 @@ class ExceptionNotifier
         }
     }
 
-    protected function typeSuits($kind)
+    protected function typeSuits($kind): bool
     {
         $logTypeConfig = $this->config['logging']['type'][$this->isDebug ? 'debug' : 'prod'];
 
-        return \in_array($logTypeConfig, ['both', $kind], true);
+        return in_array($logTypeConfig, ['both', $kind], true);
     }
 
     protected function log($exception)
@@ -198,17 +210,17 @@ class ExceptionNotifier
 
         $message = 'Exception was thrown.' . "\n";
         $message .= '----------------------------------------------------------------------' . "\n\n";
-        $message .= 'Message: ' . ($exception instanceof \Throwable ? $exception->getMessage() : '404 error') . "\n";
+        $message .= 'Message: ' . ($exception instanceof Throwable ? $exception->getMessage() : '404 error') . "\n";
         $message .= 'File: ' . $exception->getFile() . "\n";
         $message .= 'Line: ' . $exception->getLine() . "\n";
         $message .= 'Code: ' . $exception->getCode() . "\n";
-        $message .= 'Class: ' . \get_class($exception) . "\n\n";
+        $message .= 'Class: ' . get_class($exception) . "\n\n";
         $message .= 'Details: ' . "\n";
         $message .= '- controller: ' . ($controller ?? '') . "\n";
         $message .= '- redirect URL: ' . (@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '') . "\n";
         $message .= '- request URI: ' . (@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '') . "\n\n";
         $message .= 'Trace:' . "\n";
-        $message .= '- ' . ($exception instanceof \Throwable ? $exception->getTraceAsString() : '') . "\n\n";
+        $message .= '- ' . ($exception instanceof Throwable ? $exception->getTraceAsString() : '') . "\n\n";
         $message .= '***********************************************************************' . "\n\n";
 
         $this->logger->getLogger()->info($message);
@@ -223,7 +235,7 @@ class ExceptionNotifier
         $mailer = $this->mailer;
         $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
-        $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
+        $message = ($exception instanceof Throwable ? $exception->getMessage() : '404 error');
         $width = 1200;
 
         $body = '
@@ -242,15 +254,15 @@ class ExceptionNotifier
         $body .= 'File: ' . $exception->getFile() . '<br />';
         $body .= 'Line: ' . $exception->getLine() . '<br />';
         $body .= 'Code: ' . $exception->getCode() . '<br />';
-        $body .= 'Class: ' . \get_class($exception) . '<br /><br />';
-        $body .= ($exception instanceof \Throwable ? '<ul><li>' . implode('</li><li>', $this->getTraceArray($exception)) . '</li></ul>' : '') . '<br>';
+        $body .= 'Class: ' . get_class($exception) . '<br /><br />';
+        $body .= ($exception instanceof Throwable ? '<ul><li>' . implode('</li><li>', $this->getTraceArray($exception)) . '</li></ul>' : '') . '<br>';
         $body .= ('Controller: ' . $controller . '<br>');
 
         $req = $this->requestStack->getCurrentRequest();
         if ($req) {
             $pars = array_merge($req->request->all(), $req->query->all());
             foreach ($pars as $key => $data) {
-                if (\is_object($data)) {
+                if (is_object($data)) {
                     unset($pars[$key]);
                 }
             }
@@ -274,36 +286,46 @@ class ExceptionNotifier
         ) :
             'EXCEPTION on ' . @$_SERVER['HTTP_HOST'] . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
 
-        $mail = new \Swift_Message($subject);
-        $mail->setFrom([$fromEmail => $fromName]);
-        $mail->setTo($to);
-        $mail->setBody($body, 'text/html');
-        $mail->setReturnPath('hgabka@gmail.com');
-        $mailer->send($mail);
+        $mail = new Email();
+        $mail->subject($subject);
+        $mail->from(new Address($fromEmail, $fromName));
+        if (!is_array($to)) {
+            $to = [$to];
+        }
+        $to = Address::createArray($to);
+
+        $mail->to(...$to);
+        $mail->html($body);
+        $mail->returnPath(new Address('hgabka@gmail.com'));
+
+        try {
+            $mailer->send($mail);
+        } catch (TransportExceptionInterface $e) {
+        }
     }
 
     protected function getTraceArray($exception)
     {
-        if (!$exception instanceof \Throwable) {
+        if (!$exception instanceof Throwable) {
             return [];
         }
 
         return explode("\n", $exception->getTraceAsString());
     }
 
-    protected function getHash(Notify $notify)
+    protected function getHash(Notify $notify): string
     {
         return sha1(implode('|', $this->entityToArray($notify)));
     }
 
-    protected function entityToArray($entity)
+    protected function entityToArray($entity): array
     {
         if (empty($entity)) {
             return [];
         }
-        /** @var EntityManager $em */
+        /** @var EntityManagerInterface $em */
         $em = $this->doctrine->getManager();
-        $md = $em->getClassMetadata(\get_class($entity));
+        $md = $em->getClassMetadata(get_class($entity));
 
         $result = [];
         if ($md) {
