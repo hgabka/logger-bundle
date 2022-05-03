@@ -28,7 +28,6 @@ class ActionLogSubscriber implements EventSubscriberInterface
             LogActionEvent::EVENT_DONE => 'onDone',
             LogActionEvent::EVENT_UPDATE => 'onUpdate',
             LogActionEvent::EVENT_LOG => 'onLog',
-         //   LogActionEvent::EVENT_FORM => 'onAddHeaders',
         ];
     }
 
@@ -62,23 +61,5 @@ class ActionLogSubscriber implements EventSubscriberInterface
     public function onLog(LogActionEvent $event)
     {
         $this->logger->log($event->getType(), $event->getParameters(), $event->getObject(), $event->getPriority(), $event->getExtraParameters());
-    }
-
-    /**
-     * @param MailerEvent $event
-     */
-    public function onMailSent(MailerEvent $event)
-    {
-        if ('mailer_send' !== $this->strategy) {
-            $this->logger->logMessage($event);
-        }
-    }
-
-    /**
-     * @param MailerEvent $event
-     */
-    public function onAddHeaders(MailerEvent $event)
-    {
-        $event->setReturnValue($event->getParameter('configHeaders'));
     }
 }
