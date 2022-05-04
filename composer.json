@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php" : "~7.2",
+        "php" : ">=8.0.2",
         "symfony/framework-bundle": "6.0.*"
     },
     "require-dev": {
