@@ -17,6 +17,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="original_user_action_idx", columns={"original_user_id"})
  * })
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_logger_log_action')]
+#[ORM\Index(name: 'user_action_idx', columns: ['user_id'])]
+#[ORM\Index(name: 'foreign_id_action_idx', columns: ['foreign_id'])]
+#[ORM\Index(name: 'table_name_action_idx', columns: ['table_name'])]
+#[ORM\Index(name: 'log_type_action_idx', columns: ['log_type'])]
+#[ORM\Index(name: 'original_user_action_idx', columns: ['original_user_id'])]
 class LogAction implements ObjectLogInterface
 {
     /**
@@ -24,198 +31,224 @@ class LogAction implements ObjectLogInterface
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="ident", nullable=true)
      */
-    protected $ident;
+    #[ORM\Column(type: 'string', name: 'ident', nullable: true)]
+    protected ?string $ident = null;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", name="user_id", nullable=true)
      */
-    protected $userId;
+    #[ORM\Column(type: 'integer', name: 'user_id', nullable: true)]
+    protected ?int $userId = null;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", name="original_user_id", nullable=true)
      */
-    protected $originalUserId;
+    #[ORM\Column(type: 'integer', name: 'original_user_id', nullable: true)]
+    protected ?int $originalUserId = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="username", nullable=true)
      */
-    protected $username;
+    #[ORM\Column(type: 'string', name: 'username', nullable: true)]
+    protected ?string $username = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="original_username", nullable=true)
      */
-    protected $originalUsername;
+    #[ORM\Column(type: 'string', name: 'original_username', nullable: true)]
+    protected ?string $originalUsername = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="session_id", nullable=true)
      */
-    protected $sessionId;
+    #[ORM\Column(type: 'string', name: 'session_id', nullable: true)]
+    protected ?string $sessionId = null;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", name="time", nullable=true)
      */
-    protected $time;
+    #[ORM\Column(type: 'datetime', name: 'time', nullable: true)]
+    protected ?\DateTime $time = null;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", name="end_time", nullable=true)
      */
-    protected $endTime;
+    #[ORM\Column(type: 'datetime', name: 'end_time', nullable: true)]
+    protected ?\DateTime $endTime = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="controller", nullable=true)
      */
-    protected $controller;
+    #[ORM\Column(type: 'string', name: 'controller', nullable: true)]
+    protected ?string $controller = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="description", nullable=true)
      */
-    protected $description;
+    #[ORM\Column(type: 'text', name: 'description', nullable: true)]
+    protected ?string $description = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="request_uri", nullable=true)
      */
-    protected $requestUri;
+    #[ORM\Column(type: 'text', name: 'request_uri', nullable: true)]
+    protected ?string $requestUri;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="success", nullable=true)
      */
-    protected $success;
+    #[ORM\Column(type: 'boolean', name: 'success', nullable: true)]
+    protected ?bool $success = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="client_ip", nullable=true)
      */
-    protected $clientIp;
+    #[ORM\Column(type: 'string', name: 'client_ip', nullable: true)]
+    protected ?string $clientIp = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="user_agent", nullable=true)
      */
-    protected $userAgent;
+    #[ORM\Column(type: 'text', name: 'user_agent', nullable: true)]
+    protected ?string $userAgent = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="log_type", nullable=true)
      */
-    protected $type;
+    #[ORM\Column(type: 'string', name: 'log_type', nullable: true)]
+    protected ?string $type = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="method", nullable=true)
      */
-    protected $method;
+    #[ORM\Column(type: 'string', name: 'method', nullable: true)]
+    protected ?string $method = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="post", nullable=true)
      */
-    protected $post;
+    #[ORM\Column(type: 'text', name: 'post', nullable: true)]
+    protected ?string $post = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="request_attributes", nullable=true)
      */
-    protected $requestAttributes;
+    #[ORM\Column(type: 'text', name: 'request_attributes', nullable: true)]
+    protected ?string $requestAttributes = null;
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="table_name", nullable=true)
      */
-    protected $table;
+    #[ORM\Column(type: 'string', name: 'table_name', nullable: true)]
+    protected ?string $table = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="entity_class", nullable=true)
      */
-    protected $class;
+    #[ORM\Column(type: 'string', name: 'entity_class', nullable: true)]
+    protected ?string $class = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="foreign_id", nullable=true)
      */
-    protected $foreignId;
+    #[ORM\Column(type: 'string', name: 'foreign_id', nullable: true)]
+    protected ?string $foreignId = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="extra_parameters", nullable=true)
      */
-    protected $extraParameters;
+    #[ORM\Column(type: 'text', name: 'extra_parameters', nullable: true)]
+    protected ?string $extraParameters = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=10, name="priority", nullable=true)
      */
-    protected $priority;
+    #[ORM\Column(type: 'string', name: 'priority', length: 10, nullable: true)]
+    protected ?string $priority = null;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
-    protected $createdAt;
+    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[Gedmo\Timestampable(on: 'create')]
+    protected ?\DateTime $createdAt = null;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", name="updated_at")
      */
-    protected $updatedAt;
+    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[Gedmo\Timestampable(on: 'update')]
+    protected ?\DateTime $updatedAt = null;
 
     /**
-     * Get id.
-     *
-     * @return int
+     * @return null|int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * Set id.
-     *
-     * @param int $id The unique identifier
+     * @param null|int $id
      *
      * @return LogAction
      */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -225,7 +258,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getIdent()
+    public function getIdent(): ?string
     {
         return $this->ident;
     }
@@ -235,7 +268,7 @@ class LogAction implements ObjectLogInterface
      *
      * @return LogAction
      */
-    public function setIdent($ident)
+    public function setIdent(?string $ident): self
     {
         $this->ident = $ident;
 
@@ -245,7 +278,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
@@ -255,7 +288,7 @@ class LogAction implements ObjectLogInterface
      *
      * @return LogAction
      */
-    public function setUserId($userId)
+    public function setUserId(?int $userId): self
     {
         $this->userId = $userId;
 
@@ -265,7 +298,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return int
      */
-    public function getOriginalUserId()
+    public function getOriginalUserId(): ?int
     {
         return $this->originalUserId;
     }
@@ -275,7 +308,7 @@ class LogAction implements ObjectLogInterface
      *
      * @return LogAction
      */
-    public function setOriginalUserId($originalUserId)
+    public function setOriginalUserId(?int $originalUserId): self
     {
         $this->originalUserId = $originalUserId;
 
@@ -285,411 +318,7 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * @param string $sessionId
-     *
-     * @return LogAction
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param \DateTime $time
-     *
-     * @return LogAction
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getEndTime()
-    {
-        return $this->endTime;
-    }
-
-    /**
-     * @param \DateTime $endTime
-     *
-     * @return LogAction
-     */
-    public function setEndTime($endTime)
-    {
-        $this->endTime = $endTime;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @param string $controller
-     *
-     * @return LogAction
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     *
-     * @return LogAction
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestUri()
-    {
-        return $this->requestUri;
-    }
-
-    /**
-     * @param string $requestUri
-     *
-     * @return LogAction
-     */
-    public function setRequestUri($requestUri)
-    {
-        $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSuccess()
-    {
-        return $this->success;
-    }
-
-    /**
-     * @param bool $success
-     *
-     * @return LogAction
-     */
-    public function setSuccess($success)
-    {
-        $this->success = $success;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientIp()
-    {
-        return $this->clientIp;
-    }
-
-    /**
-     * @param string $clientIp
-     *
-     * @return LogAction
-     */
-    public function setClientIp($clientIp)
-    {
-        $this->clientIp = $clientIp;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgent()
-    {
-        return $this->userAgent;
-    }
-
-    /**
-     * @param string $userAgent
-     *
-     * @return LogAction
-     */
-    public function setUserAgent($userAgent)
-    {
-        $this->userAgent = $userAgent;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return LogAction
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * @param string $priority
-     *
-     * @return LogAction
-     */
-    public function setPriority($priority)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $method
-     *
-     * @return LogAction
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestAttributes()
-    {
-        return $this->requestAttributes;
-    }
-
-    /**
-     * @param string $requestAttributes
-     *
-     * @return LogAction
-     */
-    public function setRequestAttributes($requestAttributes)
-    {
-        $this->requestAttributes = $requestAttributes;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPost()
-    {
-        return $this->post;
-    }
-
-    /**
-     * @param string $post
-     *
-     * @return LogAction
-     */
-    public function setPost($post)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param \DateTime $updatedAt
-     *
-     * @return LogAction
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Sets createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return $this
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Returns createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExtraParameters()
-    {
-        return $this->extraParameters;
-    }
-
-    /**
-     * @param string $extraParameters
-     *
-     * @return LogAction
-     */
-    public function setExtraParameters($extraParameters)
-    {
-        $this->extraParameters = $extraParameters;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param string $table
-     *
-     * @return LogAction
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return LogAction
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getForeignId()
-    {
-        return $this->foreignId;
-    }
-
-    /**
-     * @param string $foreignId
-     *
-     * @return LogAction
-     */
-    public function setForeignId($foreignId)
-    {
-        $this->foreignId = $foreignId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -699,7 +328,7 @@ class LogAction implements ObjectLogInterface
      *
      * @return LogAction
      */
-    public function setUsername($username)
+    public function setUsername(?string $username): self
     {
         $this->username = $username;
 
@@ -709,19 +338,419 @@ class LogAction implements ObjectLogInterface
     /**
      * @return string
      */
-    public function getOriginalUsername()
+    public function getOriginalUsername(): ?string
     {
         return $this->originalUsername;
     }
 
     /**
-     * @param int $originalUsername
+     * @param string $originalUsername
      *
      * @return LogAction
      */
-    public function setOriginalUsername($originalUsername)
+    public function setOriginalUsername(?string $originalUsername): self
     {
         $this->originalUsername = $originalUsername;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSessionId(): ?string
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * @param string $sessionId
+     *
+     * @return LogAction
+     */
+    public function setSessionId(?string $sessionId): self
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTime(): ?\DateTime
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param \DateTime $time
+     *
+     * @return LogAction
+     */
+    public function setTime(?\DateTime $time): self
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEndTime(): ?\DateTime
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * @param \DateTime $endTime
+     *
+     * @return LogAction
+     */
+    public function setEndTime(?\DateTime $endTime): self
+    {
+        $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getController(): ?string
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @param string $controller
+     *
+     * @return LogAction
+     */
+    public function setController(?string $controller): self
+    {
+        $this->controller = $controller;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return LogAction
+     */
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestUri(): ?string
+    {
+        return $this->requestUri;
+    }
+
+    /**
+     * @param string $requestUri
+     *
+     * @return LogAction
+     */
+    public function setRequestUri(?string $requestUri): self
+    {
+        $this->requestUri = $requestUri;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess(): ?bool
+    {
+        return $this->success;
+    }
+
+    /**
+     * @param bool $success
+     *
+     * @return LogAction
+     */
+    public function setSuccess(?bool $success): self
+    {
+        $this->success = $success;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientIp(): ?string
+    {
+        return $this->clientIp;
+    }
+
+    /**
+     * @param string $clientIp
+     *
+     * @return LogAction
+     */
+    public function setClientIp(?string $clientIp): self
+    {
+        $this->clientIp = $clientIp;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param string $userAgent
+     *
+     * @return LogAction
+     */
+    public function setUserAgent(?string $userAgent): self
+    {
+        $this->userAgent = $userAgent;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return LogAction
+     */
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return LogAction
+     */
+    public function setMethod(?string $method): self
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPost(): ?string
+    {
+        return $this->post;
+    }
+
+    /**
+     * @param string $post
+     *
+     * @return LogAction
+     */
+    public function setPost(?string $post): self
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestAttributes(): ?string
+    {
+        return $this->requestAttributes;
+    }
+
+    /**
+     * @param string $requestAttributes
+     *
+     * @return LogAction
+     */
+    public function setRequestAttributes(?string $requestAttributes): self
+    {
+        $this->requestAttributes = $requestAttributes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable(): ?string
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return LogAction
+     */
+    public function setTable(?string $table): self
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): ?string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return LogAction
+     */
+    public function setClass(?string $class): self
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForeignId(): ?string
+    {
+        return $this->foreignId;
+    }
+
+    /**
+     * @param string $foreignId
+     *
+     * @return LogAction
+     */
+    public function setForeignId(?string $foreignId): self
+    {
+        $this->foreignId = $foreignId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtraParameters(): ?string
+    {
+        return $this->extraParameters;
+    }
+
+    /**
+     * @param string $extraParameters
+     *
+     * @return LogAction
+     */
+    public function setExtraParameters(?string $extraParameters): self
+    {
+        $this->extraParameters = $extraParameters;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriority(): ?string
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param string $priority
+     *
+     * @return LogAction
+     */
+    public function setPriority(?string $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     *
+     * @return LogAction
+     */
+    public function setCreatedAt(?\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     *
+     * @return LogAction
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

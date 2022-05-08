@@ -14,6 +14,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="original_user_column_idx", columns={"original_user_id"})
  * })
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_logger_log_column')]
+#[ORM\Index(name: 'user_column_idx', columns: ['user_id'])]
+#[ORM\Index(name: 'original_user_column_idx', columns: ['original_user_id'])]
 class LogColumn
 {
     /**
@@ -21,201 +25,227 @@ class LogColumn
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="ident", nullable=true)
      */
-    protected $ident;
+    #[ORM\Column(type: 'string', name: 'ident', nullable: true)]
+    protected ?string $ident = null;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", name="user_id", nullable=true)
      */
-    protected $userId;
+    #[ORM\Column(type: 'integer', name: 'user_id', nullable: true)]
+    protected ?int $userId = null;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", name="original_user_id", nullable=true)
      */
-    protected $originalUserId;
+    #[ORM\Column(type: 'integer', name: 'original_user_id', nullable: true)]
+    protected ?int $originalUserId = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="username", nullable=true)
      */
-    protected $username;
+    #[ORM\Column(type: 'string', name: 'username', nullable: true)]
+    protected ?string $username = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="original_username", nullable=true)
      */
-    protected $originalUsername;
+    #[ORM\Column(type: 'string', name: 'original_username', nullable: true)]
+    protected ?string $originalUsername = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="table_name", nullable=true)
      */
-    protected $table;
+    #[ORM\Column(type: 'string', name: 'table_name', nullable: true)]
+    protected ?string $table = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="entity_class", nullable=true)
      */
-    protected $class;
+    #[ORM\Column(type: 'string', name: 'entity_class', nullable: true)]
+    protected ?string $class = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="column_name", nullable=true)
      */
-    protected $column;
+    #[ORM\Column(type: 'string', name: 'column_name', nullable: true)]
+    protected ?string $column = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="field_name", nullable=true)
      */
-    protected $field;
+    #[ORM\Column(type: 'string', name: 'field_name', nullable: true)]
+    protected ?string $field = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="foreign_id", nullable=true)
      */
-    protected $foreignId;
+    #[ORM\Column(type: 'string', name: 'foreign_id', nullable: true)]
+    protected ?string $foreignId = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="hg_utils_longblob", name="old_value", nullable=true)
      */
-    protected $oldValue;
+    #[ORM\Column(type: 'hg_utils_longblob', name: 'old_value', nullable: true)]
+    protected ?string $oldValue = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="hg_utils_longblob", name="new_value", nullable=true)
      */
-    protected $newValue;
+    #[ORM\Column(type: 'hg_utils_longblob', name: 'new_value', nullable: true)]
+    protected ?string $newValue = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="mod_type", nullable=true)
      */
-    protected $modType;
+    #[ORM\Column(type: 'string', name: 'mod_type', nullable: true)]
+    protected ?string $modType = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="entity_data", nullable=true)
      */
-    protected $data;
+    #[ORM\Column(type: 'text', name: 'entity_data', nullable: true)]
+    protected ?string $data = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="session_id", nullable=true)
      */
-    protected $sessionId;
+    #[ORM\Column(type: 'string', name: 'session_id', nullable: true)]
+    protected ?string $sessionId = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="controller", nullable=true)
      */
-    protected $controller;
+    #[ORM\Column(type: 'string', name: 'controller', nullable: true)]
+    protected ?string $controller = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="request_uri", nullable=true)
      */
-    protected $requestUri;
+    #[ORM\Column(type: 'text', name: 'request_uri', nullable: true)]
+    protected ?string $requestUri = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="client_ip", nullable=true)
      */
-    protected $clientIp;
+    #[ORM\Column(type: 'string', name: 'client_ip', nullable: true)]
+    protected ?string $clientIp = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="user_agent", nullable=true)
      */
-    protected $userAgent;
+    #[ORM\Column(type: 'text', name: 'user_agent', nullable: true)]
+    protected ?string $userAgent = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="post", nullable=true)
      */
-    protected $post;
+    #[ORM\Column(type: 'text', name: 'post', nullable: true)]
+    protected ?string $post = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="request_attributes", nullable=true)
      */
-    protected $requestAttributes;
+    #[ORM\Column(type: 'text', name: 'request_attributes', nullable: true)]
+    protected ?string $requestAttributes = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", name="method", nullable=true)
      */
-    protected $method;
+    #[ORM\Column(type: 'string', name: 'method', nullable: true)]
+    protected ?string $method = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text", name="note", nullable=true)
      */
-    protected $note;
+    #[ORM\Column(type: 'text', name: 'note', nullable: true)]
+    protected ?string $note = null;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
-    protected $createdAt;
+    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[Gedmo\Timestampable(on: 'create')]
+    protected ?\DateTime $createdAt = null;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", name="updated_at")
      */
-    protected $updatedAt;
+    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[Gedmo\Timestampable(on: 'update')]
+    protected ?\DateTime $updatedAt = null;
 
     /**
-     * Get id.
-     *
-     * @return int
+     * @return null|int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * Set id.
-     *
-     * @param int $id The unique identifier
+     * @param null|int $id
      *
      * @return LogColumn
      */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -225,7 +255,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getIdent()
+    public function getIdent(): ?string
     {
         return $this->ident;
     }
@@ -235,7 +265,7 @@ class LogColumn
      *
      * @return LogColumn
      */
-    public function setIdent($ident)
+    public function setIdent(?string $ident): self
     {
         $this->ident = $ident;
 
@@ -245,7 +275,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
@@ -255,7 +285,7 @@ class LogColumn
      *
      * @return LogColumn
      */
-    public function setUserId($userId)
+    public function setUserId(?int $userId): self
     {
         $this->userId = $userId;
 
@@ -265,7 +295,7 @@ class LogColumn
     /**
      * @return int
      */
-    public function getOriginalUserId()
+    public function getOriginalUserId(): ?int
     {
         return $this->originalUserId;
     }
@@ -275,7 +305,7 @@ class LogColumn
      *
      * @return LogColumn
      */
-    public function setOriginalUserId($originalUserId)
+    public function setOriginalUserId(?int $originalUserId): self
     {
         $this->originalUserId = $originalUserId;
 
@@ -285,435 +315,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param string $table
-     *
-     * @return LogColumn
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return LogColumn
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getColumn()
-    {
-        return $this->column;
-    }
-
-    /**
-     * @param string $column
-     *
-     * @return LogColumn
-     */
-    public function setColumn($column)
-    {
-        $this->column = $column;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getField()
-    {
-        return $this->field;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return LogColumn
-     */
-    public function setField($field)
-    {
-        $this->field = $field;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getForeignId()
-    {
-        return $this->foreignId;
-    }
-
-    /**
-     * @param string $foreignId
-     *
-     * @return LogColumn
-     */
-    public function setForeignId($foreignId)
-    {
-        $this->foreignId = $foreignId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOldValue()
-    {
-        return $this->oldValue;
-    }
-
-    /**
-     * @param string $oldValue
-     *
-     * @return LogColumn
-     */
-    public function setOldValue($oldValue)
-    {
-        $this->oldValue = $oldValue;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNewValue()
-    {
-        return $this->newValue;
-    }
-
-    /**
-     * @param string $newValue
-     *
-     * @return LogColumn
-     */
-    public function setNewValue($newValue)
-    {
-        $this->newValue = $newValue;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getModType()
-    {
-        return $this->modType;
-    }
-
-    /**
-     * @param string $modType
-     *
-     * @return LogColumn
-     */
-    public function setModType($modType)
-    {
-        $this->modType = $modType;
-
-        return $this;
-    }
-
-    /**
-     * Sets createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return $this
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Returns createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServerName()
-    {
-        return $this->serverName;
-    }
-
-    /**
-     * @param string $serverName
-     *
-     * @return Notify
-     */
-    public function setServerName($serverName)
-    {
-        $this->serverName = $serverName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return LogColumn
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * Sets updatedAt.
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return $this
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Returns updatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * @param string $note
-     *
-     * @return LogColumn
-     */
-    public function setNote($note)
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * @param string $sessionId
-     *
-     * @return LogColumn
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @param string $controller
-     *
-     * @return LogColumn
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestUri()
-    {
-        return $this->requestUri;
-    }
-
-    /**
-     * @param string $requestUri
-     *
-     * @return LogColumn
-     */
-    public function setRequestUri($requestUri)
-    {
-        $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientIp()
-    {
-        return $this->clientIp;
-    }
-
-    /**
-     * @param string $clientIp
-     *
-     * @return LogColumn
-     */
-    public function setClientIp($clientIp)
-    {
-        $this->clientIp = $clientIp;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgent()
-    {
-        return $this->userAgent;
-    }
-
-    /**
-     * @param string $userAgent
-     *
-     * @return LogColumn
-     */
-    public function setUserAgent($userAgent)
-    {
-        $this->userAgent = $userAgent;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPost()
-    {
-        return $this->post;
-    }
-
-    /**
-     * @param string $post
-     *
-     * @return LogColumn
-     */
-    public function setPost($post)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestAttributes()
-    {
-        return $this->requestAttributes;
-    }
-
-    /**
-     * @param string $requestAttributes
-     *
-     * @return LogColumn
-     */
-    public function setRequestAttributes($requestAttributes)
-    {
-        $this->requestAttributes = $requestAttributes;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $method
-     *
-     * @return LogColumn
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -723,7 +325,7 @@ class LogColumn
      *
      * @return LogColumn
      */
-    public function setUsername($username)
+    public function setUsername(?string $username): self
     {
         $this->username = $username;
 
@@ -733,7 +335,7 @@ class LogColumn
     /**
      * @return string
      */
-    public function getOriginalUsername()
+    public function getOriginalUsername(): ?string
     {
         return $this->originalUsername;
     }
@@ -743,9 +345,409 @@ class LogColumn
      *
      * @return LogColumn
      */
-    public function setOriginalUsername($originalUsername)
+    public function setOriginalUsername(?string $originalUsername): self
     {
         $this->originalUsername = $originalUsername;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable(): ?string
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return LogColumn
+     */
+    public function setTable(?string $table): self
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): ?string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return LogColumn
+     */
+    public function setClass(?string $class): self
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColumn(): ?string
+    {
+        return $this->column;
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return LogColumn
+     */
+    public function setColumn(?string $column): self
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField(): ?string
+    {
+        return $this->field;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return LogColumn
+     */
+    public function setField(?string $field): self
+    {
+        $this->field = $field;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForeignId(): ?string
+    {
+        return $this->foreignId;
+    }
+
+    /**
+     * @param string $foreignId
+     *
+     * @return LogColumn
+     */
+    public function setForeignId(?string $foreignId): self
+    {
+        $this->foreignId = $foreignId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldValue(): ?string
+    {
+        return $this->oldValue;
+    }
+
+    /**
+     * @param string $oldValue
+     *
+     * @return LogColumn
+     */
+    public function setOldValue(?string $oldValue): self
+    {
+        $this->oldValue = $oldValue;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNewValue(): ?string
+    {
+        return $this->newValue;
+    }
+
+    /**
+     * @param string $newValue
+     *
+     * @return LogColumn
+     */
+    public function setNewValue(?string $newValue): self
+    {
+        $this->newValue = $newValue;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModType(): ?string
+    {
+        return $this->modType;
+    }
+
+    /**
+     * @param string $modType
+     *
+     * @return LogColumn
+     */
+    public function setModType(?string $modType): self
+    {
+        $this->modType = $modType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData(): ?string
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return LogColumn
+     */
+    public function setData(?string $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSessionId(): ?string
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * @param string $sessionId
+     *
+     * @return LogColumn
+     */
+    public function setSessionId(?string $sessionId): self
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getController(): ?string
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @param string $controller
+     *
+     * @return LogColumn
+     */
+    public function setController(?string $controller): self
+    {
+        $this->controller = $controller;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestUri(): ?string
+    {
+        return $this->requestUri;
+    }
+
+    /**
+     * @param string $requestUri
+     *
+     * @return LogColumn
+     */
+    public function setRequestUri(?string $requestUri): self
+    {
+        $this->requestUri = $requestUri;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientIp(): ?string
+    {
+        return $this->clientIp;
+    }
+
+    /**
+     * @param string $clientIp
+     *
+     * @return LogColumn
+     */
+    public function setClientIp(?string $clientIp): self
+    {
+        $this->clientIp = $clientIp;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param string $userAgent
+     *
+     * @return LogColumn
+     */
+    public function setUserAgent(?string $userAgent): self
+    {
+        $this->userAgent = $userAgent;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPost(): ?string
+    {
+        return $this->post;
+    }
+
+    /**
+     * @param string $post
+     *
+     * @return LogColumn
+     */
+    public function setPost(?string $post): self
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestAttributes(): ?string
+    {
+        return $this->requestAttributes;
+    }
+
+    /**
+     * @param string $requestAttributes
+     *
+     * @return LogColumn
+     */
+    public function setRequestAttributes(?string $requestAttributes): self
+    {
+        $this->requestAttributes = $requestAttributes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return LogColumn
+     */
+    public function setMethod(?string $method): self
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     *
+     * @return LogColumn
+     */
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     *
+     * @return LogColumn
+     */
+    public function setCreatedAt(?\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     *
+     * @return LogColumn
+     */
+    public function setUpdatedAt(?\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

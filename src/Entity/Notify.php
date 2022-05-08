@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Hgabka\LoggerBundle\Repository\NotifyRepository")
  * @ORM\Table(name="hg_logger_notify")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_logger_notify')]
 class Notify
 {
     /**
@@ -20,6 +22,9 @@ class Notify
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
@@ -139,14 +144,18 @@ class Notify
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
-    protected $createdAt;
+    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[Gedmo\Timestampable(on: 'create')]
+    protected ?\DateTime $createdAt = null;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", name="updated_at")
      */
-    protected $updatedAt;
+    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[Gedmo\Timestampable(on: 'update')]
+    protected ?\DateTime $updatedAt = null;
 
     /**
      * @var ArrayCollection|NotifyCall[]
