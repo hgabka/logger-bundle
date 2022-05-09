@@ -14,11 +14,7 @@ trait LoggableTrait
      */
     protected $dispatcher;
 
-    /**
-     * @required
-     *
-     * @param BreadcrumbManager $dispatcher
-     */
+    #[Required]
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
