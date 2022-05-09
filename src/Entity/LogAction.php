@@ -5,18 +5,6 @@ namespace Hgabka\LoggerBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * LogAction.
- *
- * @ORM\Entity
- * @ORM\Table(name="hg_logger_log_action", indexes={
- *     @ORM\Index(name="user_action_idx", columns={"user_id"}),
- *     @ORM\Index(name="foreign_id_action_idx", columns={"foreign_id"}),
- *     @ORM\Index(name="table_name_action_idx", columns={"table_name"}),
- *     @ORM\Index(name="log_type_action_idx", columns={"log_type"}),
- *     @ORM\Index(name="original_user_action_idx", columns={"original_user_id"})
- * })
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'hg_logger_log_action')]
 #[ORM\Index(name: 'user_action_idx', columns: ['user_id'])]
@@ -26,228 +14,93 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Index(name: 'original_user_action_idx', columns: ['original_user_id'])]
 class LogAction implements ObjectLogInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     #[ORM\Id]
     #[ORM\Column(type: 'bigint')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="ident", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'ident', nullable: true)]
     protected ?string $ident = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", name="user_id", nullable=true)
-     */
     #[ORM\Column(type: 'integer', name: 'user_id', nullable: true)]
     protected ?int $userId = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", name="original_user_id", nullable=true)
-     */
     #[ORM\Column(type: 'integer', name: 'original_user_id', nullable: true)]
     protected ?int $originalUserId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="username", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'username', nullable: true)]
     protected ?string $username = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="original_username", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'original_username', nullable: true)]
     protected ?string $originalUsername = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="session_id", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'session_id', nullable: true)]
     protected ?string $sessionId = null;
 
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", name="time", nullable=true)
-     */
     #[ORM\Column(type: 'datetime', name: 'time', nullable: true)]
     protected ?\DateTime $time = null;
 
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", name="end_time", nullable=true)
-     */
     #[ORM\Column(type: 'datetime', name: 'end_time', nullable: true)]
     protected ?\DateTime $endTime = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="controller", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'controller', nullable: true)]
     protected ?string $controller = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="description", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'description', nullable: true)]
     protected ?string $description = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request_uri", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'request_uri', nullable: true)]
     protected ?string $requestUri;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", name="success", nullable=true)
-     */
     #[ORM\Column(type: 'boolean', name: 'success', nullable: true)]
     protected ?bool $success = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="client_ip", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'client_ip', nullable: true)]
     protected ?string $clientIp = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="user_agent", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'user_agent', nullable: true)]
     protected ?string $userAgent = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="log_type", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'log_type', nullable: true)]
     protected ?string $type = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="method", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'method', nullable: true)]
     protected ?string $method = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="post", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'post', nullable: true)]
     protected ?string $post = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request_attributes", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'request_attributes', nullable: true)]
     protected ?string $requestAttributes = null;
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="table_name", nullable=true)
-     */
+
     #[ORM\Column(type: 'string', name: 'table_name', nullable: true)]
     protected ?string $table = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="entity_class", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'entity_class', nullable: true)]
     protected ?string $class = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="foreign_id", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'foreign_id', nullable: true)]
     protected ?string $foreignId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="extra_parameters", nullable=true)
-     */
     #[ORM\Column(type: 'text', name: 'extra_parameters', nullable: true)]
     protected ?string $extraParameters = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=10, name="priority", nullable=true)
-     */
     #[ORM\Column(type: 'string', name: 'priority', length: 10, nullable: true)]
     protected ?string $priority = null;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_at")
-     */
     #[ORM\Column(type: 'datetime', name: 'created_at')]
     #[Gedmo\Timestampable(on: 'create')]
     protected ?\DateTime $createdAt = null;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_at")
-     */
     #[ORM\Column(type: 'datetime', name: 'updated_at')]
     #[Gedmo\Timestampable(on: 'update')]
     protected ?\DateTime $updatedAt = null;
 
-    /**
-     * @return null|int
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param null|int $id
-     *
-     * @return LogAction
-     */
     public function setId(?int $id): self
     {
         $this->id = $id;

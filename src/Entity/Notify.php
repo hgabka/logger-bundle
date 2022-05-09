@@ -3,168 +3,79 @@
 namespace Hgabka\LoggerBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Notify.
- *
- * @ORM\Entity(repositoryClass="Hgabka\LoggerBundle\Repository\NotifyRepository")
- * @ORM\Table(name="hg_logger_notify")
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'hg_logger_notify')]
 class Notify
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     #[ORM\Id]
     #[ORM\Column(type: 'bigint')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="controller", nullable=true)
-     */
-    protected $controller;
+    #[ORM\Column(type: 'string', name: 'controller', nullable: true)]
+    protected ?string $controller = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="exception_class", nullable=true)
-     */
-    protected $exceptionClass;
+    #[ORM\Column(type: 'string', name: 'exception_class', nullable: true)]
+    protected ?string $exceptionClass = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="message", nullable=true)
-     */
-    protected $message;
+    #[ORM\Column(type: 'text', name: 'message', nullable: true)]
+    protected ?string $message = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", name="code", nullable=true)
-     */
-    protected $code;
+    #[ORM\Column(type: 'integer', name: 'code', nullable: true)]
+    protected ?int $code = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="file", nullable=true)
-     */
-    protected $file;
+    #[ORM\Column(type: 'string', name: 'file', nullable: true)]
+    protected ?string $file = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", name="line", nullable=true)
-     */
-    protected $line;
+    #[ORM\Column(type: 'integer', name: 'line', nullable: true)]
+    protected ?int $line = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="traces", nullable=true)
-     */
-    protected $traces;
+    #[ORM\Column(type: 'text', name: 'traces', nullable: true)]
+    protected ?string $traces = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="server_name", nullable=true)
-     */
-    protected $serverName;
+    #[ORM\Column(type: 'string', name: 'server_name', nullable: true)]
+    protected ?string $serverName = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="redirect_url", nullable=true)
-     */
-    protected $redirectUrl;
+    #[ORM\Column(type: 'text', name: 'redirect_url', nullable: true)]
+    protected ?string $redirectUrl = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request_uri", nullable=true)
-     */
-    protected $requestUri;
+    #[ORM\Column(type: 'text', name: 'request_uri', nullable: true)]
+    protected ?string $requestUri = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="post", nullable=true)
-     */
-    protected $post;
+    #[ORM\Column(type: 'text', name: 'post', nullable: true)]
+    protected ?string $post = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="request", nullable=true)
-     */
-    protected $request;
+    #[ORM\Column(type: 'text', name: 'request', nullable: true)]
+    protected ?string $request = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="params", nullable=true)
-     */
-    protected $params;
+    #[ORM\Column(type: 'text', name: 'params', nullable: true)]
+    protected ?string $params = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", name="call_number", nullable=true)
-     */
-    protected $callNumber;
+    #[ORM\Column(type: 'integer', name: 'call_number', nullable: true)]
+    protected ?int $callNumber = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="hash", nullable=true)
-     */
-    protected $hash;
+    #[ORM\Column(type: 'string', name: 'hash', nullable: true)]
+    protected ?string $hash = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="boolean", name="send_again", nullable=true)
-     */
-    protected $sendAgain = false;
+    #[ORM\Column(type: 'boolean', name: 'send_again', nullable: true)]
+    protected ?bool $sendAgain = false;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_at")
-     */
     #[ORM\Column(type: 'datetime', name: 'created_at')]
     #[Gedmo\Timestampable(on: 'create')]
     protected ?\DateTime $createdAt = null;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_at")
-     */
     #[ORM\Column(type: 'datetime', name: 'updated_at')]
     #[Gedmo\Timestampable(on: 'update')]
     protected ?\DateTime $updatedAt = null;
 
-    /**
-     * @var ArrayCollection|NotifyCall[]
-     *
-     * @ORM\OneToMany(targetEntity="Hgabka\LoggerBundle\Entity\NotifyCall", cascade={"all"}, mappedBy="notify", orphanRemoval=true)
-     *
-     * @Assert\Valid()
-     */
-    protected $calls;
+    #[ORM\OneToMany(targetEntity: NotifyCall::class, cascade: ['all'], mappedBy: 'notify', orphanRemoval: true)]
+    #[Assert\Valid]
+    protected Collection|array|null $calls;
 
     /**
      * Notify constructor.
@@ -174,24 +85,12 @@ class Notify
         $this->calls = new ArrayCollection();
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set id.
-     *
-     * @param int $id The unique identifier
-     *
-     * @return Notify
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -201,7 +100,7 @@ class Notify
     /**
      * @return string
      */
-    public function getController(): string
+    public function getController(): ?string
     {
         return $this->controller;
     }
@@ -211,7 +110,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setController($controller)
+    public function setController(?string $controller): self
     {
         $this->controller = $controller;
 
@@ -221,7 +120,7 @@ class Notify
     /**
      * @return string
      */
-    public function getExceptionClass(): string
+    public function getExceptionClass(): ?string
     {
         return $this->exceptionClass;
     }
@@ -231,7 +130,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setExceptionClass($exceptionClass)
+    public function setExceptionClass(?string $exceptionClass): self
     {
         $this->exceptionClass = $exceptionClass;
 
@@ -241,7 +140,7 @@ class Notify
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
         return $this->message;
     }
@@ -251,7 +150,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setMessage($message)
+    public function setMessage(?string $message): self
     {
         $this->message = $message;
 
@@ -261,7 +160,7 @@ class Notify
     /**
      * @return int
      */
-    public function getCode(): int
+    public function getCode(): ?int
     {
         return $this->code;
     }
@@ -271,7 +170,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setCode($code)
+    public function setCode(?int $code): self
     {
         $this->code = $code;
 
@@ -281,7 +180,7 @@ class Notify
     /**
      * @return string
      */
-    public function getFile(): string
+    public function getFile(): ?string
     {
         return $this->file;
     }
@@ -291,7 +190,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setFile($file)
+    public function setFile(?string $file): self
     {
         $this->file = $file;
 
@@ -301,7 +200,7 @@ class Notify
     /**
      * @return int
      */
-    public function getLine(): int
+    public function getLine(): ?int
     {
         return $this->line;
     }
@@ -311,7 +210,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setLine($line)
+    public function setLine(?int $line): self
     {
         $this->line = $line;
 
@@ -321,7 +220,7 @@ class Notify
     /**
      * @return string
      */
-    public function getTraces(): string
+    public function getTraces(): ?string
     {
         return $this->traces;
     }
@@ -331,7 +230,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setTraces($traces)
+    public function setTraces(?string $traces): self
     {
         $this->traces = $traces;
 
@@ -341,7 +240,7 @@ class Notify
     /**
      * @return string
      */
-    public function getRedirectUrl(): string
+    public function getRedirectUrl(): ?string
     {
         return $this->redirectUrl;
     }
@@ -351,7 +250,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setRedirectUrl($redirectUrl)
+    public function setRedirectUrl(?string $redirectUrl): self
     {
         $this->redirectUrl = $redirectUrl;
 
@@ -361,7 +260,7 @@ class Notify
     /**
      * @return string
      */
-    public function getRequestUri(): string
+    public function getRequestUri(): ?string
     {
         return $this->requestUri;
     }
@@ -371,7 +270,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setRequestUri($requestUri)
+    public function setRequestUri(?string $requestUri): self
     {
         $this->requestUri = $requestUri;
 
@@ -381,7 +280,7 @@ class Notify
     /**
      * @return string
      */
-    public function getPost(): string
+    public function getPost(): ?string
     {
         return $this->post;
     }
@@ -391,7 +290,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setPost($post)
+    public function setPost(?string $post): self
     {
         $this->post = $post;
 
@@ -401,7 +300,7 @@ class Notify
     /**
      * @return string
      */
-    public function getRequest(): string
+    public function getRequest(): ?string
     {
         return $this->request;
     }
@@ -411,7 +310,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setRequest($request)
+    public function setRequest(?string $request): self
     {
         $this->request = $request;
 
@@ -421,7 +320,7 @@ class Notify
     /**
      * @return string
      */
-    public function getParams(): string
+    public function getParams(): ?string
     {
         return $this->params;
     }
@@ -431,7 +330,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setParams($params)
+    public function setParams(?string $params): self
     {
         $this->params = $params;
 
@@ -441,17 +340,17 @@ class Notify
     /**
      * @return int
      */
-    public function getCallNumber()
+    public function getCallNumber(): ?int
     {
         return $this->callNumber;
     }
 
     /**
-     * @param string $callNumber
+     * @param int $callNumber
      *
      * @return Notify
      */
-    public function setCallNumber($callNumber)
+    public function setCallNumber(?int $callNumber): self
     {
         $this->callNumber = $callNumber;
 
@@ -461,7 +360,7 @@ class Notify
     /**
      * @return string
      */
-    public function getHash(): string
+    public function getHash(): ?string
     {
         return $this->hash;
     }
@@ -471,7 +370,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setHash($hash)
+    public function setHash(?string $hash): self
     {
         $this->hash = $hash;
 
@@ -481,7 +380,7 @@ class Notify
     /**
      * @return string
      */
-    public function getSendAgain(): string
+    public function getSendAgain(): bool|string|null
     {
         return $this->sendAgain;
     }
@@ -491,7 +390,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setSendAgain($sendAgain)
+    public function setSendAgain(bool|string|null $sendAgain): self
     {
         $this->sendAgain = $sendAgain;
 
@@ -501,7 +400,7 @@ class Notify
     /**
      * @return ArrayCollection|NotifyCall[]
      */
-    public function getCalls()
+    public function getCalls(): Collection|array|null
     {
         return $this->calls;
     }
@@ -511,7 +410,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setCalls($calls)
+    public function setCalls(Collection|array|null $calls): self
     {
         $this->calls = $calls;
 
@@ -525,7 +424,7 @@ class Notify
      *
      * @return Notify
      */
-    public function addCall(NotifyCall $call)
+    public function addCall(NotifyCall $call): self
     {
         if (!$this->calls->contains($call)) {
             $this->calls[] = $call;
@@ -541,9 +440,11 @@ class Notify
      *
      * @param NotifyCall $call
      */
-    public function removeCall(NotifyCall $call)
+    public function removeCall(NotifyCall $call): self
     {
         $this->calls->removeElement($call);
+
+        return $this;
     }
 
     /**
@@ -553,7 +454,7 @@ class Notify
      *
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(?\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -565,7 +466,7 @@ class Notify
      *
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -573,7 +474,7 @@ class Notify
     /**
      * @return string
      */
-    public function getServerName(): string
+    public function getServerName(): ?string
     {
         return $this->serverName;
     }
@@ -583,7 +484,7 @@ class Notify
      *
      * @return Notify
      */
-    public function setServerName($serverName)
+    public function setServerName(?string $serverName): self
     {
         $this->serverName = $serverName;
 
@@ -597,7 +498,7 @@ class Notify
      *
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -609,7 +510,7 @@ class Notify
      *
      * @return \DateTime
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }

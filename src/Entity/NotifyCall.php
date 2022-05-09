@@ -5,158 +5,86 @@ namespace Hgabka\LoggerBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * NotifyCall.
- *
- * @ORM\Entity
- * @ORM\Table(name="hg_logger_notify_call")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_logger_notify_call')]
 class NotifyCall
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
-    /**
-     * @var Notify
-     *
-     * @ORM\ManyToOne(targetEntity="Hgabka\LoggerBundle\Entity\Notify", inversedBy="calls", cascade={"persist"})
-     * @ORM\JoinColumn(name="notify_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $notify;
+    #[ORM\ManyToOne(targetEntity: Notify::class, inversedBy: 'calls', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'notify_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Notify $notify = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", name="server", nullable=true)
-     */
-    protected $server;
+    #[ORM\Column(type: 'text', name: '`server`', nullable: true)]
+    protected ?string $server = null;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_at")
-     */
-    protected $createdAt;
+    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[Gedmo\Timestampable(on: 'create')]
+    protected ?\DateTime $createdAt = null;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_at")
-     */
-    protected $updatedAt;
+    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[Gedmo\Timestampable(on: 'update')]
+    protected ?\DateTime $updatedAt = null;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set id.
-     *
-     * @param int $id The unique identifier
-     *
-     * @return NotifyCall
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * Sets createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return NotifyCall
-     */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(?\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * @return \Hgabka\LoggerBundle\Entity\Notify
-     */
-    public function getNotify(): Notify
+    public function getNotify(): ?Notify
     {
         return $this->notify;
     }
 
-    /**
-     * @param \Hgabka\LoggerBundle\Entity\Notify $notify
-     *
-     * @return NotifyCall
-     */
-    public function setNotify($notify)
+    public function setNotify(?Notify $notify): self
     {
         $this->notify = $notify;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getServer(): string
+    public function getServer(): ?string
     {
         return $this->server;
     }
 
-    /**
-     * @param string $server
-     *
-     * @return NotifyCall
-     */
-    public function setServer($server)
+    public function setServer(?string $server): self
     {
         $this->server = $server;
 
         return $this;
     }
 
-    /**
-     * Returns createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * Sets updatedAt.
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return NotifyCall
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    /**
-     * Returns updatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
