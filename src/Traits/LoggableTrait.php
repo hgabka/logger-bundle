@@ -6,6 +6,7 @@ use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait LoggableTrait
 {
