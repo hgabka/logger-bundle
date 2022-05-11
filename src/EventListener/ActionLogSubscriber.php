@@ -8,8 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ActionLogSubscriber implements EventSubscriberInterface
 {
-    /** @var ActionLogger */
-    protected $logger;
+    protected ActionLogger $logger;
 
     /**
      * ActionLogSubscriber constructor.
@@ -21,7 +20,7 @@ class ActionLogSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LogActionEvent::EVENT_START => 'onStart',
@@ -31,34 +30,22 @@ class ActionLogSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param LogActionEvent $event
-     */
-    public function onStart(LogActionEvent $event)
+    public function onStart(LogActionEvent $event): void
     {
         $this->logger->start($event->getType(), $event->getParameters(), $event->getObject(), $event->getExtraParameters());
     }
 
-    /**
-     * @param LogActionEvent $event
-     */
-    public function onUpdate(LogActionEvent $event)
+    public function onUpdate(LogActionEvent $event): void
     {
         $this->logger->update($event->getParameters(), $event->getObject(), $event->getPriority(), $event->getExtraParameters());
     }
 
-    /**
-     * @param LogActionEvent $event
-     */
-    public function onDone(LogActionEvent $event)
+    public function onDone(LogActionEvent $event): void
     {
         $this->logger->done();
     }
 
-    /**
-     * @param LogActionEvent $event
-     */
-    public function onLog(LogActionEvent $event)
+    public function onLog(LogActionEvent $event): void
     {
         $this->logger->log($event->getType(), $event->getParameters(), $event->getObject(), $event->getPriority(), $event->getExtraParameters());
     }

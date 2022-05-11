@@ -8,19 +8,14 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 class ExceptionListener
 {
     /** @var ExceptionNotifier */
-    protected $notifier;
+    protected ExceptionNotifier $notifier;
 
-    /**
-     * ExceptionListener constructor.
-     *
-     * @param ExceptionNotifier $notifier
-     */
     public function __construct(ExceptionNotifier $notifier)
     {
         $this->notifier = $notifier;
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         // You get the exception object from the received event
         $exception = $event->getThrowable();
