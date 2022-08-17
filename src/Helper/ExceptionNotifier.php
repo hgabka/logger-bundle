@@ -214,17 +214,18 @@ class ExceptionNotifier
         $this->logger->getLogger()->info($message);
     }
 
-    protected function sendMail($exception)
+    public function sendWarningMail(string $message, string $body, $subject = null)
     {
-        if (!$this->isMailSendingEnabled()) {
-            return;
-        }
-
         $mailer = $this->mailer;
-        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
-
-        $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
         $width = 1200;
+        $message = strtr(
+            $message,
+            [
+                '[host]' => $_SERVER['HTTP_HOST'],
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        ));
 
         $body = '
         <!DOCTYPE html>
@@ -235,8 +236,45 @@ class ExceptionNotifier
             </head>
             <body style="width:' . $width . 'px">
 
-        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">';
-        $body .= 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
+        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">'.$body.'</pre></body></html>';
+
+        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
+        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
+
+        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
+
+        if (null === $subject) {
+            $subject = $this->config['mails']['subject'] ??
+                'EXCEPTION on ' . @$_SERVER['HTTP_HOST'] . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
+        }
+
+        $subject = strtr(
+            $subject,
+            [
+                '[host]' => $_SERVER['HTTP_HOST'],
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        ));
+
+        $mail = new \Swift_Message($subject);
+        $mail->setFrom([$fromEmail => $fromName]);
+        $mail->setTo($to);
+        $mail->setBody($body, 'text/html');
+        $mail->setReturnPath('hgabka@gmail.com');
+        $mailer->send($mail);
+    }
+
+    protected function sendMail($exception)
+    {
+        if (!$this->isMailSendingEnabled()) {
+            return;
+        }
+
+        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
+
+        $message = ($exception instanceof \Throwable ? $exception->getMessage() : '404 error');
+        $body = 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
         $body .= 'REQUEST_URI:' . @$_SERVER['REQUEST_URI'] . '<br>';
         $body .= ('<br />Exception message: <br /><br /><p style="font-size:18px;font-weight:bold;display:block;max-width:100%;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;">' . $message . '</p><br />') . '<br>';
         $body .= 'File: ' . $exception->getFile() . '<br />';
@@ -260,26 +298,8 @@ class ExceptionNotifier
         $body .= ('<br>Paraméterek:<br>' . var_export($pars, true));
 
         $body .= '<br>SERVER:<br>' . var_export(@$_SERVER, true);
-        $body .= '</pre></body></html>';
 
-        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
-        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
-
-        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
-        $subject = isset($this->config['mails']['subject']) ? strtr(
-            $this->config['mails']['subject'],
-            ['[host]' => $_SERVER['HTTP_HOST'],
-                  '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
-                  '[request_uri]' => @$_SERVER['REQUEST_URI'], ]
-        ) :
-            'EXCEPTION on ' . @$_SERVER['HTTP_HOST'] . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
-
-        $mail = new \Swift_Message($subject);
-        $mail->setFrom([$fromEmail => $fromName]);
-        $mail->setTo($to);
-        $mail->setBody($body, 'text/html');
-        $mail->setReturnPath('hgabka@gmail.com');
-        $mailer->send($mail);
+        $this->sendWarningMail($message, $body);
     }
 
     protected function getTraceArray($exception)
