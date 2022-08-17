@@ -4,11 +4,11 @@ namespace Hgabka\LoggerBundle\Helper;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
-use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use function get_class;
 use Hgabka\LoggerBundle\Entity\Notify;
 use Hgabka\LoggerBundle\Entity\NotifyCall;
 use Hgabka\LoggerBundle\Logger\ExceptionLogger;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use function in_array;
 use function is_array;
 use function is_object;
@@ -40,7 +40,8 @@ class ExceptionNotifier
         protected ExceptionLogger $logger,
         protected HgabkaUtils $hgabkaUtils,
         protected bool $isDebug
-    ) {}
+    ) {
+    }
 
     /**
      * @param array $config
@@ -177,38 +178,6 @@ class ExceptionNotifier
         }
     }
 
-    protected function typeSuits($kind): bool
-    {
-        $logTypeConfig = $this->config['logging']['type'][$this->isDebug ? 'debug' : 'prod'];
-
-        return in_array($logTypeConfig, ['both', $kind], true);
-    }
-
-    protected function log($exception)
-    {
-        if (!$this->isLoggingEnabled()) {
-            return;
-        }
-        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
-
-        $message = 'Exception was thrown.' . "\n";
-        $message .= '----------------------------------------------------------------------' . "\n\n";
-        $message .= 'Message: ' . ($exception instanceof Throwable ? $exception->getMessage() : '404 error') . "\n";
-        $message .= 'File: ' . $exception->getFile() . "\n";
-        $message .= 'Line: ' . $exception->getLine() . "\n";
-        $message .= 'Code: ' . $exception->getCode() . "\n";
-        $message .= 'Class: ' . get_class($exception) . "\n\n";
-        $message .= 'Details: ' . "\n";
-        $message .= '- controller: ' . ($controller ?? '') . "\n";
-        $message .= '- redirect URL: ' . (@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '') . "\n";
-        $message .= '- request URI: ' . (@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '') . "\n\n";
-        $message .= 'Trace:' . "\n";
-        $message .= '- ' . ($exception instanceof Throwable ? $exception->getTraceAsString() : '') . "\n\n";
-        $message .= '***********************************************************************' . "\n\n";
-
-        $this->logger->getLogger()->info($message);
-    }
-
     public function sendWarningMail(string $message, string $body, ?string $subject = null)
     {
         $mailer = $this->mailer;
@@ -269,6 +238,38 @@ class ExceptionNotifier
             $mailer->send($mail);
         } catch (TransportExceptionInterface $e) {
         }
+    }
+
+    protected function typeSuits($kind): bool
+    {
+        $logTypeConfig = $this->config['logging']['type'][$this->isDebug ? 'debug' : 'prod'];
+
+        return in_array($logTypeConfig, ['both', $kind], true);
+    }
+
+    protected function log($exception)
+    {
+        if (!$this->isLoggingEnabled()) {
+            return;
+        }
+        $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
+
+        $message = 'Exception was thrown.' . "\n";
+        $message .= '----------------------------------------------------------------------' . "\n\n";
+        $message .= 'Message: ' . ($exception instanceof Throwable ? $exception->getMessage() : '404 error') . "\n";
+        $message .= 'File: ' . $exception->getFile() . "\n";
+        $message .= 'Line: ' . $exception->getLine() . "\n";
+        $message .= 'Code: ' . $exception->getCode() . "\n";
+        $message .= 'Class: ' . get_class($exception) . "\n\n";
+        $message .= 'Details: ' . "\n";
+        $message .= '- controller: ' . ($controller ?? '') . "\n";
+        $message .= '- redirect URL: ' . (@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '') . "\n";
+        $message .= '- request URI: ' . (@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '') . "\n\n";
+        $message .= 'Trace:' . "\n";
+        $message .= '- ' . ($exception instanceof Throwable ? $exception->getTraceAsString() : '') . "\n\n";
+        $message .= '***********************************************************************' . "\n\n";
+
+        $this->logger->getLogger()->info($message);
     }
 
     protected function sendMail($exception)
