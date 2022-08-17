@@ -4,6 +4,7 @@ namespace Hgabka\LoggerBundle\Helper;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use function get_class;
 use Hgabka\LoggerBundle\Entity\Notify;
 use Hgabka\LoggerBundle\Entity\NotifyCall;
@@ -37,6 +38,7 @@ class ExceptionNotifier
         protected MailerInterface $mailer,
         protected RequestStack $requestStack,
         protected ExceptionLogger $logger,
+        protected HgabkaUtils $hgabkaUtils,
         protected bool $isDebug
     ) {}
 
@@ -137,7 +139,7 @@ class ExceptionNotifier
         $sfNotify->setTraces($exception instanceof Throwable ? $exception->getTraceAsString() : '');
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
-        $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
+        $sfNotify->setServerName($this->hgabkaUtils->getHost());
         $sfNotify->setPost(json_encode(@$_POST));
         $sfNotify->setParams(json_encode($_GET));
         $sfNotify->setCode($exception->getCode());
@@ -214,11 +216,11 @@ class ExceptionNotifier
         $message = strtr(
             $message,
             [
-                '[host]' => $_SERVER['HTTP_HOST'],
+                '[host]' => $this->hgabkaUtils->getHost(),
                 '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
                 '[request_uri]' => @$_SERVER['REQUEST_URI'],
             ]
-        );
+        ));
 
         $body = '
         <!DOCTYPE html>
@@ -239,17 +241,17 @@ class ExceptionNotifier
 
         if (null === $subject) {
             $subject = $this->config['mails']['subject'] ??
-                'EXCEPTION on ' . @$_SERVER['HTTP_HOST'] . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
+                'EXCEPTION on ' . $this->hgabkaUtils->getHost() . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
         }
 
         $subject = strtr(
             $subject,
             [
-                '[host]' => $_SERVER['HTTP_HOST'],
+                '[host]' => $this->hgabkaUtils->getHost(),
                 '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
                 '[request_uri]' => @$_SERVER['REQUEST_URI'],
             ]
-        );
+        ));
 
         $mail = new Email();
         $mail->subject($subject);
