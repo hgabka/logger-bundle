@@ -225,7 +225,7 @@ class ExceptionNotifier
                 '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
                 '[request_uri]' => @$_SERVER['REQUEST_URI'],
             ]
-        ));
+        );
 
         $body = '
         <!DOCTYPE html>
@@ -255,7 +255,7 @@ class ExceptionNotifier
                 '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
                 '[request_uri]' => @$_SERVER['REQUEST_URI'],
             ]
-        ));
+        );
 
         $mail = new \Swift_Message($subject);
         $mail->setFrom([$fromEmail => $fromName]);
