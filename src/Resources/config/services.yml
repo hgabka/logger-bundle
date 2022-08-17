@@ -13,7 +13,7 @@ services:
 
     Hgabka\LoggerBundle\Helper\ExceptionNotifier:
         autowire: true
-        arguments: ["@doctrine", "@mailer.mailer", "@request_stack", "@hgabka_logger.exception_logger", "%kernel.debug%"]
+        arguments: ["@doctrine", "@mailer.mailer", "@request_stack", "@hgabka_logger.exception_logger", '@hgabka_utils.hgabka_utils', "%kernel.debug%"]
 
     hgabka_logger.exception_notifier:
         alias: Hgabka\LoggerBundle\Helper\ExceptionNotifier
