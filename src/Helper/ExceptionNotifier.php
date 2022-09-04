@@ -282,7 +282,7 @@ class ExceptionNotifier
 
         $message = ($exception instanceof Throwable ? $exception->getMessage() : '404 error');
 
-        $body .= 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
+        $body = 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
         $body .= 'REQUEST_URI:' . @$_SERVER['REQUEST_URI'] . '<br>';
         $body .= ('<br />Exception message: <br /><br /><p style="font-size:18px;font-weight:bold;display:block;max-width:100%;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;">' . $message . '</p><br />') . '<br>';
         $body .= 'File: ' . $exception->getFile() . '<br />';
