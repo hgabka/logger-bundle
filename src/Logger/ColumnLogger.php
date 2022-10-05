@@ -197,7 +197,7 @@ class ColumnLogger extends AbstractLogger
         $origValue = $value;
 
         if ($value instanceof \DateTimeInterface) {
-            $value = $value->format('datetime' === $type ? 'Y-m-d H:i:s' : 'Y-m-d H:i');
+            $value = $value->format('date' === $type ? 'Y-m-d' : 'Y-m-d H:i:s');
         }
 
         if (\is_bool($value)) {
