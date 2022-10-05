@@ -30,8 +30,8 @@ class HgabkaLoggerExtension extends Extension
         $loggerDefinition->replaceArgument(2, $config['notifier']['logging']['log_path']);
 
         $columnLoggerDefinition = $container->getDefinition('hgabka_logger.column_logger');
-        $columnLoggerDefinition->replaceArgument(5, $config['column_logger']['common_identifier']);
-        $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['enabled']);
+        $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['common_identifier']);
+        $columnLoggerDefinition->replaceArgument(7, $config['column_logger']['enabled']);
 
         $actionLoggerDefinition = $container->getDefinition('hgabka_logger.action_logger');
         $actionLoggerDefinition->replaceArgument(6, $config['action_logger']['common_identifier']);

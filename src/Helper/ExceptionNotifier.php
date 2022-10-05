@@ -187,6 +187,57 @@ class ExceptionNotifier
         }
     }
 
+    public function sendWarningMail(string $message, string $body, $subject = null)
+    {
+        $mailer = $this->mailer;
+        $width = 1200;
+        $message = strtr(
+            $message,
+            [
+                '[host]' => $this->hgabkaUtils->getHost(),
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        );
+
+        $body = '
+        <!DOCTYPE html>
+        <html style="width:' . $width . 'px">
+            <head>
+                <meta charset="UTF-8" />
+                <title>' . $message . '</title>
+            </head>
+            <body style="width:' . $width . 'px">
+
+        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">' . $body . '</pre></body></html>';
+
+        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
+        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
+
+        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
+
+        if (null === $subject) {
+            $subject = $this->config['mails']['subject'] ??
+                'EXCEPTION on ' . $this->hgabkaUtils->getHost() . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
+        }
+
+        $subject = strtr(
+            $subject,
+            [
+                '[host]' => $this->hgabkaUtils->getHost(),
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        );
+
+        $mail = new \Swift_Message($subject);
+        $mail->setFrom([$fromEmail => $fromName]);
+        $mail->setTo($to);
+        $mail->setBody($body, 'text/html');
+        $mail->setReturnPath('hgabka@gmail.com');
+        $mailer->send($mail);
+    }
+
     protected function typeSuits($kind)
     {
         $logTypeConfig = $this->config['logging']['type'][$this->isDebug ? 'debug' : 'prod'];
@@ -217,57 +268,6 @@ class ExceptionNotifier
         $message .= '***********************************************************************' . "\n\n";
 
         $this->logger->getLogger()->info($message);
-    }
-
-    public function sendWarningMail(string $message, string $body, $subject = null)
-    {
-        $mailer = $this->mailer;
-        $width = 1200;
-        $message = strtr(
-            $message,
-            [
-                '[host]' => $this->hgabkaUtils->getHost(),
-                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
-                '[request_uri]' => @$_SERVER['REQUEST_URI'],
-            ]
-        );
-
-        $body = '
-        <!DOCTYPE html>
-        <html style="width:' . $width . 'px">
-            <head>
-                <meta charset="UTF-8" />
-                <title>' . $message . '</title>
-            </head>
-            <body style="width:' . $width . 'px">
-
-        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">'.$body.'</pre></body></html>';
-
-        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
-        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
-
-        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
-
-        if (null === $subject) {
-            $subject = $this->config['mails']['subject'] ??
-                'EXCEPTION on ' . $this->hgabkaUtils->getHost() . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
-        }
-
-        $subject = strtr(
-            $subject,
-            [
-                '[host]' => $this->hgabkaUtils->getHost(),
-                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
-                '[request_uri]' => @$_SERVER['REQUEST_URI'],
-            ]
-        );
-
-        $mail = new \Swift_Message($subject);
-        $mail->setFrom([$fromEmail => $fromName]);
-        $mail->setTo($to);
-        $mail->setBody($body, 'text/html');
-        $mail->setReturnPath('hgabka@gmail.com');
-        $mailer->send($mail);
     }
 
     protected function sendMail($exception)

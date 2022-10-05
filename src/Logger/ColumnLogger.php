@@ -6,15 +6,41 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
+use Hgabka\LoggerBundle\Helper\LoggableEntityInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ColumnLogger extends AbstractLogger
 {
     public const MOD_TYPE_INSERT = 'INSERT';
     public const MOD_TYPE_UPDATE = 'UPDATE';
     public const MOD_TYPE_DELETE = 'DELETE';
+
+    /** @var Registry */
+    protected $doctrine;
+
+    /** @var TranslatorInterface */
+    protected $translator;
+
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /** @var TokenStorageInterface */
+    protected $tokenStorage;
+
+    /** @var AuthorizationCheckerInterface */
+    protected $authChecker;
+
+    /** @var string */
+    protected $ident;
+
+    /** @var string */
+    protected $enabled;
+
+    /** @var bool */
+    protected $debug;
 
     /**
      * ColumnLogger constructor.
@@ -23,15 +49,16 @@ class ColumnLogger extends AbstractLogger
      * @param TokenStorageInterface $tokenStorage
      * @param string                $ident
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, RequestStack $requestStack, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $enabled)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $enabled)
     {
         $this->doctrine = $doctrine;
+        $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
-        $this->ident = $ident;
-        $this->authChecker = $authChecker;
         $this->requestStack = $requestStack;
-        $this->debug = $debug;
+        $this->authChecker = $authChecker;
         $this->enabled = $enabled;
+        $this->ident = $ident;
+        $this->debug = $debug;
     }
 
     /**
@@ -44,7 +71,7 @@ class ColumnLogger extends AbstractLogger
      *
      * @return array
      */
-    public function logColumns($obj, $action, EntityManager $em, array $changeData = null)
+    public function logColumns(LoggableEntityInterface $obj, $action, EntityManager $em, array $changeData = null)
     {
         if (!$this->isLoggingEnabled()) {
             return [];
@@ -93,8 +120,13 @@ class ColumnLogger extends AbstractLogger
             $logs[] = $log;
         } else {
             $logFields = $obj->getLogFields();
+            $notLogFields = $obj->getNotLogFields();
 
             foreach ($changeData as $field => $changeData) {
+                if (null !== $notLogFields && \in_array($field, $notLogFields, true)) {
+                    continue;
+                }
+
                 if (!\is_array($logFields) || (!empty($logFields) && !\in_array($field, $logFields, true))) {
                     continue;
                 }
@@ -107,7 +139,10 @@ class ColumnLogger extends AbstractLogger
                 $oldVal = self::MOD_TYPE_INSERT === $action ? null : $changeData[0];
                 $newVal = $changeData[1];
 
-                if (($oldValue = $this->convertValue($oldVal)) === ($newValue = $this->convertValue($newVal))) {
+                $mapping = $metaData->getFieldMapping($field);
+                $type = $mapping['type'] ?? null;
+
+                if (($oldValue = $this->convertValue($oldVal, $type)) === ($newValue = $this->convertValue($newVal, $type))) {
                     continue;
                 }
 
@@ -157,14 +192,26 @@ class ColumnLogger extends AbstractLogger
         ;
     }
 
-    protected function convertValue($value)
+    protected function convertValue($value, $type)
     {
-        if (\is_bool($value)) {
-            return $value ? '1' : '0';
+        $origValue = $value;
+
+        if ($value instanceof \DateTimeInterface) {
+            $value = $value->format('datetime' === $type ? 'Y-m-d H:i:s' : 'Y-m-d H:i');
         }
 
-        if (\is_array($value) || \is_object($value)) {
-            return json_encode($value, \JSON_UNESCAPED_UNICODE);
+        if (\is_bool($value)) {
+            $value = $value ? '1' : '0';
+        } elseif (\is_array($value) || \is_object($value)) {
+            $value = json_encode($value, \JSON_UNESCAPED_UNICODE);
+        }
+
+        if ('boolean' === $type) {
+            return $this->translator->trans('hgabka_logger.log_value.' . ((bool) $value ? 'yes' : 'no'), [], 'HgabkaLoggerBundle');
+        }
+
+        if ('integer' === $type) {
+            return (int) $value;
         }
 
         return (string) $value;
