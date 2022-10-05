@@ -34,9 +34,9 @@ class ColumnLogger extends AbstractLogger
         protected AuthorizationCheckerInterface $authChecker,
         protected bool $debug,
         protected string $ident,
+        protected string $catalog,
         protected string $enabled
-    )
-    {
+    ) {
     }
 
     /**
@@ -183,7 +183,7 @@ class ColumnLogger extends AbstractLogger
         }
 
         if ('boolean' === $type) {
-            return $this->translator->trans('hgabka_logger.log_value.' . ((bool) $value ? 'yes' : 'no'), [], 'HgabkaLoggerBundle');
+            return $this->translator->trans('hgabka_logger.log_value.' . ((bool) $value ? 'yes' : 'no'), [], $this->catalog);
         }
 
         if ('integer' === $type) {

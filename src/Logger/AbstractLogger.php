@@ -2,7 +2,7 @@
 
 namespace Hgabka\LoggerBundle\Logger;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\ObjectLogInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -26,26 +26,19 @@ class AbstractLogger
     public const OPT_USERNAME = 'username';
     public const OPT_ORIGINAL_USERNAME = 'original_username';
 
-    /** @var ManagerRegistry */
-    protected $doctrine;
+    protected Registry $doctrine;
 
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
+    protected TokenStorageInterface $tokenStorage;
 
-    /** @var string */
-    protected $ident;
+    protected string $ident;
 
-    /** @var RequestStack */
-    protected $requestStack;
+    protected RequestStack $requestStack;
 
-    /** @var AuthorizationCheckerInterface */
-    protected $authChecker;
+    protected AuthorizationCheckerInterface$authChecker;
 
-    /** @var string */
-    protected $enabled;
+    protected string $enabled;
 
-    /** @var bool */
-    protected $debug;
+    protected bool $debug;
 
     protected function getSession(): ?SessionInterface
     {
@@ -61,7 +54,7 @@ class AbstractLogger
      *
      * @return array
      */
-    protected function getContextOptions()
+    protected function getContextOptions(): array
     {
         $request = $this->requestStack->getCurrentRequest();
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
@@ -96,7 +89,7 @@ class AbstractLogger
         ];
     }
 
-    protected function getEntityData($object)
+    protected function getEntityData($object): array
     {
         $em = $this->doctrine->getManager();
         if (\is_object($object)) {
@@ -128,7 +121,7 @@ class AbstractLogger
         return ['class' => $objClass, 'table' => $table, 'key' => $fk];
     }
 
-    protected function setObject(ObjectLogInterface $log, $object)
+    protected function setObject(ObjectLogInterface $log, $object): array
     {
         $data = $this->getEntityData($object);
         ['class' => $objClass, 'table' => $table, 'key' => $fk] = $data;
@@ -142,13 +135,13 @@ class AbstractLogger
         return $data;
     }
 
-    protected function isLoggingEnabled()
+    protected function isLoggingEnabled(): bool
     {
         $logEnv = $this->enabled;
         if ($this->debug) {
-            return \in_array($logEnv, ['always', 'debug'], true);
+            return in_array($logEnv, ['always', 'debug'], true);
         }
 
-        return \in_array($logEnv, ['always', 'prod'], true);
+        return in_array($logEnv, ['always', 'prod'], true);
     }
 }
