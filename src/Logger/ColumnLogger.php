@@ -5,6 +5,7 @@ namespace Hgabka\LoggerBundle\Logger;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\MappingException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Hgabka\LoggerBundle\Helper\LoggableEntityInterface;
@@ -119,7 +120,7 @@ class ColumnLogger extends AbstractLogger
                 
                 try {
                     $mapping = $metaData->getFieldMapping($field);
-                } catch (\Exception $e) {
+                } catch (MappingException $e) {
                     $mapping = [];
                 }
                 $type = $mapping['type'] ?? null;
