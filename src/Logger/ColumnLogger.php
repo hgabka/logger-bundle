@@ -116,8 +116,12 @@ class ColumnLogger extends AbstractLogger
                 $fieldName = $metaData->getColumnName($field);
                 $oldVal = self::MOD_TYPE_INSERT === $action ? null : $changeData[0];
                 $newVal = $changeData[1];
-
-                $mapping = $metaData->getFieldMapping($field);
+                
+                try {
+                    $mapping = $metaData->getFieldMapping($field);
+                } catch (\Exception $e) {
+                    $mapping = [];
+                }
                 $type = $mapping['type'] ?? null;
 
                 if (($oldValue = $this->convertValue($oldVal, $type)) === ($newValue = $this->convertValue($newVal, $type))) {
