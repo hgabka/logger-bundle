@@ -34,7 +34,7 @@ class AbstractLogger
 
     protected RequestStack $requestStack;
 
-    protected AuthorizationCheckerInterface$authChecker;
+    protected AuthorizationCheckerInterface $authChecker;
 
     protected string $enabled;
 
