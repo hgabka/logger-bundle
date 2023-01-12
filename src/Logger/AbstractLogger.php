@@ -84,8 +84,8 @@ class AbstractLogger
             static::OPT_URL => $request ? $request->getRequestUri() : null,
             static::OPT_SESSION => $session ? $session : null,
             static::OPT_ACTION => $request ? $request->attributes->get('_controller') : null,
-            static::OPT_USERNAME => $user && \is_object($user) ? $accessor->getValue($user, 'username') : null,
-            static::OPT_ORIGINAL_USERNAME => $originalUser && \is_object($originalUser) ? $accessor->getValue($originalUser, 'username') : null,
+            static::OPT_USERNAME => $user && \is_object($user) ? $user->getUserIdentifier() : null,
+            static::OPT_ORIGINAL_USERNAME => $originalUser && \is_object($originalUser) ? $originalUser->getUserIdentifier() : null,
         ];
     }
 
