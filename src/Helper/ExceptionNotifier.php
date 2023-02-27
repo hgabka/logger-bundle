@@ -24,6 +24,8 @@ use Throwable;
 
 class ExceptionNotifier
 {
+    protected ?array $config = null;
+    
     /**
      * ExceptionNotifier constructor.
      *
