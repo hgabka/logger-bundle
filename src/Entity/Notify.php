@@ -4,6 +4,7 @@ namespace Hgabka\LoggerBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,63 +14,63 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Notify
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'bigint')]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\Column(type: 'string', name: 'controller', nullable: true)]
+    #[ORM\Column(type: Types::STRING, name: 'controller', nullable: true)]
     protected ?string $controller = null;
 
-    #[ORM\Column(type: 'string', name: 'exception_class', nullable: true)]
+    #[ORM\Column(type: Types::STRING, name: 'exception_class', nullable: true)]
     protected ?string $exceptionClass = null;
 
-    #[ORM\Column(type: 'text', name: 'message', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'message', nullable: true)]
     protected ?string $message = null;
 
-    #[ORM\Column(type: 'integer', name: 'code', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, name: 'code', nullable: true)]
     protected ?int $code = null;
 
-    #[ORM\Column(type: 'string', name: 'file', nullable: true)]
+    #[ORM\Column(type: Types::STRING, name: 'file', nullable: true)]
     protected ?string $file = null;
 
-    #[ORM\Column(type: 'integer', name: 'line', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, name: 'line', nullable: true)]
     protected ?int $line = null;
 
-    #[ORM\Column(type: 'text', name: 'traces', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'traces', nullable: true)]
     protected ?string $traces = null;
 
-    #[ORM\Column(type: 'string', name: 'server_name', nullable: true)]
+    #[ORM\Column(type: Types::STRING, name: 'server_name', nullable: true)]
     protected ?string $serverName = null;
 
-    #[ORM\Column(type: 'text', name: 'redirect_url', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'redirect_url', nullable: true)]
     protected ?string $redirectUrl = null;
 
-    #[ORM\Column(type: 'text', name: 'request_uri', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'request_uri', nullable: true)]
     protected ?string $requestUri = null;
 
-    #[ORM\Column(type: 'text', name: 'post', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'post', nullable: true)]
     protected ?string $post = null;
 
-    #[ORM\Column(type: 'text', name: 'request', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'request', nullable: true)]
     protected ?string $request = null;
 
-    #[ORM\Column(type: 'text', name: 'params', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: 'params', nullable: true)]
     protected ?string $params = null;
 
-    #[ORM\Column(type: 'integer', name: 'call_number', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, name: 'call_number', nullable: true)]
     protected ?int $callNumber = null;
 
-    #[ORM\Column(type: 'string', name: 'hash', nullable: true)]
+    #[ORM\Column(type: Types::STRING, name: 'hash', nullable: true)]
     protected ?string $hash = null;
 
-    #[ORM\Column(type: 'boolean', name: 'send_again', nullable: true)]
+    #[ORM\Column(type: Types::BOOLEAN, name: 'send_again', nullable: true)]
     protected ?bool $sendAgain = false;
 
-    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'created_at')]
     #[Gedmo\Timestampable(on: 'create')]
     protected ?\DateTime $createdAt = null;
 
-    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'updated_at')]
     #[Gedmo\Timestampable(on: 'update')]
     protected ?\DateTime $updatedAt = null;
 

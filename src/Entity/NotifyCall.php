@@ -2,6 +2,7 @@
 
 namespace Hgabka\LoggerBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -10,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class NotifyCall
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'bigint')]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
@@ -18,14 +19,14 @@ class NotifyCall
     #[ORM\JoinColumn(name: 'notify_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected ?Notify $notify = null;
 
-    #[ORM\Column(type: 'text', name: '`server`', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, name: '`server`', nullable: true)]
     protected ?string $server = null;
 
-    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'created_at')]
     #[Gedmo\Timestampable(on: 'create')]
     protected ?\DateTime $createdAt = null;
 
-    #[ORM\Column(type: 'datetime', name: 'updated_at')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'updated_at')]
     #[Gedmo\Timestampable(on: 'update')]
     protected ?\DateTime $updatedAt = null;
 
