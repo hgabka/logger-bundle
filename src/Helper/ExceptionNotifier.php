@@ -8,6 +8,7 @@ use function get_class;
 use Hgabka\LoggerBundle\Entity\Notify;
 use Hgabka\LoggerBundle\Entity\NotifyCall;
 use Hgabka\LoggerBundle\Logger\ExceptionLogger;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use function in_array;
 use function is_array;
 use function is_object;
@@ -23,23 +24,7 @@ use Throwable;
 
 class ExceptionNotifier
 {
-    /** @var Registry */
-    protected $doctrine;
-
-    /** @var MailerInterface */
-    protected $mailer;
-
-    /** @var ExceptionLogger */
-    protected $logger;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    /** @var array */
-    protected $config;
-
-    /** @var bool */
-    protected $isDebug;
+    protected ?array $config = null;
 
     /**
      * ExceptionNotifier constructor.
@@ -50,13 +35,14 @@ class ExceptionNotifier
      * @param ExceptionLogger $logger
      * @param bool            $isDebug
      */
-    public function __construct(Registry $doctrine, MailerInterface $mailer, RequestStack $requestStack, ExceptionLogger $logger, bool $isDebug)
-    {
-        $this->doctrine = $doctrine;
-        $this->mailer = $mailer;
-        $this->logger = $logger;
-        $this->isDebug = $isDebug;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        protected Registry $doctrine,
+        protected MailerInterface $mailer,
+        protected RequestStack $requestStack,
+        protected ExceptionLogger $logger,
+        protected HgabkaUtils $hgabkaUtils,
+        protected bool $isDebug
+    ) {
     }
 
     /**
@@ -156,7 +142,7 @@ class ExceptionNotifier
         $sfNotify->setTraces($exception instanceof Throwable ? $exception->getTraceAsString() : '');
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
-        $sfNotify->setServerName(@$_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '');
+        $sfNotify->setServerName($this->hgabkaUtils->getHost());
         $sfNotify->setPost(json_encode(@$_POST));
         $sfNotify->setParams(json_encode($_GET));
         $sfNotify->setCode($exception->getCode());
@@ -191,6 +177,68 @@ class ExceptionNotifier
             $em->persist($sfNotifyCall);
             $em->flush($sfNotify);
             $em->flush($sfNotifyCall);
+        }
+    }
+
+    public function sendWarningMail(string $message, string $body, ?string $subject = null)
+    {
+        $mailer = $this->mailer;
+        $width = 1200;
+        $message = strtr(
+            $message,
+            [
+                '[host]' => $this->hgabkaUtils->getHost(),
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        );
+
+        $body = '
+        <!DOCTYPE html>
+        <html style="width:' . $width . 'px">
+            <head>
+                <meta charset="UTF-8" />
+                <title>' . $message . '</title>
+            </head>
+            <body style="width:' . $width . 'px">
+
+        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">'
+        . $body . '</pre></body></html>';
+
+        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
+        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
+
+        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
+
+        if (null === $subject) {
+            $subject = $this->config['mails']['subject'] ??
+                'EXCEPTION on ' . $this->hgabkaUtils->getHost() . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
+        }
+
+        $subject = strtr(
+            $subject,
+            [
+                '[host]' => $this->hgabkaUtils->getHost(),
+                '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
+                '[request_uri]' => @$_SERVER['REQUEST_URI'],
+            ]
+        );
+
+        $mail = new Email();
+        $mail->subject($subject);
+        $mail->from(new Address($fromEmail, $fromName));
+        if (!is_array($to)) {
+            $to = [$to];
+        }
+        $to = Address::createArray($to);
+
+        $mail->to(...$to);
+        $mail->html($body);
+        $mail->returnPath(new Address('hgabka@gmail.com'));
+
+        try {
+            $mailer->send($mail);
+        } catch (TransportExceptionInterface $e) {
         }
     }
 
@@ -232,23 +280,11 @@ class ExceptionNotifier
             return;
         }
 
-        $mailer = $this->mailer;
         $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
         $message = ($exception instanceof Throwable ? $exception->getMessage() : '404 error');
-        $width = 1200;
 
-        $body = '
-        <!DOCTYPE html>
-        <html style="width:' . $width . 'px">
-            <head>
-                <meta charset="UTF-8" />
-                <title>' . $message . '</title>
-            </head>
-            <body style="width:' . $width . 'px">
-
-        <pre width="' . $width . '" style="max-width:' . $width . 'px;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;white-space: pre-wrap;">';
-        $body .= 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
+        $body = 'REDIRECT_URL:' . @$_SERVER['REDIRECT_URL'] . '<br>';
         $body .= 'REQUEST_URI:' . @$_SERVER['REQUEST_URI'] . '<br>';
         $body .= ('<br />Exception message: <br /><br /><p style="font-size:18px;font-weight:bold;display:block;max-width:100%;word-wrap: break-word;overflow-wrap: break-word;hyphens: auto;">' . $message . '</p><br />') . '<br>';
         $body .= 'File: ' . $exception->getFile() . '<br />';
@@ -272,36 +308,8 @@ class ExceptionNotifier
         $body .= ('<br>Paraméterek:<br>' . var_export($pars, true));
 
         $body .= '<br>SERVER:<br>' . var_export(@$_SERVER, true);
-        $body .= '</pre></body></html>';
 
-        $fromName = $this->config['mails']['from_name'] ?? 'hgLoggerBundle';
-        $fromEmail = $this->config['mails']['from_mail'] ?? 'info@hgnotifier.com';
-
-        $to = !isset($this->config['mails']['recipients']) ? 'hgabka@gmail.com' : $this->config['mails']['recipients'];
-        $subject = isset($this->config['mails']['subject']) ? strtr(
-            $this->config['mails']['subject'],
-            ['[host]' => $_SERVER['HTTP_HOST'],
-                  '[redirect_url]' => @$_SERVER['REDIRECT_URL'],
-                  '[request_uri]' => @$_SERVER['REQUEST_URI'], ]
-        ) :
-            'EXCEPTION on ' . @$_SERVER['HTTP_HOST'] . '!!! - ' . @$_SERVER['REDIRECT_URL'] . '-' . @$_SERVER['REQUEST_URI'];
-
-        $mail = new Email();
-        $mail->subject($subject);
-        $mail->from(new Address($fromEmail, $fromName));
-        if (!is_array($to)) {
-            $to = [$to];
-        }
-        $to = Address::createArray($to);
-
-        $mail->to(...$to);
-        $mail->html($body);
-        $mail->returnPath(new Address('hgabka@gmail.com'));
-
-        try {
-            $mailer->send($mail);
-        } catch (TransportExceptionInterface $e) {
-        }
+        $this->sendWarningMail($message, $body);
     }
 
     protected function getTraceArray($exception)

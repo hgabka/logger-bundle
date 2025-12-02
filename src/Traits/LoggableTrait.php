@@ -94,7 +94,6 @@ trait LoggableTrait
         }
 
         $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
-        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
     }
 
     protected function actionLog($type, $params = [], $object = null, $priority = null, $extraParameters = null)
