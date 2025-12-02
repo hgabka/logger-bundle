@@ -6,6 +6,7 @@ use Hgabka\LoggerBundle\Event\LogActionEvent;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait LoggableTrait
 {
@@ -14,11 +15,7 @@ trait LoggableTrait
      */
     protected $dispatcher;
 
-    /**
-     * @required
-     *
-     * @param BreadcrumbManager $dispatcher
-     */
+    #[Required]
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
@@ -96,7 +93,6 @@ trait LoggableTrait
             $event->setObject($object);
         }
 
-        $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
         $this->dispatcher->dispatch($event, LogActionEvent::EVENT_UPDATE);
     }
 

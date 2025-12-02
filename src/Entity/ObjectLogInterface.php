@@ -4,9 +4,9 @@ namespace Hgabka\LoggerBundle\Entity;
 
 interface ObjectLogInterface
 {
-    public function setTable($table);
+    public function setTable(?string $table): self;
 
-    public function setForeignId($fk);
+    public function setForeignId(?string $fk): self;
 
-    public function setClass($class);
+    public function setClass(?string $class): self;
 }

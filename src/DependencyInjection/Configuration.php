@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('hgabka_logger');
         $rootNode = $treeBuilder->getRootNode();
@@ -81,6 +81,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('column_logger')
                 ->addDefaultsIfNotSet()
                     ->children()
+                        ->scalarNode('translation_domain')->defaultValue('logger')->end()
                         ->scalarNode('common_identifier')->defaultValue('symfony')->end()
                         ->enumNode('enabled')->values(['always', 'prod', 'debug', 'never'])->defaultValue('prod')->end()
                     ->end()

@@ -1,0 +1,4 @@
+hgabka_logger:
+    log_value:
+        yes: Igen
+        no: Nem

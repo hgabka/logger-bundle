@@ -8,8 +8,7 @@ use Hgabka\LoggerBundle\Logger\ColumnLogger;
 
 class ColumnLogListener
 {
-    /** @var ColumnLogger */
-    protected $columnLogger;
+    protected ColumnLogger $columnLogger;
 
     /**
      * ColumnLogListener constructor.
@@ -21,7 +20,7 @@ class ColumnLogListener
         $this->columnLogger = $columnLogger;
     }
 
-    public function onFlush(OnFlushEventArgs $eventArgs)
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $em = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
@@ -33,7 +32,7 @@ class ColumnLogListener
                 $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_INSERT, $em, $changeSet);
                 foreach ($logs as $log) {
                     $em->persist($log);
-                    $uow->computeChangeSet($em->getClassMetadata(\get_class($log)), $log);
+                    $uow->computeChangeSet($em->getClassMetadata($log::class), $log);
                 }
             }
         }
@@ -45,7 +44,7 @@ class ColumnLogListener
                 $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_UPDATE, $em, $changeSet);
                 foreach ($logs as $log) {
                     $em->persist($log);
-                    $uow->computeChangeSet($em->getClassMetadata(\get_class($log)), $log);
+                    $uow->computeChangeSet($em->getClassMetadata($log::class), $log);
                 }
             }
         }
@@ -55,7 +54,7 @@ class ColumnLogListener
                 $logs = $this->columnLogger->logColumns($entity, ColumnLogger::MOD_TYPE_DELETE, $em);
                 foreach ($logs as $log) {
                     $em->persist($log);
-                    $uow->computeChangeSet($em->getClassMetadata(\get_class($log)), $log);
+                    $uow->computeChangeSet($em->getClassMetadata($log::class), $log);
                 }
             }
         }

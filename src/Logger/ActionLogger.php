@@ -13,18 +13,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ActionLogger extends AbstractLogger
 {
-    /** @var TranslatorInterface */
-    protected $translator;
-
-    /** @var string */
-    protected $catalog;
-
     /**
      * A start()-al elkezdett log.
      *
      * @var LogAction
      */
-    protected $startedObj;
+    protected ?LogAction $startedObj = null;
 
     /**
      * ColumnLogger constructor.
@@ -36,17 +30,8 @@ class ActionLogger extends AbstractLogger
      * @param string                $ident
      * @param string                $catalog
      */
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, RequestStack $requestStack, AuthorizationCheckerInterface $authChecker, bool $debug, string $ident, string $catalog, string $enabled)
+    public function __construct(protected Registry $doctrine, protected TokenStorageInterface $tokenStorage, protected TranslatorInterface $translator, protected RequestStack $requestStack, protected AuthorizationCheckerInterface $authChecker, protected bool $debug, protected string $ident, protected string $catalog, protected string $enabled)
     {
-        $this->doctrine = $doctrine;
-        $this->tokenStorage = $tokenStorage;
-        $this->ident = $ident;
-        $this->catalog = $catalog;
-        $this->translator = $translator;
-        $this->requestStack = $requestStack;
-        $this->authChecker = $authChecker;
-        $this->enabled = $enabled;
-        $this->debug = $debug;
     }
 
     /**

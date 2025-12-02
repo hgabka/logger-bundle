@@ -18,7 +18,7 @@ class HgabkaLoggerExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration($container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -30,8 +30,9 @@ class HgabkaLoggerExtension extends Extension
         $loggerDefinition->replaceArgument(2, $config['notifier']['logging']['log_path']);
 
         $columnLoggerDefinition = $container->getDefinition('hgabka_logger.column_logger');
-        $columnLoggerDefinition->replaceArgument(5, $config['column_logger']['common_identifier']);
-        $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['enabled']);
+        $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['common_identifier']);
+        $columnLoggerDefinition->replaceArgument(7, $config['column_logger']['translation_domain']);
+        $columnLoggerDefinition->replaceArgument(8, $config['column_logger']['enabled']);
 
         $actionLoggerDefinition = $container->getDefinition('hgabka_logger.action_logger');
         $actionLoggerDefinition->replaceArgument(6, $config['action_logger']['common_identifier']);
