@@ -43,7 +43,7 @@ class ColumnLogListenerTest extends TestCase
         $uow->method('getEntityChangeSet')->willReturn(['name' => ['a', 'b']]);
 
         $log = new LogColumn();
-        $logger = $this->createMock(ColumnLogger::class);
+        $logger = $this->createStub(ColumnLogger::class);
         $calls = [];
         $logger->method('logColumns')->willReturnCallback(function ($entity, $action, $em, $changeSet = null) use (&$calls, $log) {
             $calls[] = [$entity, $action, $changeSet];
