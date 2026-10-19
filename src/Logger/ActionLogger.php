@@ -150,6 +150,9 @@ class ActionLogger extends AbstractLogger
         }
 
         $em = $this->doctrine->getManager();
+        if (null === $i18nParamsOrMessage && LogActionEvent::EVENT_UPDATE !== $kind) {
+            $i18nParamsOrMessage = [];
+        }
         $priority = $priority ?: Logger::getLevelName(Logger::INFO);
         $context = $this->getContextOptions();
 

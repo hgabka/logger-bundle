@@ -100,6 +100,20 @@ class ActionLoggerTest extends TestCase
         $this->assertSame('{"a":1}', $action->getPost());
     }
 
+    public function testStartWithoutParametersTranslatesWithAnEmptyParameterList(): void
+    {
+        $this->logger()->start('order.save');
+
+        $this->assertSame('logger|order.save|[]', $this->persisted[0]->getDescription());
+    }
+
+    public function testLogWithoutParametersDoesNotFail(): void
+    {
+        $this->logger()->log('order.save');
+
+        $this->assertSame('logger|order.save|[]', $this->persisted[0]->getDescription());
+    }
+
     public function testStringMessageIsUsedAsDescription(): void
     {
         $this->logger()->start('custom', 'Saját szöveg');
