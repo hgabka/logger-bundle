@@ -84,6 +84,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('translation_domain')->defaultValue('logger')->end()
                         ->scalarNode('common_identifier')->defaultValue('symfony')->end()
                         ->enumNode('enabled')->values(['always', 'prod', 'debug', 'never'])->defaultValue('prod')->end()
+                        ->booleanNode('log_request_data')->defaultTrue()->end()
                     ->end()
                 ->end()
              ->end()

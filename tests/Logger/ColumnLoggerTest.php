@@ -4,18 +4,22 @@ namespace Hgabka\LoggerBundle\Tests\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Hgabka\LoggerBundle\Entity\LogColumn;
 use Hgabka\LoggerBundle\Helper\LoggableEntityInterface;
 use Hgabka\LoggerBundle\Logger\ColumnLogger;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ColumnLoggerTest extends TestCase
 {
-    private function logger(string $enabled = 'always'): ColumnLogger
+    private function logger(string $enabled = 'always', bool $logRequestData = true, ?RequestStack $requestStack = null, ?TokenStorage $tokenStorage = null): ColumnLogger
     {
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(
@@ -24,14 +28,15 @@ class ColumnLoggerTest extends TestCase
 
         return new ColumnLogger(
             $this->createStub(Registry::class),
-            new TokenStorage(),
+            $tokenStorage ?? new TokenStorage(),
             $translator,
-            new RequestStack(),
+            $requestStack ?? new RequestStack(),
             $this->createStub(AuthorizationCheckerInterface::class),
             false,
             'ident',
             'logger',
-            $enabled
+            $enabled,
+            $logRequestData
         );
     }
 
@@ -82,5 +87,70 @@ class ColumnLoggerTest extends TestCase
     public function testModTypeConstants(): void
     {
         $this->assertSame(['INSERT', 'UPDATE', 'DELETE'], [ColumnLogger::MOD_TYPE_INSERT, ColumnLogger::MOD_TYPE_UPDATE, ColumnLogger::MOD_TYPE_DELETE]);
+    }
+
+    private function fill(ColumnLogger $logger): LogColumn
+    {
+        $log = new LogColumn();
+        (new \ReflectionMethod(ColumnLogger::class, 'setLogFields'))->invoke($logger, $log);
+
+        return $log;
+    }
+
+    private function requestStack(): RequestStack
+    {
+        $stack = new RequestStack();
+        $stack->push(Request::create('/x', 'POST', ['name' => 'Rohadt ugyfel']));
+
+        return $stack;
+    }
+
+    public function testRequestDataIsLoggedByDefault(): void
+    {
+        $log = $this->fill($this->logger('always', true, $this->requestStack()));
+
+        $this->assertSame('{"name":"Rohadt ugyfel"}', $log->getPost());
+        $this->assertNotNull($log->getRequestAttributes());
+    }
+
+    public function testRequestDataCanBeDisabled(): void
+    {
+        $log = $this->fill($this->logger('always', false, $this->requestStack()));
+
+        $this->assertNull($log->getPost());
+        $this->assertNull($log->getRequestAttributes());
+        $this->assertSame('POST (POST)', $log->getMethod());
+    }
+
+    public function testUserClassIsRecorded(): void
+    {
+        $user = new class() implements UserInterface {
+            public function getId(): int
+            {
+                return 7;
+            }
+
+            public function getRoles(): array
+            {
+                return [];
+            }
+
+            public function eraseCredentials(): void
+            {
+            }
+
+            public function getUserIdentifier(): string
+            {
+                return 'admin';
+            }
+        };
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setToken(new UsernamePasswordToken($user, 'main'));
+
+        $log = $this->fill($this->logger('always', true, $this->requestStack(), $tokenStorage));
+
+        $this->assertSame(7, $log->getUserId());
+        $this->assertSame($user::class, $log->getUserClass());
+        $this->assertNull($log->getOriginalUserClass());
     }
 }
