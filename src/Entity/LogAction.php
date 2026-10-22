@@ -29,6 +29,12 @@ class LogAction implements ObjectLogInterface
     #[ORM\Column(type: Types::INTEGER, name: 'original_user_id', nullable: true)]
     protected ?int $originalUserId = null;
 
+    #[ORM\Column(type: Types::STRING, name: 'user_class', nullable: true)]
+    protected ?string $userClass = null;
+
+    #[ORM\Column(type: Types::STRING, name: 'original_user_class', nullable: true)]
+    protected ?string $originalUserClass = null;
+
     #[ORM\Column(type: Types::STRING, name: 'username', nullable: true)]
     protected ?string $username = null;
 
@@ -165,6 +171,30 @@ class LogAction implements ObjectLogInterface
     public function setOriginalUserId(?int $originalUserId): self
     {
         $this->originalUserId = $originalUserId;
+
+        return $this;
+    }
+
+    public function getUserClass(): ?string
+    {
+        return $this->userClass;
+    }
+
+    public function setUserClass(?string $userClass): self
+    {
+        $this->userClass = $userClass;
+
+        return $this;
+    }
+
+    public function getOriginalUserClass(): ?string
+    {
+        return $this->originalUserClass;
+    }
+
+    public function setOriginalUserClass(?string $originalUserClass): self
+    {
+        $this->originalUserClass = $originalUserClass;
 
         return $this;
     }
