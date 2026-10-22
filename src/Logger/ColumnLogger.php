@@ -186,6 +186,11 @@ class ColumnLogger extends AbstractLogger
 
         if (is_bool($value)) {
             $value = $value ? '1' : '0';
+        } elseif (is_object($value) && method_exists($value, 'getId')) {
+            // Entitás (akár Doctrine proxy): az azonosítója, a proxy belső állapotát nem érdemes serializálni
+            $value = (new \ReflectionClass($this->getRealClass($value)))->getShortName() . '#' . $value->getId();
+        } elseif ($value instanceof \Stringable) {
+            $value = (string) $value;
         } elseif (is_array($value) || is_object($value)) {
             $value = json_encode($value, \JSON_UNESCAPED_UNICODE);
         }

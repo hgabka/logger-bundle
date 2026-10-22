@@ -63,6 +63,13 @@ class ColumnLoggerTest extends TestCase
             'integer' => ['42', 'integer', '42'],
             'datetime' => [new \DateTime('2024-03-05 10:11:12'), 'datetime', '2024-03-05 10:11:12'],
             'date' => [new \DateTimeImmutable('2024-03-05 10:11:12'), 'date', '2024-03-05'],
+            'entity is logged by short class and id' => [new LoggedEntityStub(7), null, 'LoggedEntityStub#7'],
+            'stringable' => [new class() implements \Stringable {
+                public function __toString(): string
+                {
+                    return 'Név';
+                }
+            }, null, 'Név'],
             'array is json' => [['a' => 'é'], 'json', '{"a":"é"}'],
         ];
     }
@@ -152,5 +159,17 @@ class ColumnLoggerTest extends TestCase
         $this->assertSame(7, $log->getUserId());
         $this->assertSame($user::class, $log->getUserClass());
         $this->assertNull($log->getOriginalUserClass());
+    }
+}
+
+class LoggedEntityStub
+{
+    public function __construct(private int $id)
+    {
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
