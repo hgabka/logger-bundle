@@ -36,7 +36,8 @@ class ColumnLogger extends AbstractLogger
         protected bool $debug,
         protected string $ident,
         protected string $catalog,
-        protected string $enabled
+        protected string $enabled,
+        protected bool $logRequestData = true
     ) {
     }
 
@@ -93,7 +94,7 @@ class ColumnLogger extends AbstractLogger
                 ->setData(json_encode($entityData, \JSON_UNESCAPED_UNICODE))
             ;
             $this->setLogFields($log);
-            if ($originalUser && \is_object()) {
+            if ($originalUser && \is_object($originalUser)) {
                 $log->setNote('Impersonated (original user: ' . $context[self::OPT_ORIGINAL_USERNAME] . ')');
             }
             $logs[] = $log;
@@ -139,7 +140,7 @@ class ColumnLogger extends AbstractLogger
                     ->setOldValue($oldValue)
                     ->setNewValue($newValue)
                     ->setModType($action)
-                    ->setData(json_encode($entityData, \JSON_UNESCAPED_UNICODE))
+                    ->setData(self::MOD_TYPE_INSERT === $action && empty($logs) ? json_encode($entityData, \JSON_UNESCAPED_UNICODE) : null)
                 ;
                 $this->setLogFields($log);
 
@@ -160,14 +161,16 @@ class ColumnLogger extends AbstractLogger
 
         $log
             ->setIdent($this->ident)
-            ->setPost($request ? json_encode($request->request->all()) : null)
-            ->setRequestAttributes($request ? json_encode($request->attributes->all()) : null)
+            ->setPost($request && $this->logRequestData ? json_encode($request->request->all()) : null)
+            ->setRequestAttributes($request && $this->logRequestData ? json_encode($request->attributes->all()) : null)
             ->setMethod($request ? ($request->getMethod() . ' (' . $request->getRealMethod() . ')') : null)
             ->setClientIp($context[static::OPT_IP])
             ->setController($context[static::OPT_ACTION])
             ->setSessionId($context[static::OPT_SESSION])
             ->setUserAgent($context[static::OPT_USER_AGENT])
             ->setUserId($context[static::OPT_USER])
+            ->setUserClass($context[static::OPT_USER_CLASS])
+            ->setOriginalUserClass($context[static::OPT_ORIGINAL_USER_CLASS])
             ->setOriginalUserId($context[static::OPT_ORIGINAL_USER])
             ->setUsername($context[static::OPT_USERNAME])
             ->setOriginalUsername($context[static::OPT_ORIGINAL_USERNAME])

@@ -3,6 +3,7 @@
 namespace Hgabka\LoggerBundle\Logger;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Util\ClassUtils;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\ObjectLogInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,6 +19,8 @@ class AbstractLogger
     public const OPT_USER_OBJECT = 'user_object';
     public const OPT_ORIGINAL_USER = 'original_user';
     public const OPT_ORIGINAL_USER_OBJECT = 'original_user_object';
+    public const OPT_USER_CLASS = 'user_class';
+    public const OPT_ORIGINAL_USER_CLASS = 'original_user_class';
     public const OPT_URL = 'url';
     public const OPT_IP = 'ip';
     public const OPT_SESSION = 'session';
@@ -79,6 +82,8 @@ class AbstractLogger
             static::OPT_USER_OBJECT => $user && \is_object($user) ? $user : null,
             static::OPT_ORIGINAL_USER => $originalUser && \is_object($originalUser) ? $originalUser->getId() : null,
             static::OPT_ORIGINAL_USER_OBJECT => $originalUser && \is_object($originalUser) ? $originalUser : null,
+            static::OPT_USER_CLASS => $user && \is_object($user) ? $this->getRealClass($user) : null,
+            static::OPT_ORIGINAL_USER_CLASS => $originalUser && \is_object($originalUser) ? $this->getRealClass($originalUser) : null,
             static::OPT_USER_AGENT => $request ? $request->headers->get('User-Agent') : null,
             static::OPT_IP => $request ? $request->getClientIp() : null,
             static::OPT_URL => $request ? $request->getRequestUri() : null,
@@ -87,6 +92,14 @@ class AbstractLogger
             static::OPT_USERNAME => $user && \is_object($user) ? $user->getUserIdentifier() : null,
             static::OPT_ORIGINAL_USERNAME => $originalUser && \is_object($originalUser) ? $originalUser->getUserIdentifier() : null,
         ];
+    }
+
+    /**
+     * A user osztálya (Doctrine proxy esetén a valódi), hogy a user_id-hoz tartozó tábla azonosítható legyen.
+     */
+    protected function getRealClass(object $object): string
+    {
+        return ClassUtils::getClass($object);
     }
 
     protected function getEntityData($object): array
