@@ -33,6 +33,7 @@ class HgabkaLoggerExtension extends Extension
         $columnLoggerDefinition->replaceArgument(6, $config['column_logger']['common_identifier']);
         $columnLoggerDefinition->replaceArgument(7, $config['column_logger']['translation_domain']);
         $columnLoggerDefinition->replaceArgument(8, $config['column_logger']['enabled']);
+        $columnLoggerDefinition->replaceArgument(9, $config['column_logger']['log_request_data']);
 
         $actionLoggerDefinition = $container->getDefinition('hgabka_logger.action_logger');
         $actionLoggerDefinition->replaceArgument(6, $config['action_logger']['common_identifier']);
