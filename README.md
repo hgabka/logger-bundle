@@ -48,6 +48,7 @@ hgabka_logger:
         enabled: prod
         common_identifier: symfony
         translation_domain: logger
+        log_request_data: true         # false: a POST és a request attribútumok nem kerülnek a sorokba (kisebb tábla)
 ```
 
 ## Használat
@@ -95,7 +96,7 @@ class Product implements LoggableEntityInterface
 }
 ```
 
-A `ColumnLogListener` a Doctrine `onFlush` eseményén fut, és mezőnként egy `LogColumn` sort készít (tábla, osztály, `foreign_id`, régi/új érték, módosítás típusa, user, URL, controller, kliens adatok). Törléskor/beszúráskor az entitás teljes adata JSON-ként a `data` mezőbe kerül. Ha `getLogFields()` üres tömb, minden mezőt naplóz, kivéve a `createdAt`/`updatedAt`-et.
+A `ColumnLogListener` a Doctrine `onFlush` eseményén fut, és mezőnként egy `LogColumn` sort készít (tábla, osztály, `foreign_id`, régi/új érték, módosítás típusa, user, URL, controller, kliens adatok). Törléskor az entitás teljes adata JSON-ként a `data` mezőbe kerül; beszúrásnál csak az első sorba (nem mezőnként ismételve), módosításnál sehova (a változás az old/new értékben van). Ha `getLogFields()` üres tömb, minden mezőt naplóz, kivéve a `createdAt`/`updatedAt`-et.
 
 ## Entitások
 

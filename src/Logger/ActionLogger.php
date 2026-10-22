@@ -193,6 +193,8 @@ class ActionLogger extends AbstractLogger
                     ->setSessionId($context[static::OPT_SESSION])
                     ->setUserAgent($context[static::OPT_USER_AGENT])
                     ->setUserId($context[static::OPT_USER])
+                    ->setUserClass($context[static::OPT_USER_CLASS])
+                    ->setOriginalUserClass($context[static::OPT_ORIGINAL_USER_CLASS])
                     ->setOriginalUserId($context[static::OPT_ORIGINAL_USER])
                     ->setUsername($context[static::OPT_USERNAME])
                     ->setOriginalUsername($context[static::OPT_ORIGINAL_USERNAME])
