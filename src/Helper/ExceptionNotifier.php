@@ -143,14 +143,14 @@ class ExceptionNotifier
         $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
         $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
         $sfNotify->setServerName($this->hgabkaUtils->getHost());
-        $sfNotify->setPost(json_encode(@$_POST));
-        $sfNotify->setParams(json_encode($_GET));
+        $sfNotify->setPost(TextTruncator::truncate(json_encode(@$_POST)));
+        $sfNotify->setParams(TextTruncator::truncate(json_encode($_GET)));
         $sfNotify->setCode($exception->getCode());
         $sfNotify->setLine($exception->getLine());
         $sfNotify->setFile($exception->getFile());
         $hash = $this->getHash($sfNotify);
         $sfNotify->setHash($hash);
-        $sfNotify->setRequest(json_encode(@$_REQUEST));
+        $sfNotify->setRequest(TextTruncator::truncate(json_encode(@$_REQUEST)));
 
         $old = $this->doctrine->getRepository(Notify::class)->findOneBy(['hash' => $hash]);
 
@@ -171,7 +171,7 @@ class ExceptionNotifier
             $em->persist($sfNotify);
 
             $sfNotifyCall = new NotifyCall();
-            $sfNotifyCall->setServer(json_encode(@$_SERVER));
+            $sfNotifyCall->setServer(TextTruncator::truncate(json_encode(@$_SERVER)));
             $sfNotify->addCall($sfNotifyCall);
 
             $em->persist($sfNotifyCall);
