@@ -2,6 +2,7 @@
 
 namespace Hgabka\LoggerBundle\Logger;
 
+use Hgabka\LoggerBundle\Helper\TextTruncator;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Hgabka\LoggerBundle\Entity\LogAction;
 use Hgabka\LoggerBundle\Event\LogActionEvent;
@@ -179,8 +180,8 @@ class ActionLogger extends AbstractLogger
                         ->setTime(new \DateTime())
                         ->setType($type)
                         ->setPriority($priority)
-                        ->setPost($request ? json_encode($request->request->all()) : null)
-                        ->setRequestAttributes($request ? json_encode($request->attributes->all()) : null)
+                        ->setPost($request ? TextTruncator::truncate(json_encode($request->request->all())) : null)
+                        ->setRequestAttributes($request ? TextTruncator::truncate(json_encode($request->attributes->all())) : null)
                         ->setMethod($request ? ($request->getMethod() . ' (' . $request->getRealMethod() . ')') : null)
                         ->setSuccess(false)
                         ->setExtraParameters($extraParameters ?? null)

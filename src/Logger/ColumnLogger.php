@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\MappingException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Hgabka\LoggerBundle\Entity\LogColumn;
 use Hgabka\LoggerBundle\Helper\LoggableEntityInterface;
+use Hgabka\LoggerBundle\Helper\TextTruncator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -161,8 +162,8 @@ class ColumnLogger extends AbstractLogger
 
         $log
             ->setIdent($this->ident)
-            ->setPost($request && $this->logRequestData ? json_encode($request->request->all()) : null)
-            ->setRequestAttributes($request && $this->logRequestData ? json_encode($request->attributes->all()) : null)
+            ->setPost($request && $this->logRequestData ? TextTruncator::truncate(json_encode($request->request->all())) : null)
+            ->setRequestAttributes($request && $this->logRequestData ? TextTruncator::truncate(json_encode($request->attributes->all())) : null)
             ->setMethod($request ? ($request->getMethod() . ' (' . $request->getRealMethod() . ')') : null)
             ->setClientIp($context[static::OPT_IP])
             ->setController($context[static::OPT_ACTION])
