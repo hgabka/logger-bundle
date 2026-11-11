@@ -236,7 +236,9 @@ class ExceptionNotifier
 
         $mail->to(...$to);
         $mail->html($body);
-        $mail->returnPath(new Address('hgabka@gmail.com'));
+        // The envelope sender defaults to the From address: a foreign domain here (the bounces' address) breaks the
+        // SPF alignment, and a strict DMARC policy (p=reject) then rejects the mail
+        $mail->returnPath(new Address($this->config['mails']['return_path'] ?? $fromEmail));
 
         try {
             $mailer->send($mail);

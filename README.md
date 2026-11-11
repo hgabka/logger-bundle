@@ -29,6 +29,7 @@ hgabka_logger:
             enabled: prod              # always | prod | debug | never
             from_mail: info@hgabka.eu
             from_name: hgLoggerBundle
+            return_path: ~             # a boríték-feladó (bounce cím); alapból a from_mail (SPF/DMARC illeszkedés miatt)
             subject: 'Exception a(z) [host] oldalon'
             recipients: [dev@example.com]
             send_only_if_new: false    # csak új (nem ismétlődő) hibáról küldjön levelet
