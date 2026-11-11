@@ -33,6 +33,7 @@ hgabka_logger:
             recipients: [dev@example.com]
             send_only_if_new: false    # csak új (nem ismétlődő) hibáról küldjön levelet
             send_404: true
+            dump_server: false         # a $_SERVER teljes tartalmát (titkokat is!) beleteszi a levélbe
         logging:
             enabled: prod              # always | prod | debug | never
             type:                      # hova naplózzon: file | database | both | none
@@ -40,6 +41,7 @@ hgabka_logger:
                 prod: both
             log_path: '%kernel.logs_dir%/exception'
             log_404: true
+            dump_server: false         # a $_SERVER-t eltárolja a NotifyCall rekordban
     action_logger:
         enabled: prod
         common_identifier: symfony     # az `ident` mező értéke a rekordokban
