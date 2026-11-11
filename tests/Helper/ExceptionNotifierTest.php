@@ -158,4 +158,18 @@ class ExceptionNotifierTest extends TestCase
 
         $this->assertSame('Custom example.test', $this->sent[0]->getSubject());
     }
+
+    public function testReturnPathDefaultsToFromAddress(): void
+    {
+        $this->notifier(self::config())->sendWarningMail('m', 'b');
+
+        $this->assertSame('from@example.com', $this->sent[0]->getReturnPath()->getAddress());
+    }
+
+    public function testReturnPathCanBeConfigured(): void
+    {
+        $this->notifier(self::config(extra: ['return_path' => 'bounce@example.com']))->sendWarningMail('m', 'b');
+
+        $this->assertSame('bounce@example.com', $this->sent[0]->getReturnPath()->getAddress());
+    }
 }

@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
                                   ->enumNode('enabled')->values(['always', 'prod', 'debug', 'never'])->defaultValue('prod')->end()
                                   ->scalarNode('from_mail')->defaultValue('info@hgabka.eu')->end()
                                   ->scalarNode('from_name')->defaultValue('hgLoggerBundle')->end()
+                                  ->scalarNode('return_path')->defaultNull()->end()
                                   ->scalarNode('subject')->defaultValue('Exception a(z) [host] oldalon')->end()
                                   ->arrayNode('recipients')
                                       ->prototype('scalar')->end()
