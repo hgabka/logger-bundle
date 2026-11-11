@@ -171,7 +171,9 @@ class ExceptionNotifier
             $em->persist($sfNotify);
 
             $sfNotifyCall = new NotifyCall();
-            $sfNotifyCall->setServer(TextTruncator::truncate(json_encode(@$_SERVER)));
+            if (!empty($this->config['logging']['dump_server'])) {
+                $sfNotifyCall->setServer(TextTruncator::truncate(json_encode(@$_SERVER)));
+            }
             $sfNotify->addCall($sfNotifyCall);
 
             $em->persist($sfNotifyCall);
@@ -307,7 +309,9 @@ class ExceptionNotifier
         }
         $body .= ('<br>Paraméterek:<br>' . var_export($pars, true));
 
-        $body .= '<br>SERVER:<br>' . var_export(@$_SERVER, true);
+        if (!empty($this->config['mails']['dump_server'])) {
+            $body .= '<br>SERVER:<br>' . var_export(@$_SERVER, true);
+        }
 
         $this->sendWarningMail($message, $body);
     }
