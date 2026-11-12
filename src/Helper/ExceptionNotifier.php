@@ -12,7 +12,6 @@ use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use function in_array;
 use function is_array;
 use function is_object;
-use function json_encode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -136,21 +135,21 @@ class ExceptionNotifier
         $sfNotify = new Notify();
         $controller = $this->getMasterRequest() && $this->getMasterRequest()->attributes ? $this->getMasterRequest()->attributes->get('_controller') : '';
 
-        $sfNotify->setController($controller);
+        $sfNotify->setController(TextTruncator::scrub($controller));
         $sfNotify->setExceptionClass(get_class($exception));
-        $sfNotify->setMessage($exception instanceof Throwable ? $exception->getMessage() : '404 error');
-        $sfNotify->setTraces($exception instanceof Throwable ? $exception->getTraceAsString() : '');
-        $sfNotify->setRedirectUrl(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : '');
-        $sfNotify->setRequestUri(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '');
-        $sfNotify->setServerName($this->hgabkaUtils->getHost());
-        $sfNotify->setPost(TextTruncator::truncate(json_encode(@$_POST)));
-        $sfNotify->setParams(TextTruncator::truncate(json_encode($_GET)));
+        $sfNotify->setMessage(TextTruncator::scrub($exception instanceof Throwable ? $exception->getMessage() : '404 error'));
+        $sfNotify->setTraces(TextTruncator::scrub($exception instanceof Throwable ? $exception->getTraceAsString() : ''));
+        $sfNotify->setRedirectUrl(TextTruncator::scrub(@$_SERVER['REDIRECT_URL'] ? $_SERVER['REDIRECT_URL'] : ''));
+        $sfNotify->setRequestUri(TextTruncator::scrub(@$_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : ''));
+        $sfNotify->setServerName(TextTruncator::scrub($this->hgabkaUtils->getHost()));
+        $sfNotify->setPost(TextTruncator::truncate(TextTruncator::json(@$_POST)));
+        $sfNotify->setParams(TextTruncator::truncate(TextTruncator::json($_GET)));
         $sfNotify->setCode($exception->getCode());
         $sfNotify->setLine($exception->getLine());
-        $sfNotify->setFile($exception->getFile());
+        $sfNotify->setFile(TextTruncator::scrub($exception->getFile()));
         $hash = $this->getHash($sfNotify);
         $sfNotify->setHash($hash);
-        $sfNotify->setRequest(TextTruncator::truncate(json_encode(@$_REQUEST)));
+        $sfNotify->setRequest(TextTruncator::truncate(TextTruncator::json(@$_REQUEST)));
 
         $old = $this->doctrine->getRepository(Notify::class)->findOneBy(['hash' => $hash]);
 
@@ -172,7 +171,7 @@ class ExceptionNotifier
 
             $sfNotifyCall = new NotifyCall();
             if (!empty($this->config['logging']['dump_server'])) {
-                $sfNotifyCall->setServer(TextTruncator::truncate(json_encode(@$_SERVER)));
+                $sfNotifyCall->setServer(TextTruncator::truncate(TextTruncator::json(@$_SERVER)));
             }
             $sfNotify->addCall($sfNotifyCall);
 

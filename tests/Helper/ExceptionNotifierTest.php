@@ -3,6 +3,10 @@
 namespace Hgabka\LoggerBundle\Tests\Helper;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectRepository;
+use Hgabka\LoggerBundle\Entity\Notify;
 use Hgabka\LoggerBundle\Helper\ExceptionNotifier;
 use Hgabka\LoggerBundle\Logger\ExceptionLogger;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
@@ -171,5 +175,49 @@ class ExceptionNotifierTest extends TestCase
         $this->notifier(self::config(extra: ['return_path' => 'bounce@example.com']))->sendWarningMail('m', 'b');
 
         $this->assertSame('bounce@example.com', $this->sent[0]->getReturnPath()->getAddress());
+    }
+
+    public function testDatabaseLoggingScrubsInvalidUtf8BeforePersisting(): void
+    {
+        $persisted = [];
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->method('getClassMetadata')->willReturn($this->createStub(ClassMetadata::class));
+        $em->method('persist')->willReturnCallback(function (object $o) use (&$persisted): void {
+            $persisted[] = $o;
+        });
+        $repo = $this->createStub(ObjectRepository::class);
+        $registry = $this->createStub(Registry::class);
+        $registry->method('getManager')->willReturn($em);
+        $registry->method('getRepository')->willReturn($repo);
+        $utils = $this->createStub(HgabkaUtils::class);
+        $utils->method('getHost')->willReturn('example.test');
+
+        $notifier = (new ExceptionNotifier(
+            $registry,
+            $this->createStub(MailerInterface::class),
+            new RequestStack(),
+            $this->createStub(ExceptionLogger::class),
+            $utils,
+            false
+        ))->setConfig([
+            'logging' => ['enabled' => 'always', 'type' => ['debug' => 'database', 'prod' => 'database']],
+            'mails' => ['enabled' => 'never'],
+        ]);
+
+        $old = [$_SERVER['REDIRECT_URL'] ?? null, $_SERVER['REQUEST_URI'] ?? null];
+        $_SERVER['REDIRECT_URL'] = "/x/\xC0\xA7\xC0\xA2%2e";
+        $_SERVER['REQUEST_URI'] = "/x?q=\xC0\xA7\xC0\xA2";
+        try {
+            $notifier->trigger(new \RuntimeException("bad \xC0\xA7 input"));
+        } finally {
+            [$_SERVER['REDIRECT_URL'], $_SERVER['REQUEST_URI']] = $old;
+        }
+
+        $notifies = array_values(array_filter($persisted, static fn (object $o): bool => $o instanceof Notify));
+        $this->assertCount(1, $notifies);
+        foreach (['getRedirectUrl', 'getRequestUri', 'getMessage', 'getTraces', 'getFile'] as $getter) {
+            $this->assertTrue(mb_check_encoding((string) $notifies[0]->$getter(), 'UTF-8'), $getter);
+        }
     }
 }
