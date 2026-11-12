@@ -18,4 +18,25 @@ final class TextTruncator
 
         return \strlen($str) > $max ? mb_strcut($str, 0, $max, 'UTF-8') : $str;
     }
+
+    /**
+     * Az ervenytelen UTF-8 bajtokat (pl. a szkennerek overlong "%c0%a7" payloadjai) '?'-re cseréli: az utf8/utf8mb4
+     * oszlopok MySQL 1366 hibaval utasitjak vissza oket, ami bezarja az EntityManagert is.
+     */
+    public static function scrub(string|false|null $str): ?string
+    {
+        if (null === $str || false === $str) {
+            return null;
+        }
+
+        return mb_scrub($str, 'UTF-8');
+    }
+
+    /**
+     * json_encode, ami az ervenytelen UTF-8 bajtokat nem dobja el (false), hanem U+FFFD-re cseréli.
+     */
+    public static function json(mixed $value): string|false
+    {
+        return json_encode($value, \JSON_INVALID_UTF8_SUBSTITUTE | \JSON_PARTIAL_OUTPUT_ON_ERROR);
+    }
 }
