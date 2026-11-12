@@ -20,4 +20,24 @@ class TextTruncatorTest extends TestCase
         $this->assertLessThanOrEqual(TextTruncator::MAX_LENGTH, \strlen($res));
         $this->assertTrue(mb_check_encoding($res, 'UTF-8'));
     }
+
+    public function testScrubReplacesInvalidUtf8AndKeepsValidText(): void
+    {
+        $res = TextTruncator::scrub("/a/\xC0\xA7\xC0\xA2%2e/árvíztűrő");
+
+        $this->assertTrue(mb_check_encoding($res, 'UTF-8'));
+        $this->assertStringContainsString('árvíztűrő', $res);
+        $this->assertSame('', TextTruncator::scrub(''));
+        $this->assertNull(TextTruncator::scrub(null));
+        $this->assertNull(TextTruncator::scrub(false));
+    }
+
+    public function testJsonSubstitutesInvalidUtf8InsteadOfFailing(): void
+    {
+        $res = TextTruncator::json(['q' => "\xC0\xA7x", 'ok' => 'ő']);
+
+        $this->assertIsString($res);
+        $this->assertTrue(mb_check_encoding($res, 'UTF-8'));
+        $this->assertSame('ő', json_decode($res, true)['ok']);
+    }
 }
