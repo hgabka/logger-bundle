@@ -1,6 +1,6 @@
 {
     "name": "hgabka/logger-bundle",
-    "type": "kunstmaan-bundle",
+    "type": "symfony-bundle",
     "description": "Logger bundle",
     "keywords": [],
     "homepage": "https://github.com/hgabka/logger-bundle",
